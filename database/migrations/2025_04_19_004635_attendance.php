@@ -14,15 +14,15 @@ return new class extends Migration
         Schema::create('attendance', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->dateTime('punch_in');
-            $table->dateTime('punch_out')->nullable();
+            $table->dateTime('check_in');
+            $table->dateTime('check_out');
             $table->string('shift')->nullable();         
-            $table->string('punch_in_location');
-            $table->string('punch_out_location')->nullable();
-            $table->string('punch_in_photo')->nullable();
-            $table->string('punch_out_photo')->nullable();
+            $table->string('check_in_location');
+            $table->string('check_out_location');
+            $table->decimal('latitude', 10, 7);
+            $table->decimal('longitude', 10, 7);
             $table->string('status');
-            $table->boolean('is_late')->default(false);
+            $table->string('permission');
             $table->dateTime('created_at')->nullable();
             $table->dateTime('updated_at')->nullable();
 });

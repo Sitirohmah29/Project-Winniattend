@@ -5,15 +5,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class LocationLog extends Model
+class PayrollReport extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'user_id',
+        'salary',
+        'alpha_deduction',
+        'total_salary',
+        'month',
+    ];
 
-    public $timestamps = false;
-    protected $fillable = ['user_id', 'location_name', 'latitude', 'longitude', 'recorded_at', 'created_at'];
-
+    // Relasi ke tabel User
     public function user()
     {
         return $this->belongsTo(User::class);
     }
+
 }

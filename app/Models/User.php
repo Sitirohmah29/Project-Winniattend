@@ -56,13 +56,13 @@ class User extends Authenticatable
         return $this->hasMany(FaceData::class);
     }
 
-    public function activityLogs()
+    public function payrollreports()
     {
-        return $this->hasMany(ActivityLog::class);
+        return $this->hasMany(PayrollReport::class);
     }
 
-    public function locationLogs()
+    public function attendancereports()
     {
-        return $this->hasMany(LocationLog::class);
+        return $this->hasMany(AttendanceReport::class);
     }
 }

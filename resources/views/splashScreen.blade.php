@@ -16,26 +16,26 @@
     <!-- Tailwind CSS -->
     @vite('resources/css/app.css')
 </head>
-<body class="bg-white">
+<body class="bg-white font-poppins">
     <div class="flex flex-col items-center justify-center min-h-screen p-6">
-        <div class="flex flex-col items-center justify-center flex-1 text-center">
+        <div class="flex flex-col items-center justify-center flex-1 text-center ">
             <!-- Logo -->
-            <div class="mb-8">
-                <img src="{{ asset('images/logo.png') }}" alt="WinniCode Garuda Teknologi Logo" class="w-48">
+            <div class="mt-10">
+                <img src="{{ asset('images/logo.png') }}" alt="WinniCode Garuda Teknologi Logo" class="w-50">
             </div>
             
             <!-- Welcome Text -->
-            <h1 class="text-2xl font-weight-600">
+            <h1 class="text-xl font-semibold ">
                 <span class="text-blue-500">Welcome to </span>
                 <span class="text-pink-500">WinniAttend!</span>
             </h1>
             
-            <p class="mt-4 mb-12 text-xl text-gray-700">Your Workday Starts Here</p>
+            <p class="mb-14 text-sm text-gray-700">Your Workday Starts Here</p>
             
             <!-- Get Started Button -->
-            <a href="" class="px-8 py-3 text-lg font-medium text-white transition-colors bg-blue-500 rounded-full shadow-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 w-64">
-                Get Started
-            </a>
+            <a href="" class="py-2 px-12 h-8 text-xs text-white transition-colors bg-blue-500 rounded-3xl shadow-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 w-55 font-semibold flex items-center justify-center mt-60">
+    Get Started
+</a>
         </div>
     </div>
     
