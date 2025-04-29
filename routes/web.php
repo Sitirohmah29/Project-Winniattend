@@ -1,8 +1,6 @@
 <?php
 
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Request;
+use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,17 +14,20 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('splashScreen');
-});
 
-Route::post('/api/login', function (Request $request) {
-    $user = User::where('email', $request->email)->first();
+// Authentication Routes
+Route::get('/', [AuthController::class, 'splash'])->name('splash');
+Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('login', [AuthController::class, 'login'])->name('login.attempt');
+Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
-    if ($user) {
-        Auth::login($user);
-        return ['token' => $user->createToken('api-token')->plainTextToken];
-    }
+// Password Reset Routes
+Route::get('/forgot-password', [AuthController::class, 'showForgotPasswordForm'])->name('password.request');
+Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->name('password.email');
 
-    return response()->json(['error' => 'Unauthorized'], 401);
-});
+// Protected Routes (require authentication)
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+});   

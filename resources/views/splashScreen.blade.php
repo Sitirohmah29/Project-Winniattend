@@ -15,27 +15,99 @@
     
     <!-- Tailwind CSS -->
     @vite('resources/css/app.css')
+    <!-- Alpine.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.13.0/cdn.min.js" defer></script>
+    <!-- Heroicons (untuk ikon mata) -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body class="bg-white font-poppins">
-    <div class="flex flex-col items-center justify-center min-h-screen p-6">
-        <div class="flex flex-col items-center justify-center flex-1 text-center ">
-            <!-- Logo -->
-            <div class="mt-10">
+    <div x-data="{ 
+        showForm: false,
+        passwordVisible: false,
+        handleScroll() {
+            if (window.scrollY > 50 && this.showForm) {
+                this.showForm = false;
+            }
+        }
+    }" 
+    @scroll.window="handleScroll()" 
+    class="flex flex-col items-center justify-center min-h-screen p-6 relative overflow-hidden">
+        
+        <div class="flex flex-col items-center justify-center flex-1 text-center w-full max-w-md">
+            <!-- Logo with transition -->
+            <div :class="showForm ? 'transform -translate-y-10 scale-100 transition-all duration-500' : 'mt-10 transition-all duration-500'">
                 <img src="{{ asset('images/logo.png') }}" alt="WinniCode Garuda Teknologi Logo" class="w-50">
             </div>
             
             <!-- Welcome Text -->
-            <h1 class="text-xl font-semibold ">
+            <h1 class="text-xl font-semibold" :class="showForm ? 'hidden' : ''">
                 <span class="text-blue-500">Welcome to </span>
                 <span class="text-pink-500">WinniAttend!</span>
             </h1>
             
-            <p class="mb-14 text-sm text-gray-700">Your Workday Starts Here</p>
+            <p class="mb-14 text-sm text-gray-700" :class="showForm ? 'hidden' : ''">Your Workday Starts Here</p>
             
             <!-- Get Started Button -->
-            <a href="" class="py-2 px-12 h-8 text-xs text-white transition-colors bg-blue-500 rounded-3xl shadow-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 w-55 font-semibold flex items-center justify-center mt-60">
-    Get Started
-</a>
+            <button 
+                @click="showForm = true; setTimeout(() => document.getElementById('email').focus(), 500)" 
+                :class="showForm ? 'hidden' : 'block'"
+                class="py-2 px-12 h-8 text-xs text-white transition-colors bg-blue-500 hover:bg-black hover:text-blue-400 rounded-3xl shadow-lg w-55 font-semibold flex items-center justify-center mt-60">
+                Get Started
+            </button>
+            
+            <!-- Login Form (initially hidden) -->
+            <div 
+                x-show="showForm" 
+                x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="opacity-0 translate-y-full"
+                x-transition:enter-end="opacity-100 translate-y-0"
+                x-transition:leave="transition ease-in duration-300"
+                x-transition:leave-start="opacity-100 translate-y-0"
+                x-transition:leave-end="opacity-0 translate-y-full"
+                class="w-full max-w-xl mx-auto pt-8 inset-0 inset-t-0 shadow-gray-500 rounded-t-lg">
+                
+                <h2 class="text-center text-xl font-semibold mb-4">
+                    <span class="text-blue-500">Sign In</span>
+                </h2>
+                
+                <form action="{{ url('login') }}" method="POST" class="space-y-4">
+                    @csrf
+                    
+                    <div>
+                        <label for="email" class="block text-xs font-semibold mb-1 text-left">E-mail</label>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email" 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    
+                    <div>
+                        <label for="password" class="block text-xs font-semibold mb-1 text-left">Password</label>
+                        <div class="relative">
+                            <input 
+                                :type="passwordVisible ? 'text' : 'password'" 
+                                id="password" 
+                                name="password" 
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <button 
+                                type="button"
+                                @click="passwordVisible = !passwordVisible"
+                                class="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5">
+                                <i class="fa" :class="passwordVisible ? 'fa-eye-slash' : 'fa-eye'"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-end">
+                        <span class="text-xs text-black-500">Forgot password?<a href="#" class="text-xs text-red-500 hover:text-blue-700"> Click Here</a></span>
+                    </div>
+                    
+                    <button class="py-2 px-12 h-8 text-xs text-white transition-colors bg-blue-500 hover:bg-black hover:text-blue-400 rounded-3xl shadow-lg w-55 font-semibold mt-40">
+                        Next
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
     
