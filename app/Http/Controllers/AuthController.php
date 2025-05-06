@@ -68,6 +68,10 @@ class AuthController extends Controller
         return view('profile.indexProfile');
     }
 
+    public function editP () {
+        return view('profile.page.editProfile');
+    }
+
     /**
      * Handle user logout
      *
