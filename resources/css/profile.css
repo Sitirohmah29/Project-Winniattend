@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import "tailwindcss";
+@source "../views";
+
+/* Komponen kustom */
+.text-title {
+    @apply text-lg font-semibold;
+}
+.profile-btn {
+    @apply mt-3 px-4 py-2 bg-blue-500 text-white rounded-full hover:bg-blue-700;
+}
+
+.profile-image {
+    @apply w-20 h-20 rounded-full object-cover border border-gray-300 shadow-sm mb-2;
+}
+
+.profile-card {
+    @apply flex items-center mb-2 gap-2 bg-gray-400 rounded-full p-2;
+}
+
+.profile-icon {
+    @apply w-4 h-4 flex items-center justify-center bg-white rounded-full;
+}
+
+.nav-bottom {
+    @apply fixed bottom-6 left-0 right-0 flex justify-center;
+}
+
+.nav-container {
+    @apply bg-white rounded-full shadow-lg px-6 py-2 flex space-x-8;
+}

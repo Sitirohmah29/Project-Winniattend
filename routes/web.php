@@ -31,6 +31,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
+
     Route::get('/notification', [AuthController::class, 'notify'])->name('notification');
      Route::get('/attendance/check-in', [AttendanceController::class, 'showCheckInPage'])->name('attendance.check-in');
     Route::post('/attendance/punch-in', [AttendanceController::class, 'punchIn'])->name('attendance.punch-in');
@@ -38,3 +39,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/attendance/verify-face', [AttendanceController::class, 'verifyFace'])->name('attendance.verify-face');
     Route::get('/attendance/history', [AttendanceController::class, 'history'])->name('attendance.history');
 });   
+
+Route::get('/indexProfile', [AuthController::class, 'profile'])->name('indexProfile');
+
+

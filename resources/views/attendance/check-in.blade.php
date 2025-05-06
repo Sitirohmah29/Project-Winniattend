@@ -26,7 +26,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 </head>
-<body class="bg-white font-sans">
+<body class="bg-white font-poppins">
   <div class="flex flex-col h-screen">
     <!-- Header -->
     <div class="px-4 py-3 bg-white shadow">
@@ -34,36 +34,35 @@
         <a href="{{ route('dashboard') }}" class="mr-4">
           <i class="fas fa-chevron-left text-gray-600"></i>
         </a>
-        <h1 class="text-lg font-medium text-center flex-1">Punch in</h1>
+        <h1 class="text-sm font-semibold text-center flex-1">Punch in</h1>
       </div>
     </div>
-
-    <!-- Map Area - Increased height for better visibility -->
-    <div class="relative h-64 bg-gray-200">
-      <div id="map" class="w-full h-full rounded-md">
-        <h2 class="text-sm font-medium text-gray-600 mb-2">Available</h2>
-      <div class="bg-white rounded-lg shadow-sm border mb-4 p-3" id="selected-location">
-        <div class="flex items-start">
-          <div class="flex-shrink-0 mt-1">
-            <div class="h-5 w-5 rounded-full bg-red-500 flex items-center justify-center">
-              <div class="h-2 w-2 rounded-full bg-white"></div>
+    
+    <!-- Map Container -->
+    <div id="map" class="w-full h-80 rounded-md relative">
+      <div class="absolute bottom-5 left-2 bg-opacity-90 rounded-md shadow p-3 z-[500] max-w-xs">
+        <h2 class="text-sm font-semibold">Available</h2>
+        <div id="selected-location">
+          <div class="flex items-start">
+            <div class="flex-shrink-0 mt-1">
+              <div class="h-5 w-5 rounded-full bg-red-500 flex items-center justify-center">
+                <div class="h-2 w-2 rounded-full bg-white"></div>
+              </div>
             </div>
-          </div>
-          <div class="ml-3">
-            <h3 class="font-medium" id="selected-location-name">IBI Kesatuan</h3>
-            <p class="text-xs text-gray-600" id="selected-location-address">
-              Jl. Ranggagading no.1 RT.02/09, Gudang, Kec.Bogor Tengah, Bogor, Indonesia 16123
-            </p>
-            <p class="text-xs text-green-600 mt-1" id="distance-info">Calculating distance...</p>
+            <div class="ml-3">
+              <h3 class="text-sm font-semibold" id="selected-location-name">IBI Kesatuan</h3>
+              <p class="text-xs font-thin" id="selected-location-address">
+                Jl. Ranggagading no.1 RT.02/09, Gudang, Kec.Bogor Tengah, Bogor, Indonesia 16123
+              </p>
+            </div>
           </div>
         </div>
       </div>
-      </div>
     </div>
 
-    <!-- Location Section -->
+    <!-- Shift Information -->
     <div class="px-4 py-3">
-      <h2 class="text-sm font-medium text-gray-600 mb-2">Shift</h2>
+      <h2 class="text-sm font-semibold mb-2">Shift</h2>
       <div class="bg-white rounded-lg shadow-sm border p-3">
         <div class="flex items-center">
           <div class="flex-shrink-0">
@@ -72,15 +71,15 @@
             </div>
           </div>
           <div class="ml-3">
-            <span class="font-medium">Frontend Developer</span>
-            <span class="text-sm text-gray-600 ml-2">(07:00am - 01:00pm)</span>
+            <span class="text-xs font-semibold">Frontend Developer</span>
+            <span class="text-xs font-thin ml-14">(07:00am - 01:00pm)</span>
           </div>
         </div>
       </div>
     </div>
 
     <!-- Face ID Button -->
-    <div class="mt-auto mb-8 flex justify-center">
+    <div class="mt-auto mb-6 flex justify-center">
       <form id="punchInForm" action="{{ route('attendance.punch-in') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <input type="hidden" name="punch_in_location" id="punch_in_location" value="IBI Kesatuan, Bogor" />
@@ -90,15 +89,14 @@
         <input type="hidden" name="punch_in_photo" id="punch_in_photo_input" />
         <input type="hidden" name="in_allowed_range" id="in_allowed_range" value="0" />
 
-        <button type="button" id="scanFaceBtn" onclick="startFaceScan()" 
-            class="w-20 h-20 rounded-full bg-white shadow-lg flex flex-col items-center justify-center"
-            disabled>
-          <div class="text-blue-500">
-            <!-- Replace SVG with Font Awesome icon -->
-            <i class="fas fa-user-circle text-4xl"></i>
-          </div>
-          <span class="text-xs mt-1" id="scan-text">Scan Face ID</span>
-        </button>
+        <button type="button" id="scanFaceBtn" onclick="startFaceScan()" class="w-20 h-20 rounded-full bg-white shadow-lg flex flex-col items-center justify-center"
+        disabled>
+  <div class="text-blue-500">
+    <i class="fas fa-face-id text-4xl"></i> <!-- Ganti ikon sesuai selera -->
+  </div>
+  <span class="text-xs mt-1" id="scan-text">Scan Face ID</span>
+</button>
+
       </form>
     </div>
 
@@ -128,20 +126,20 @@
   <!-- Map Initialization Script -->
   <script>
     // Define office locations with coordinates
-    // const officeLocations = [
-    //   {
-    //     name: "IBI Kesatuan",
-    //     address: "Jl. Ranggagading no.1 RT.02/09, Gudang, Kec.Bogor Tengah, Bogor, Indonesia 16123",
-    //     position: [-6.597825, 106.793898], // [lat, lng] format for Leaflet
-    //     allowedRadius: 100 // in meters
-    //   },
-    //   {
-    //     name: "Head Office",
-    //     address: "Jl. Pahlawan No. 123, Jakarta Pusat, Indonesia 10110",
-    //     position: [-6.175110, 106.865036], // [lat, lng] format for Leaflet
-    //     allowedRadius: 100 // in meters
-    //   }
-    // ];
+    const officeLocations = [
+      {
+        name: "IBI Kesatuan",
+        address: "Jl. Ranggagading no.1 RT.02/09, Gudang, Kec.Bogor Tengah, Bogor, Indonesia 16123",
+        position: [-6.597825, 106.793898], // [lat, lng] format for Leaflet
+        allowedRadius: 100 // in meters
+      },
+      {
+        name: "Head Office",
+        address: "Jl. Pahlawan No. 123, Jakarta Pusat, Indonesia 10110",
+        position: [-6.175110, 106.865036], // [lat, lng] format for Leaflet
+        allowedRadius: 100 // in meters
+      }
+    ];
     
     let map, userMarker, userCircle, officeMarkers = [], userPosition;
     
