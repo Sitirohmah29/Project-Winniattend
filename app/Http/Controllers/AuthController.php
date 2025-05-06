@@ -29,6 +29,10 @@ class AuthController extends Controller
          return view('/');
     }
 
+    public function notify(){
+        return view('notification');
+    }
+
     /**
      * Handle login attempt
      *

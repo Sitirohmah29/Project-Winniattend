@@ -14,7 +14,9 @@
       <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 
-<body class="py-4 px-4 ">
+
+<body class="bg-gray-50 font-poppins">
+    <div class="py-4 px-4 relative">
     <h2 class="font-bold font-xl text-center">Profile</h2>
 
     {{-- username profile --}}

@@ -27,32 +27,35 @@
         <!-- Welcome Header -->
         <div class="flex justify-between items-center mb-6">
             <div>
-                <h1 class="text-2xl font-bold text-pink-500">Welcome!</h1>
+                <h1 class="text-xl font-semibold text-pink-400">Welcome!</h1>
                 <p class="text-gray-800 font-medium">Risma Handayani</p>
             </div>
-            <div class="bg-gray-800 text-white rounded-full p-2 w-10 h-10 flex items-center justify-center">
-                <i class="fa fa-bell"></i>
+            <div class="bg-gray-800 text-white rounded-full p-2 w-7 h-7 flex items-center justify-center">
+                <a href="{{url('/notification')}}"><i class="fa fa-bell"></i></a>
             </div>
         </div>
 
         <!-- Time Card -->
-        <div class="bg-blue-500 text-white rounded-xl p-4 mb-6">
+        <div class="bg-blue-500 text-white rounded-xl p-2 mb-4">
             <div class="text-center mb-1">
-                <h2 class="text-3xl font-bold">12.14</h2>
-                <p class="text-sm mb-1">Monday, 03 March 2025</p>
-                <p class="text-sm">Your Working hours are 01.00 am - 06.00 am</p>
+                <h2 class="text-xl font-semibold">12.14</h2>
+                <p class="text-sm font-thin">Monday, 03 March 2025</p>
+                <p class="text-sm font-thin">Your Working hours are 01.00 am - 06.00 am</p>
             </div>
 
             <div class="grid grid-cols-2 gap-3 mt-4">
-                <button class="bg-white text-gray-800 py-2 rounded-md text-sm font-medium">
-                    Check In
-                </button>
-                <button class="bg-white text-gray-800 py-2 rounded-md text-sm font-medium">
+               <button type="button" onclick="window.location.href='{{ url('/attendance/check-in') }}'"
+   class="bg-white text-black py-2 px-4 rounded-full text-xs font-semibold hover:bg-black hover:text-blue-400">
+    Check In
+</button>
+
+                <button class="bg-white text-black py-2 rounded-full text-xs font-semibold hover:bg-black hover:text-blue-400">
                     Check Out
                 </button>
             </div>
+            
+            <button class="w-full bg-black text-white py-2 rounded-full mt-3 text-xs font-semibold hover:bg-white hover:text-pink-400">
 
-            <button class="w-full bg-gray-800 text-white py-2 rounded-md mt-3 text-sm font-medium">
                 Permission
             </button>
         </div>
