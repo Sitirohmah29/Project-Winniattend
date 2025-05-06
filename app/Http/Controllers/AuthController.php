@@ -64,6 +64,10 @@ class AuthController extends Controller
         return redirect()->intended('dashboard');
     }
 
+    public function profile(){
+        return view('profile.indexProfile');
+    }
+
     /**
      * Handle user logout
      *
@@ -100,7 +104,7 @@ class AuthController extends Controller
     {
         // Password reset logic would go here
         // This typically involves sending a reset link via email
-        
+
         return back()->with('status', 'We have sent you a password reset link!');
     }
 }
