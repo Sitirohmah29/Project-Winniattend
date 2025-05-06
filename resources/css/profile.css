@@ -5,6 +5,9 @@
 @source "../views";
 
 /* Komponen kustom */
+.page-title-back {
+    @apply flex items-center gap-30;
+}
 .text-title {
     @apply text-lg font-semibold;
 }
