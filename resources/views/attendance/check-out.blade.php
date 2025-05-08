@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#ffffff" />
-  <title>WinniAttend - Punch In</title>
+  <title>WinniAttend - Punch Out</title>
 
   <!-- PWA Meta Tags -->
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -34,7 +34,7 @@
         <a href="{{ route('dashboard') }}" class="mr-4">
           <i class="fas fa-chevron-left text-gray-600"></i>
         </a>
-        <h1 class="text-sm font-semibold text-center flex-1">Punch in</h1>
+        <h1 class="text-sm font-semibold text-center flex-1">Punch out</h1>
       </div>
     </div>
     
@@ -60,23 +60,6 @@
       </div>
     </div>
 
-    <!-- Shift Information -->
-    <div class="px-4 py-3">
-      <h2 class="text-sm font-semibold mb-2">Shift</h2>
-      <div class="bg-white p-1">
-        <div class="flex items-center">
-          <div class="flex-shrink-0 ">
-            <div class="h-5 w-5 rounded-full bg-red-500 flex items-center justify-center">
-              <div class="h-2 w-2 rounded-full bg-white"></div>
-            </div>
-          </div>
-          <div class="ml-3">
-            <span class="text-xs font-semibold">Frontend Developer</span>
-            <span class="text-xs font-thin ml-14">(07:00am - 01:00pm)</span>
-          </div>
-        </div>
-      </div>
-    </div>
 
     <!-- Face ID Button -->
     <div class="flex justify-center mt-15">

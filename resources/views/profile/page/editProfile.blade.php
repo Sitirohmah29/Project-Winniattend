@@ -15,19 +15,23 @@
         <!-- Font Awesome -->
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
-<body class="py-4 px-4 grid gap-10">
+<body class="py-8 px-8 grid gap-8">
     <div class="page-title-back">
-        <i class="fa-solid fa-backward"></i>
-        <h2 class="font bold font-xl">Edit Profile</h2>
+        <a href="{{ route('indexProfile') }}">
+            <i class="fas fa-chevron-left text-gray-600"></i>
+        </a>
+        <h2 class="font-bold font-xl">Edit Profile</h2>
     </div>
 
+<div class="flex justify-center items-center">
     <div class="flex relative w-fit">
         <img src="{{ asset('images/risma-cantik.jpg') }}"
              alt="Foto Risma Cantik"
              class="profile-image" />
-
         <i class="fa-solid fa-pen-to-square absolute bottom-1 right-1 p-1"></i>
     </div>
+</div>
+
 
     <div class="grid gap-5">
         <div class="grid gap-2">

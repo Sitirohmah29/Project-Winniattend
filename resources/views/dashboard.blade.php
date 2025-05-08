@@ -45,20 +45,19 @@
 
             <div class="grid grid-cols-2 gap-3 mt-4">
                <button type="button" onclick="window.location.href='{{ url('/attendance/check-in') }}'"
-   class="bg-white text-black py-2 px-4 rounded-full text-xs font-semibold hover:bg-black hover:text-blue-400">
-    Check In
-</button>
-
-                <button class="bg-white text-black py-2 rounded-full text-xs font-semibold hover:bg-black hover:text-blue-400">
-                    Check Out
-                </button>
-            </div>
+               class="bg-white text-black py-2 px-4 rounded-full text-xs font-semibold hover:bg-black hover:text-blue-400">
+               Check In
+            </button>
             
-            <button class="w-full bg-black text-white py-2 rounded-full mt-3 text-xs font-semibold hover:bg-white hover:text-pink-400">
-
-                Permission
+            <button class="bg-white text-black py-2 rounded-full text-xs font-semibold hover:bg-black hover:text-blue-400" onclick="window.location.href='{{ url('/attendance/check-out') }}'">
+                Check Out
             </button>
         </div>
+        
+        <button class="w-full bg-black text-white py-2 rounded-full mt-3 text-xs font-semibold hover:bg-white hover:text-pink-400">
+            Permission
+        </button>
+    </div>
 
         <!-- Time Track -->
         <div class="mb-6">

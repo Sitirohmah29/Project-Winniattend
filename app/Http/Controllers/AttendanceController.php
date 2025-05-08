@@ -15,6 +15,12 @@ class AttendanceController extends Controller
     {
         return view('attendance.check-in');
     }
+
+    public function showCheckOutPage()
+    {
+        return view('attendance.check-out');
+    }
+    
     
     /**
      * Process the attendance check-in (punch in)

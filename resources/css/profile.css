@@ -6,7 +6,7 @@
 
 /* Komponen kustom */
 .page-title-back {
-    @apply flex items-center gap-30;
+    @apply flex items-center gap-28;
 }
 .text-title {
     @apply text-lg font-semibold;
