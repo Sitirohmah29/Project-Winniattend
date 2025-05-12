@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import "tailwindcss";
+@source "../views";
+
+.headline-admin {
+    @apply font-poppins font-blod text-5xl;
+}
+.subheadline-admin {
+    @apply font-poppins font-normal text-3xl;
+}
+.highlight-admin {
+    @apply font-poppins font-semibold text-2xl;
+}
+.title-admin {
+    @apply font-poppins font-semibold text-3xl;
+}
+.body-admin {
+    @apply font-poppins font-normal text-xl;
+}
+.body-blod-admin {
+    @apply font-poppins font-semibold text-xl;
+}
+.caption-admin {
+    @apply font-poppins font-normal text-sm;
+}
+.caption-bold-admin {
+    @apply font-poppins font-semibold text-lg;
+}
+.button-label-admin {
+    @apply font-poppins font-semibold text-2xl;
+}
+.headline {
+    @apply font-poppins font-semibold text-xl;
+}
+.subheadline {
+    @apply font-poppins font-normal text-sm;
+}
+.higlight {
+    @apply font-poppins font-semibold text-sm;
+}
+.title {
+    @apply font-poppins font-semibold text-sm;
+}
+.body {
+    @apply font-poppins font-normal text-xs;
+}
+body-bold {
+    @apply font-poppins font-semibold text-xs;
+}
+.caption {
+    @apply font-poppins font-normal text-xs;
+}
+.caption-bold {
+    @apply font-poppins font-semibold text-xs;
+}
+.button-label {
+    @apply font-poppins font-semibold text-xs text-black;
+}

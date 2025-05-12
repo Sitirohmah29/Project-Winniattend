@@ -1,6 +1,14 @@
 /* Komponen kustom */
+
 .page-title-container {
     @apply fixed top-6 left-0 right-0 px-5 flex items-center justify-center;
+
+.page-title-back {
+    @apply flex items-center gap-28;
+}
+.text-title {
+    @apply text-lg font-semibold;
+
 }
 
 .page-title-back {

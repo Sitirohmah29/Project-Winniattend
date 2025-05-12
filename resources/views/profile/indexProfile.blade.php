@@ -13,10 +13,12 @@
       <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 
-<body class="container">
-    {{-- information page --}}
-    <h2 class="fixed top-6 left-0 right-0 flex justify-center
-    font-bold font-xl">Profile</h2>
+
+
+<body class="bg-gray-50 font-poppins">
+    <div class="py-4 px-4 relative">
+    <h2 class="font-bold font-xl text-center">Profile</h2>
+
 
     {{-- username profile --}}
     <div class="pt-4 mt-4 flex flex-col items-center text-center">

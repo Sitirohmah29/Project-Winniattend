@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
@@ -38,5 +39,15 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/indexReport', [AuthController::class, 'report'])->name('Attedance Report');
 
+
     Route::get('/detailsReport', [AuthController::class, 'detailsReportDay'])->name('Details Report');
 });
+
+
+    Route::get('/notification', [AuthController::class, 'notify'])->name('notification');
+    Route::get('/attendance/check-in', [AttendanceController::class, 'showCheckInPage'])->name('attendance.check-in');
+    Route::get('/attendance/check-out', [AttendanceController::class, 'showCheckOutPage'])->name('attendance.check-out');
+});   
+
+
+
