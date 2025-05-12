@@ -9,36 +9,20 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    /**
-     * Show the splash screen
-     *
-     * @return \Illuminate\View\View
-     */
     public function splash()
     {
         return view('splashScreen');
     }
 
-    /**
-     * Show the login form
-     *
-     * @return \Illuminate\View\View
-     */
     public function showLoginForm()
     {
          return view('/');
     }
 
+
     public function notify(){
         return view('notification');
     }
-
-    /**
-     * Handle login attempt
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
     public function login(Request $request)
     {
         $request->validate([
@@ -68,20 +52,39 @@ class AuthController extends Controller
         return redirect()->intended('dashboard');
     }
 
-    public function profile(){
+    public function mainProfile(){
         return view('profile.indexProfile');
     }
 
-    public function editP () {
+    public function editProfile () {
         return view('profile.page.editProfile');
     }
 
-    /**
-     * Handle user logout
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
+    public function personalInformation () {
+        return view('profile.page.personInfo');
+    }
+
+    public function changePassword() {
+        return view('profile.page.changePw');
+    }
+
+    public function changeFaceID() {
+        return view('profile.page.changeFaceID.changeFace');
+    }
+
+    public function faceVerification()  {
+        return view('profile.page.changeFaceID.faceVerified');
+    }
+
+    public function report (){
+        return view('report.indexReport');
+    }
+
+    public function detailsReportDay() {
+        return view('report.detailsReport');
+    }
+
+
     public function logout(Request $request)
     {
         Auth::logout();
@@ -92,22 +95,19 @@ class AuthController extends Controller
         return redirect('/');
     }
 
-    /**
-     * Show forgot password form
-     *
-     * @return \Illuminate\View\View
-     */
     public function showForgotPasswordForm()
     {
-        return view('auth.forgot-password');
+        return view('forgot-password.forgot-password');
     }
 
-    /**
-     * Handle forgot password request
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
+    public function verificationCode () {
+        return view('forgot-password.verif-code');
+    }
+
+    public function newPassword (){
+        return view('forgot-password.new-pw');
+    }
+
     public function forgotPassword(Request $request)
     {
         // Password reset logic would go here
