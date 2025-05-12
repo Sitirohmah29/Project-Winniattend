@@ -6,18 +6,17 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Edit Profile</title>
 
-        <!-- Tailwind CSS -->
-        @vite('resources/css/profile.css')
-        @vite('resources/css/components/button.css')
-        @vite('resources/css/components/textInput.css')
-        <!-- Alpine.js -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.13.0/cdn.min.js" defer></script>
-        <!-- Font Awesome -->
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+    @vite('resources/css/app.css')
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.13.0/cdn.min.js" defer></script>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
+
 <body class="py-4 px-4 grid gap-10">
     <div class="page-title-back">
-        <i class="fa-solid fa-backward"></i>
+        <i class="fa-solid fa-chevron-left"></i>
         <h2 class="font bold font-xl">Edit Profile</h2>
     </div>
 

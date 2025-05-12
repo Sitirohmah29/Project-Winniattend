@@ -84,7 +84,7 @@
                             <span class="text-xs text-gray-600">Permission</span>
                         </div>
                     </div>
-                    <button class="bg-blue-500 text-white text-xs py-1 px-3 rounded-full">
+                    <button class="bg-blue-500 text-white text-xs py-1 px-3 rounded-full" onclick="window.location.href='{{url('/indexReport')}}'">
                         See Full Report
                     </button>
                 </div>

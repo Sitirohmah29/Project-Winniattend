@@ -101,7 +101,7 @@
                     </div>
 
                     <div class="flex items-center justify-end">
-                        <span class="text-xs text-black-500">Forgot password?<a href="#" class="text-xs text-red-500 hover:text-blue-700"> Click Here</a></span>
+                        <span class="text-xs text-black-500">Forgot password?<a href="/forgot-password" class="text-xs text-red-500 hover:text-blue-700"> Click Here</a></span>
                     </div>
 
                     <button class="long-button">
