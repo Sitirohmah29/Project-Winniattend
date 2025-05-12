@@ -59,7 +59,6 @@
                 class="py-2 px-12 h-8 text-xs text-white transition-colors bg-blue-500 hover:bg-black hover:text-blue-400 rounded-3xl shadow-lg w-55 font-semibold flex items-center justify-center mt-60 block"
             >
                 Get Started
-            </a>
         </div>
     </div>
 

@@ -6,21 +6,21 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Edit Profile</title>
 
-        <!-- Tailwind CSS -->
-        @vite('resources/css/profile.css')
-        @vite('resources/css/components/button.css')
-        @vite('resources/css/components/textInput.css')
-        <!-- Alpine.js -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.13.0/cdn.min.js" defer></script>
-        <!-- Font Awesome -->
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+    @vite('resources/css/app.css')
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.13.0/cdn.min.js" defer></script>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
+
 <body class="py-8 px-8 grid gap-8">
     <div class="page-title-back">
         <a href="{{ route('indexProfile') }}">
             <i class="fas fa-chevron-left text-gray-600"></i>
         </a>
         <h2 class="font-bold font-xl">Edit Profile</h2>
+
     </div>
 
 <div class="flex justify-center items-center">

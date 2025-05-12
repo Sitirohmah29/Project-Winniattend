@@ -9,23 +9,37 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    
+    /**
+     * Show the splash screen
+     *
+     * @return \Illuminate\View\View
+     */
     public function splash()
     {
         return view('splashScreen');
     }
 
-   
+    /**
+     * Show the login form
+     *
+     * @return \Illuminate\View\View
+     */
     public function showLoginForm()
     {
          return view('auth.login');
     }
 
+
     public function notify(){
         return view('notification');
     }
 
-
+    /**
+     * Handle login attempt
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function login(Request $request)
     {
         $request->validate([
@@ -56,15 +70,20 @@ class AuthController extends Controller
         return redirect()->intended('dashboard');
     }
 
-    public function profile(){
+    public function mainProfile(){
         return view('profile.indexProfile');
     }
 
-    public function editP () {
+    public function editProfile () {
         return view('profile.page.editProfile');
     }
 
-   
+    /**
+     * Handle user logout
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function logout(Request $request)
     {
         Auth::logout();
@@ -75,13 +94,22 @@ class AuthController extends Controller
         return redirect('/');
     }
 
-   
+    /**
+     * Show forgot password form
+     *
+     * @return \Illuminate\View\View
+     */
     public function showForgotPasswordForm()
     {
-        return view('auth.forgot-password');
+        return view('forgot-password.forgot-password');
     }
 
-    
+    /**
+     * Handle forgot password request
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function forgotPassword(Request $request)
     {
         // Password reset logic would go here
