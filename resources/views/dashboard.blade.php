@@ -23,7 +23,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 </head>
 <body class="bg-gray-50 font-poppins">
-    <div class="max-w-md mx-auto px-4 py-6">
+    <div class="px-2 py-2">
         <!-- Welcome Header -->
         <div class="flex justify-between items-center mb-6">
             <div>

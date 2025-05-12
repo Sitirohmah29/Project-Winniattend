@@ -9,36 +9,23 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    /**
-     * Show the splash screen
-     *
-     * @return \Illuminate\View\View
-     */
+    
     public function splash()
     {
         return view('splashScreen');
     }
 
-    /**
-     * Show the login form
-     *
-     * @return \Illuminate\View\View
-     */
+   
     public function showLoginForm()
     {
-         return view('/');
+         return view('auth.login');
     }
 
     public function notify(){
         return view('notification');
     }
 
-    /**
-     * Handle login attempt
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
+
     public function login(Request $request)
     {
         $request->validate([
@@ -56,11 +43,12 @@ class AuthController extends Controller
         }
 
         // Attempt login
-        if (!Auth::attempt($request->only('email', 'password'))) {
-            throw ValidationException::withMessages([
-                'email' => ['The provided credentials are incorrect.'],
-            ]);
+        if (!Auth::attempt($request->only('email', 'password'), $request->remember)) {
+            return back()->withErrors([
+                'email' => 'Email or password is incorrect.',
+            ])->onlyInput('email');
         }
+        
 
         $request->session()->regenerate();
 
@@ -76,12 +64,7 @@ class AuthController extends Controller
         return view('profile.page.editProfile');
     }
 
-    /**
-     * Handle user logout
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
+   
     public function logout(Request $request)
     {
         Auth::logout();
@@ -92,22 +75,13 @@ class AuthController extends Controller
         return redirect('/');
     }
 
-    /**
-     * Show forgot password form
-     *
-     * @return \Illuminate\View\View
-     */
+   
     public function showForgotPasswordForm()
     {
         return view('auth.forgot-password');
     }
 
-    /**
-     * Handle forgot password request
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
+    
     public function forgotPassword(Request $request)
     {
         // Password reset logic would go here
