@@ -9,6 +9,7 @@
 
     @vite('resources/css/app.css')
 
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.13.0/cdn.min.js" defer></script>
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -16,7 +17,7 @@
 
 <body class="py-8 px-8 grid gap-8">
     <div class="page-title-back">
-        <a href="{{ route('indexProfile') }}">
+        <a href="{{ url('indexProfile') }}">
             <i class="fas fa-chevron-left text-gray-600"></i>
         </a>
         <h2 class="font-bold font-xl">Edit Profile</h2>
@@ -24,7 +25,7 @@
     </div>
 
 <div class="flex justify-center items-center">
-    <div class="flex relative w-fit">
+    <div class="flex relative w-fit mt-10">
         <img src="{{ asset('images/risma-cantik.jpg') }}"
              alt="Foto Risma Cantik"
              class="profile-image" />
