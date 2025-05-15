@@ -31,7 +31,7 @@
         </div>
     </div>
 
-    <div class="mt-5 mb-15 flex justify-center" onclick="window.location.href='{{url('/')}}'">
+    <div class="mt-5 mb-15 flex justify-center" onclick="window.location.href='{{url('/login')}}'">
         <button class="long-button">Next</button>
     </div>
 </body>

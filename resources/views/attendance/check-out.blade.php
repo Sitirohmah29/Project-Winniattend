@@ -31,7 +31,7 @@
     <!-- Header -->
     <div class="px-4 py-3 bg-white shadow">
       <div class="flex items-center">
-        <a href="{{ route('dashboard') }}" class="mr-4">
+        <a href="{{ url('dashboard') }}" class="mr-4">
           <i class="fas fa-chevron-left text-gray-600"></i>
         </a>
         <h1 class="text-sm font-semibold text-center flex-1">Punch out</h1>
@@ -439,7 +439,7 @@
           .then(response => response.json())
           .then(data => {
             if (data.success) {
-              window.location.href = "{{ route('dashboard') }}";
+              window.location.href = "{{ url('dashboard') }}";
             } else {
               alert(data.message || 'Failed to punch in. Please try again.');
               stopCamera();

@@ -25,22 +25,25 @@
 </head>
 <body class="bg-white font-poppins">
     <div
-        x-data="{
-            showForm: true,
-            passwordVisible: false,
-            handleScroll() {
-                if (window.scrollY > 50 && this.showForm) {
-                    this.showForm = true;
-                }
+    x-data="{
+        showForm: true,
+        passwordVisible: false,
+        hasRedirected: false,
+        handleScroll() {
+            if (window.scrollY > 50 && !this.hasRedirected) {
+                this.hasRedirected = true;
+                window.location.href = '{{ url('/') }}';
             }
-        }"
+        }
+    }"
+    
         @scroll.window="handleScroll()"
         class="flex flex-col items-center justify-center min-h-screen p-6 relative overflow-hidden"
     >
-        <div class="flex flex-col items-center justify-center flex-1 text-center w-full max-w-md">
+        <div class="flex flex-col items-center justify-center flex-1 text-center w-full max-w-md fixed">
             <!-- Logo -->
-            <div :class="showForm ? 'transform -translate-y-10 scale-100 transition-all duration-500' : 'mt-10 transition-all duration-500'">
-                <img src="{{ asset('images/logo.png') }}" alt="WinniCode Garuda Teknologi Logo" class="w-50" />
+            <div :class="showForm ? 'transform -translate-y-10 scale-100 transition-all duration-500' : 'mt-2 transition-all duration-500'">
+                <img src="{{ asset('images/logo.png') }}" alt="WinniCode Garuda Teknologi Logo" class="w-70" />
             </div>
 
             <!-- Login Form -->
@@ -52,28 +55,29 @@
                 x-transition:leave="transition ease-in duration-300"
                 x-transition:leave-start="opacity-100 translate-y-0"
                 x-transition:leave-end="opacity-0 translate-y-full"
-                class="w-full max-w-xl mx-auto pt-8 inset-0 inset-t-0 shadow-gray-100 rounded-t-xl border-t bg-white"
+                class="w-full max-w-xl mx-auto pt-8 top-45 left-0 right-0 shadow-[0_-8px_15px_-3px_rgba(0,0,0,0.08)] rounded-t-3xl bg-white"
             >
-            <div class="flex justify-center pt-4 pb-2">
-                <button @click="handleScroll" class="w-12 h-1 bg-gray-300 rounded-full"></button>
+            <div class="flex justify-center items-center pt-2 pb-1">
+                <button class="w-12 h-1 bg-gray-300 rounded-full" onclick="window.location.href='{{ url('/') }}'"></button>
             </div>
-                <h2 class="text-center text-xl font-semibold mb-4">
+            
+                <h2 class="text-center text-xl font-semibold pt-6 ">
                     <span class="text-blue-500">Sign In</span>
                 </h2>
 
                 @if ($errors->any())
-                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4 text-sm text-left">
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative text-sm">
                         @foreach ($errors->all() as $error)
                             <p>{{ $error }}</p>
                         @endforeach
                     </div>
                 @endif
 
-                <form action="{{ url('login') }}" method="POST" class="space-y-4">
+                <form action="{{ url('login') }}" method="POST" class="space-y-4 px-6 mt-6">
                     @csrf
 
                     <div>
-                        <label for="email" class="block text-xs font-semibold mb-1 text-left">E-mail</label>
+                        <label for="email" class="block text-xs font-semibold mb-4 text-left">E-mail</label>
                         <input
                             type="email"
                             id="email"
@@ -83,7 +87,7 @@
                     </div>
 
                     <div>
-                        <label for="password" class="block text-xs font-semibold mb-1 text-left">Password</label>
+                        <label for="password" class="block text-xs font-semibold mb-4 text-left">Password</label>
                         <div class="relative">
                             <input
                                 :type="passwordVisible ? 'text' : 'password'"
@@ -104,7 +108,7 @@
                     <div class="flex items-center justify-end">
                         <span class="text-xs text-black-500">
                             Forgot password?
-                            <a href="#" class="text-xs text-red-500 hover:text-blue-700">Click Here</a>
+                            <a href="{{url('/forgot-password')}}" class="text-xs text-red-500 hover:text-blue-700">Click Here</a>
                         </span>
                     </div>
 
