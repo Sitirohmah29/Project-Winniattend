@@ -38,7 +38,7 @@
     </div>
 
     {{-- account settings --}}
-    <div>
+    <div class="py-4 mt-4">
         <div>
             <h2 class="text-title flex-start ">Account</h2>
 
@@ -130,8 +130,8 @@
     </div>
 
     {{-- logout --}}
-    <div class="mt-5 mb-15 flex justify-center">
-        <button class="long-button">Logout</button>
+    <div class="mt-20 flex justify-center">
+        <a href="{{url('/login')}}" class="long-button text-center">Logout</a>
     </div>
 
     {{-- Bottom Navigation --}}

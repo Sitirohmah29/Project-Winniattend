@@ -16,7 +16,7 @@ Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->name
 Route::get('/verif-code', [AuthController::class, 'verificationCode'])->name('verif.code');
 Route::get('/new-pw', [AuthController::class, 'newPassword'])->name('new.password');
 
-// ✅ Sanctum Protected Routes
+// Sanctum Protected Routes
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/dashboard', fn () => view('dashboard'))->name('Dashboard');
 
