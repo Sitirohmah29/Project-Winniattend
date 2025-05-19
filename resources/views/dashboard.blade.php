@@ -60,36 +60,37 @@
     </div>
 
         <!-- Time Track -->
-        <div class="mb-6">
+        <div class="mb-6 ">
             <h2 class="text-xl font-semibold text-gray-800 mb-3">Time Track</h2>
-            <div class="bg-white rounded-xl p-4 shadow-sm">
-                <div class="h-48">
-                    <canvas id="timeTrackChart"></canvas>
-                </div>
-
-                <div class="flex justify-between mt-3">
-                    <div class="flex flex-wrap gap-4">
-                        <div class="flex items-center gap-1">
-                            <span class="w-3 h-3 rounded-full bg-green-400"></span>
-                            <span class="text-xs text-gray-600">On Time</span>
-                        </div>
-                        <div class="flex items-center gap-1">
-                            <span class="w-3 h-3 rounded-full bg-red-500"></span>
-                            <span class="text-xs text-gray-600">Late</span>
-                        </div>
-                        <div class="flex items-center gap-1">
-                            <span class="w-3 h-3 rounded-full bg-gray-800"></span>
-                            <span class="text-xs text-gray-600">Absent</span>
-                        </div>
-                        <div class="flex items-center gap-1">
-                            <span class="w-3 h-3 rounded-full bg-blue-400"></span>
-                            <span class="text-xs text-gray-600">Permission</span>
+            <div class="bg-white rounded-xl p-4 shadow-sm ">
+                <div class="flex flex-row">
+                    <div class="h-48 w-55">
+                        <canvas id="timeTrackChart"></canvas>
+                    </div>
+                    <div class="flex justify-between ml-4">
+                        <div class="flex flex-col gap-4">
+                            <div class="flex items-center gap-1">
+                                <span class="w-3 h-3 rounded-full bg-green-400"></span>
+                                <span class="text-xs text-gray-600">On Time</span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <span class="w-3 h-3 rounded-full bg-red-500"></span>
+                                <span class="text-xs text-gray-600">Late</span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <span class="w-3 h-3 rounded-full bg-gray-800"></span>
+                                <span class="text-xs text-gray-600">Absent</span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <span class="w-3 h-3 rounded-full bg-blue-400"></span>
+                                <span class="text-xs text-gray-600">Permission</span>
+                            </div>
                         </div>
                     </div>
-                    <button class="bg-blue-500 text-white text-xs py-1 px-3 rounded-full" onclick="window.location.href='{{url('/indexReport')}}'">
-                        See Full Report
-                    </button>
                 </div>
+                <button class="text-white transition-colors bg-blue-500 hover:bg-black hover:text-blue-400 shadow-lg font-semibold text-xs rounded-full w-30 h-8 ml-50" onclick="window.location.href='{{url('/indexReport')}}'">
+                    See Full Report
+                </button>
             </div>
         </div>
 

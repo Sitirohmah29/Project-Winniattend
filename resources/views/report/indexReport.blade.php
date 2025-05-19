@@ -22,7 +22,7 @@
     </div>
 
     {{-- Welcome title --}}
-    <p class="text-big">
+    <p class="text-xl font-semibold">
         View your <span class="text-pink-500">attendance records</span>,
        for up to the past year!
       </p>
