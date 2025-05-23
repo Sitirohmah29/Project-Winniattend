@@ -26,5 +26,5 @@
 }
 
 .grid-con-rounded {
-    @apply m-5 p-5 bg-white rounded-xl shadow-xl grid gap-4;
+    @apply p-5 bg-white rounded-xl shadow-xl grid gap-4 w-full mt-5;
 }

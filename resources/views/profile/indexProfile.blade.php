@@ -15,7 +15,11 @@
 
 
 
-<body class="bg-gray-50 font-poppins">
+<body x-data="{ darkMode: localStorage.getItem('theme') === 'dark' }"
+      x-init="$watch('darkMode', val => { document.documentElement.classList.toggle('dark', val); localStorage.setItem('theme', val ? 'dark' : 'light') })"
+      :class="{ 'dark': darkMode }"
+      class="font-poppins bg-gray-50 dark:bg-gray-900 dark:text-white">
+
     <div class="py-4 px-4 relative">
     <h2 class="font-bold font-xl text-center">Profile</h2>
 
@@ -27,7 +31,7 @@
              class="profile-image" />
 
         <h2 class="text-title">Risma Handayani</h2>
-        <p class="text-reg text-gray-600">Laravel Developer</p>
+        <p class="text-gray-600 dark:text-gray-300">Laravel Developer</p>
 
         {{-- button edit profile --}}
         <button class="short-button mt-4" onclick="window.location.href='{{url('/editProfile')}}'">
@@ -122,7 +126,7 @@
                        :class="darkMode ? 'fa-toggle-on fa-xl text-green-400' : 'fa-toggle-off fa-xl text-red-600'"
                        class="transition-all duration-200">
                     </i>
-                </button>
+                </button>  
             </div>
         </div>
 
