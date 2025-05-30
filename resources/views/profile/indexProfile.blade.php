@@ -15,10 +15,20 @@
 
 
 
-<body x-data="{ darkMode: localStorage.getItem('theme') === 'dark' }"
-      x-init="$watch('darkMode', val => { document.documentElement.classList.toggle('dark', val); localStorage.setItem('theme', val ? 'dark' : 'light') })"
-      :class="{ 'dark': darkMode }"
-      class="font-poppins bg-gray-50 dark:bg-gray-900 dark:text-white">
+<body x-data="{ 
+    darkMode: JSON.parse(localStorage.getItem('darkMode') || 'false'),
+    notify: JSON.parse(localStorage.getItem('notify') || 'false')
+}" 
+x-init="
+    $watch('darkMode', val => { 
+        localStorage.setItem('darkMode', JSON.stringify(val));
+    });
+    $watch('notify', val => {
+        localStorage.setItem('notify', JSON.stringify(val));
+    });
+"
+:class="darkMode ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'"
+class="font-sans min-h-screen transition-all duration-300">
 
     <div class="py-4 px-4 relative">
     <h2 class="font-bold font-xl text-center">Profile</h2>
@@ -31,7 +41,7 @@
              class="profile-image" />
 
         <h2 class="text-title">Risma Handayani</h2>
-        <p class="text-gray-600 dark:text-gray-300">Laravel Developer</p>
+        <p :class="darkMode ? 'text-gray-300' : 'text-gray-600'">Laravel Developer</p>
 
         {{-- button edit profile --}}
         <button class="short-button mt-4" onclick="window.location.href='{{url('/editProfile')}}'">
@@ -106,10 +116,7 @@
             </div>
 
             {{-- dark mode setting --}}
-            <div
-            x-data="{ darkMode: false }"
-            class="profile-card flex justify-between items-center">
-
+            <div class="profile-card flex justify-between items-center" :class="darkMode ? 'bg-gray-800 text-white' : 'bg-gray-800 text-white'">
                 <div class="flex items-center gap-2">
                     <div class="icon">
                         <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">

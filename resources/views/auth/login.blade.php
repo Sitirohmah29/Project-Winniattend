@@ -40,7 +40,7 @@
         @scroll.window="handleScroll()"
         class="flex flex-col items-center justify-center min-h-screen p-6 relative overflow-hidden"
     >
-        <div class="flex flex-col items-center justify-center flex-1 text-center w-full max-w-md fixed">
+        <div class="flex flex-col items-center justify-center flex-1 text-center w-full max-w-full fixed">
             <!-- Logo -->
             <div :class="showForm ? 'transform -translate-y-10 scale-100 transition-all duration-500' : 'mt-2 transition-all duration-500'">
                 <img src="{{ asset('images/logo.png') }}" alt="WinniCode Garuda Teknologi Logo" class="w-70" />
@@ -55,7 +55,7 @@
                 x-transition:leave="transition ease-in duration-300"
                 x-transition:leave-start="opacity-100 translate-y-0"
                 x-transition:leave-end="opacity-0 translate-y-full"
-                class="w-full max-w-xl mx-auto pt-8 top-45 left-0 right-0 shadow-[0_-8px_15px_-3px_rgba(0,0,0,0.08)] rounded-t-3xl bg-white"
+                class="w-full mx-auto pt-8 top-45 shadow-[0_-8px_15px_-3px_rgba(0,0,0,0.08)] rounded-t-3xl bg-white"
             >
             <div class="flex justify-center items-center pt-2 pb-1">
                 <button class="w-12 h-1 bg-gray-300 rounded-full" onclick="window.location.href='{{ url('/') }}'"></button>
