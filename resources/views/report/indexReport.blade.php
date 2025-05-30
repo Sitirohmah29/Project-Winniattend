@@ -30,7 +30,7 @@
     {{-- Summary report attedance --}}
     <div >
         <p class="text-title">Month</p>
-        <div class="flex-con-rounded">
+        <div class="p-5 grid grid-cols-3 gap-10 items-center justify-between shadow-xl rounded-2xl">
             {{-- present --}}
             <div>
                 <p class="text-reg">Present</p>

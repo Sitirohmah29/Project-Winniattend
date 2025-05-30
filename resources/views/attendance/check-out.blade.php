@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#ffffff" />
-  <title>WinniAttend - Punch Out</title>
+  <title>WinniAttend - Check Out</title>
 
   <!-- PWA Meta Tags -->
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -14,7 +14,7 @@
   <link rel="manifest" href="{{ asset('/manifest.json') }}" />
 
   <!-- Tailwind CSS -->
-  @vite('resources/css/app.css')
+  <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Alpine.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.13.0/cdn.min.js" defer></script>
@@ -25,22 +25,39 @@
   <!-- Leaflet CSS and JS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <style>
+    .popup-overlay {
+      transition: all 0.3s ease;
+    }
+    .popup-overlay.show {
+      display: flex !important;
+    }
+    .popup-content {
+      transform: scale(0.8) translateY(-20px);
+      transition: all 0.3s ease;
+    }
+    .popup-overlay.show .popup-content {
+      transform: scale(1) translateY(0);
+    }
+  </style>
 </head>
-<body class="bg-white font-poppins">
+
+<body class="bg-white font-sans">
   <div class="flex flex-col h-screen">
     <!-- Header -->
     <div class="px-4 py-3 bg-white shadow">
       <div class="flex items-center">
         <a href="{{ url('dashboard') }}" class="mr-4">
-          <i class="fas fa-chevron-left text-gray-600"></i>
+          <i class="fa-solid fa-chevron-left"></i>
         </a>
-        <h1 class="text-sm font-semibold text-center flex-1">Punch out</h1>
+        <h1 class="text-lg font-semibold text-center flex-1">Punch out</h1>
       </div>
     </div>
 
     <!-- Map Section (Static Info Only) -->
     <div id="map" class="w-full h-80 rounded-md relative">
-      <div class="absolute bottom-5 left-2 bg-opacity-90 rounded-md shadow p-3 z-[500] max-w-xs">
+      <div class="absolute bottom-5 left-2 bg-white bg-opacity-90 rounded-md shadow p-3 z-[500] max-w-xs">
         <h2 class="text-sm font-semibold mb-2">Available</h2>
         <div class="flex items-start">
           <div class="flex-shrink-0 mt-1">
@@ -59,24 +76,25 @@
     </div>
 
     <!-- Face ID Button -->
-    <div class="flex justify-center mt-30">
-      <form id="punchOutForm" method="POST" enctype="multipart/form-data" class="flex flex-col items-center">
+    <div class="flex justify-center mt-8">
+      <form id="punchOutForm" method="POST" action="{{route('attendance.realtime')}}" enctype="multipart/form-data" class="flex flex-col items-center">
         @csrf
         <input type="hidden" name="punch_out_location" value="IBI Kesatuan, Bogor" />
         <input type="hidden" name="latitude" />
         <input type="hidden" name="longitude" />
         <input type="hidden" name="shift" value="Frontend Developer" />
         <input type="hidden" name="in_allowed_range" value="0" />
+        <input type="hidden" name="checkout_time" id="checkout_time"/>
 
-        <button type="button" id="scanFaceBtn" onclick="alert('You go home at 06.00 am')" class="w-25 h-25 flex items-center justify-center">
+        <button type="button" id="scanFaceBtn" onclick="showCheckOutPopup()" class="w-32 h-32 flex items-center justify-center hover:scale-105 transition-transform duration-200">
           <div class="flex items-center justify-center">
-            <svg 
-              width="123" 
-              height="124" 
-              viewBox="0 0 123 124" 
-              fill="none" 
+            <svg
+              width="123"
+              height="124"
+              viewBox="0 0 123 124"
+              fill="none"
               xmlns="http://www.w3.org/2000/svg"
-              onmouseover="this.children[0].setAttribute('fill', '#FF66C4')" 
+              onmouseover="this.children[0].setAttribute('fill', '#FF66C4')"
               onmouseout="this.children[0].setAttribute('fill', '#5271FF')"
             >
               <circle cx="61.5" cy="61.7269" r="61.5" fill="#5271FF"/>
@@ -93,59 +111,125 @@
             </svg>
           </div>
         </button>
-        
+
         <div class="mt-4 text-center">
-          <p class="text-sm font-semibold">Punch Out</p>
+          <p class="text-sm font-semibold">Check Out</p>
         </div>
-          <p class="text-sm font-semibold">06.00 am</p>
-        </div>
-  
+        <p class="text-sm font-semibold" id="realTimeClock"></p>
       </form>
+    </div>
   </div>
 
- 
-  <!-- Tambahkan di akhir sebelum </body> -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(function (position) {
-        const userLat = position.coords.latitude;
-        const userLng = position.coords.longitude;
+  <!-- Custom Popup -->
+  <div id="checkOutPopup" class="popup-overlay fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999]" style="display: none;">
+    <div class="popup-content bg-white rounded-lg p-6 max-w-sm mx-4 shadow-xl">
+      <div class="text-center">
+        <div class="mb-4">
+          <p class="text-gray-800 mb-3">You go home at</p>
+          <p id="checkOutTime" class="text-xl font-bold text-blue-600"></p>
+        </div>
+        <div class="flex justify-center">
+          <button onclick="closePopup()" class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-pink-600 transition-colors font-semibold">
+            OK
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-        // Tampilkan lokasi di form tersembunyi
-        document.querySelector('input[name="latitude"]').value = userLat;
-        document.querySelector('input[name="longitude"]').value = userLng;
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      // Pastikan popup tersembunyi saat load
+      const popup = document.getElementById('checkOutPopup');
+      popup.style.display = 'none';
+      popup.classList.remove('show');
 
-        // Inisialisasi peta
-        const map = L.map('map').setView([userLat, userLng], 16);
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+          const userLat = position.coords.latitude;
+          const userLng = position.coords.longitude;
 
-        // Tambahkan layer tile gratis dari OpenStreetMap
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '&copy; OpenStreetMap contributors'
-        }).addTo(map);
+          // Tampilkan lokasi di form tersembunyi
+          document.querySelector('input[name="latitude"]').value = userLat;
+          document.querySelector('input[name="longitude"]').value = userLng;
 
-        // Marker lokasi user
-        L.marker([userLat, userLng]).addTo(map)
-          .bindPopup('Lokasi Kamu Sekarang')
-          .openPopup();
+          // Inisialisasi peta
+          const map = L.map('map').setView([userLat, userLng], 16);
 
-        // Lokasi kantor atau titik referensi tetap (misalnya IBI Kesatuan)
-        const targetLat = -6.596300; // contoh koordinat IBI Kesatuan
-        const targetLng = 106.806039;
+          // Tambahkan layer tile gratis dari OpenStreetMap
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+          }).addTo(map);
 
-        L.marker([targetLat, targetLng]).addTo(map)
-          .bindPopup('IBI Kesatuan')
-          .openPopup();
+          // Marker lokasi user
+          L.marker([userLat, userLng]).addTo(map)
+            .bindPopup('Lokasi Kamu Sekarang')
+            .openPopup();
 
-      }, function (error) {
-        alert("Gagal mengambil lokasi: " + error.message);
-      });
-    } else {
-      alert("Browser tidak mendukung Geolocation.");
+          // Lokasi kantor atau titik referensi tetap (misalnya IBI Kesatuan)
+          const targetLat = -6.596300; // contoh koordinat IBI Kesatuan
+          const targetLng = 106.806039;
+
+          L.marker([targetLat, targetLng]).addTo(map)
+            .bindPopup('IBI Kesatuan')
+            .openPopup();
+
+        }, function (error) {
+          alert("Gagal mengambil lokasi: " + error.message);
+        });
+      } else {
+        alert("Browser tidak mendukung Geolocation.");
+      }
+    });
+
+    function updateClock() {
+      // Update jam real time di halaman dan input hidden
+      const now = new Date();
+
+      // Format: YYYY-MM-DD HH:mm:ss (misal: 2025-05-30 18:45:12)
+      const pad = (n) => n.toString().padStart(2, '0');
+      const formatted =
+        `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+
+      document.getElementById('realTimeClock').textContent = formatted;
+      document.getElementById('checkout_time').value = formatted;
     }
-  });
-</script>
+    setInterval(updateClock, 1000);
+    updateClock();
 
+//logic show pop up
+    function showCheckOutPopup() {
+      const now = new Date();
+      const pad = (n) => n.toString().padStart(2, '0');
+      const timeString = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+
+      // Update waktu di popup
+      document.getElementById('checkOutTime').textContent = timeString;
+
+      // Tampilkan popup
+      const popup = document.getElementById('checkOutPopup');
+      popup.style.display = 'flex';
+      setTimeout(() => {
+        popup.classList.add('show');
+      }, 10);
+    }
+
+//logic close pop up
+    function closePopup() {
+      // Tutup popup dan kembali ke tampilan attendance
+      const popup = document.getElementById('checkOutPopup');
+      popup.classList.remove('show');
+      setTimeout(() => {
+        popup.style.display = 'none';
+      }, 300);
+    }
+
+    // Tutup popup dengan ESC
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closePopup();
+      }
+    });
+  </script>
 </body>
 </html>

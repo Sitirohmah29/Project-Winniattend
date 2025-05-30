@@ -21,6 +21,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <!-- Chart.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+
 </head>
 <body class="bg-gray-50 font-poppins">
     <div class="px-2 py-2">
@@ -48,51 +49,67 @@
                class="bg-white text-black py-2 px-4 rounded-full text-xs font-semibold hover:bg-black hover:text-blue-400">
                Check In
             </button>
-            
+
             <button class="bg-white text-black py-2 rounded-full text-xs font-semibold hover:bg-black hover:text-blue-400" onclick="window.location.href='{{ url('/attendance/check-out') }}'">
                 Check Out
             </button>
         </div>
-        
+
         <button class="w-full bg-black text-white py-2 rounded-full mt-3 text-xs font-semibold hover:bg-white hover:text-pink-400">
             Permission
         </button>
     </div>
 
         <!-- Time Track -->
-        <div class="mb-6 ">
+        <div class="mb-4">
             <h2 class="text-xl font-semibold text-gray-800 mb-3">Time Track</h2>
-            <div class="bg-white rounded-xl p-4 shadow-sm ">
-                <div class="flex flex-row">
-                    <div class="h-48 w-55">
-                        <canvas id="timeTrackChart"></canvas>
+
+            <div class="bg-white rounded-xl p-4 shadow-sm">
+              <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+
+                <!-- Chart Section -->
+                <div class="w-full md:w-3/4 h-48">
+                  <canvas id="timeTrackChart"></canvas>
+                </div>
+
+                <!-- Legend & Button Section -->
+                <div class="w-full md:w-1/2 flex flex-col justify-between gap-6">
+
+                  <!-- Legend -->
+                  <div class="grid lg:grid-cols-1 md:grid-cols-2 grid-cols-4 gap-4">
+                    <div class="flex items-center gap-2">
+                      <span class="w-3 h-3 rounded-full bg-green-400"></span>
+                      <span class="text-xs text-gray-600">On Time</span>
                     </div>
-                    <div class="flex justify-between ml-4">
-                        <div class="flex flex-col gap-4">
-                            <div class="flex items-center gap-1">
-                                <span class="w-3 h-3 rounded-full bg-green-400"></span>
-                                <span class="text-xs text-gray-600">On Time</span>
-                            </div>
-                            <div class="flex items-center gap-1">
-                                <span class="w-3 h-3 rounded-full bg-red-500"></span>
-                                <span class="text-xs text-gray-600">Late</span>
-                            </div>
-                            <div class="flex items-center gap-1">
-                                <span class="w-3 h-3 rounded-full bg-gray-800"></span>
-                                <span class="text-xs text-gray-600">Absent</span>
-                            </div>
-                            <div class="flex items-center gap-1">
-                                <span class="w-3 h-3 rounded-full bg-blue-400"></span>
-                                <span class="text-xs text-gray-600">Permission</span>
-                            </div>
-                        </div>
+                    <div class="flex items-center gap-2">
+                      <span class="w-3 h-3 rounded-full bg-red-500"></span>
+                      <span class="text-xs text-gray-600">Late</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <span class="w-3 h-3 rounded-full bg-gray-800"></span>
+                      <span class="text-xs text-gray-600">Absent</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <span class="w-3 h-3 rounded-full bg-blue-400"></span>
+                      <span class="text-xs text-gray-600">Permission</span>
+                    </div>
+                  </div>
+
+                  <!-- Button -->
+                    <div class="flex justify-end mt-auto">
+                        <button
+                        onclick="window.location.href='{{ url('/indexReport') }}'"
+                        class="px-4 py-2 text-xs font-semibold text-white bg-blue-500 rounded-full shadow-lg transition-colors hover:bg-black hover:text-blue-400"
+                        >
+                        See Full Report
+                        </button>
                     </div>
                 </div>
-                <button class="text-white transition-colors bg-blue-500 hover:bg-black hover:text-blue-400 shadow-lg font-semibold text-xs rounded-full w-30 h-8 ml-50" onclick="window.location.href='{{url('/indexReport')}}'">
-                    See Full Report
-                </button>
+              </div>
             </div>
-        </div>
+          </div>
+
+
 
         <!-- Announcements -->
         <div class="mb-6">

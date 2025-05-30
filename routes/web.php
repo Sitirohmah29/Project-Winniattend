@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\PasswordController;
+use App\Http\Controllers\ProfileController;
 
 // Auth routes (no change)
 Route::get('/', [AuthController::class, 'splash'])->name('splash');
@@ -20,18 +22,32 @@ Route::get('/new-pw', [AuthController::class, 'newPassword'])->name('new.passwor
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/dashboard', fn () => view('dashboard'))->name('Dashboard');
 
-    Route::get('/indexProfile', [AuthController::class, 'mainProfile'])->name('Profile');
-    Route::get('/editProfile', [AuthController::class, 'editProfile'])->name('Edit Profile');
-    Route::get('/personInfo', [AuthController::class, 'personalInformation'])->name('Personal Information');
-    Route::get('/changePw', [AuthController::class, 'changePassword'])->name('Change Password');
+    //Page profile route
+    Route::get('/indexProfile', [ProfileController::class, 'showMainProfile'])->name('Profile');
+    Route::get('/personInfo', [ProfileController::class, 'showPersonalInfo'])->name('Personal Information');
+
+    Route::get('/editProfile', [ProfileController::class, 'showEditProfile'])->name('profile.show');
+    Route::put('/editProfile', [ProfileController::class, 'updatePersonalInfo'])->name('profile.update');
+
+    // Update password
+    Route::get('/changePw', [PasswordController::class, 'changePassword'])->name('Change.Password');
+    Route::post('/changePw', [PasswordController::class, 'updatePassword'])->name('Update.password');
+
+
     Route::get('/changeFace', [AuthController::class, 'changeFaceID'])->name('Change Face ID');
     Route::get('/faceVerified', [AuthController::class, 'faceVerification'])->name('Face Verification');
     Route::get('/indexReport', [AuthController::class, 'report'])->name('Attedance Report');
     Route::get('/detailsReport', [AuthController::class, 'detailsReportDay'])->name('Details Report');
     Route::get('/notification', [AuthController::class, 'notify'])->name('notification');
 
+    //checkin
     Route::get('/attendance/check-in', [AttendanceController::class, 'showCheckInPage'])->name('attendance.check-in');
+
+    //checkout
     Route::get('/attendance/check-out', [AttendanceController::class, 'showCheckOutPage'])->name('attendance.check-out');
+    Route::post('/attendance/check-out', [AttendanceController::class, 'clockCheckOut'])->name('attendance.realtime');
+
+
     Route::get('/face-verification', [AttendanceController::class, 'showfaceVerificationPage'])->name('verification.face-verification');
     Route::get('/face-register', [AttendanceController::class, 'faceVerificationPage'])->name('verification.face-register');
 });

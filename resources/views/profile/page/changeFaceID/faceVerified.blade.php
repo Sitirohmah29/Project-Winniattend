@@ -11,7 +11,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 
-<body class="container">
+<body class="container justify-center">
     {{-- information page --}}
     <div class="page-title-container">
         <i class="fa-solid fa-chevron-left" page-title-back
@@ -27,7 +27,7 @@
     </div>
 
     {{-- pop up alert --}}
-    <div class="flex-con-rounded">
+    <div class="flex-con-rounded md:w-md">
         <i class="fa-solid fa-circle-check fa-2x" style="color: #63E6BE;"></i>
         <p class="text-title">Face ID has been succesfully Uploaded!</p>
     </div>

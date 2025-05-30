@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#ffffff" />
-  <title>WinniAttend - Punch In</title>
+  <title>WinniAttend - Check In</title>
 
   <!-- PWA Meta Tags -->
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -33,7 +33,7 @@
         <a href="{{ url('dashboard') }}" class="mr-4">
           <i class="fas fa-chevron-left text-gray-600"></i>
         </a>
-        <h1 class="text-sm font-semibold text-center flex-1">Punch in</h1>
+        <h1 class="text-sm font-semibold text-center flex-1">Check in</h1>
       </div>
     </div>
 
