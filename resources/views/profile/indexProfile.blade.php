@@ -48,6 +48,20 @@ class="font-sans min-h-screen transition-all duration-300">
             Edit Profile
         </button>
 
+        @if (session('success'))
+        <div id="success-alert" class="alert bg-blue-100 border border-blue-400 text-pink-500 px-4 py-3 rounded relative text-center font-bold mt-8 transition-all duration-200 transform">
+            {{ session('success') }}
+        </div>
+        <script>
+            const alert = document.getElementById('success-alert');
+            setTimeout(() => {
+                alert.classList.add('opacity-0', '-translate-y-5');
+                setTimeout(() => {
+                    alert.remove();
+                }, 500);
+            }, 3000);
+        </script>
+    @endif
 
     </div>
 
@@ -141,7 +155,7 @@ class="font-sans min-h-screen transition-all duration-300">
     </div>
 
     {{-- logout --}}
-    <div class="mt-20 flex justify-center">
+    <div class="mt-10 mb-15 flex justify-center">
         <a href="{{url('/login')}}" class="long-button text-center">Logout</a>
     </div>
 

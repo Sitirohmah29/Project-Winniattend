@@ -51,21 +51,6 @@ class AuthController extends Controller
         return redirect()->intended('dashboard');
     }
 
-    public function mainProfile(){
-        return view('profile.indexProfile');
-    }
-
-    public function editProfile () {
-        return view('profile.page.editProfile');
-    }
-
-    public function personalInformation () {
-        return view('profile.page.personInfo');
-    }
-
-    public function changePassword() {
-        return view('profile.page.changePw');
-    }
 
     public function changeFaceID() {
         return view('profile.page.changeFaceID.changeFace');

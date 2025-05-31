@@ -32,27 +32,27 @@
     <div class="grid-con-rounded">
         <div>
             <label class="text-reg-bold text-pink-500">ID Employee</label>
-            <p class="text-reg">FD222310015</p>
+            <p class="text-reg">{{$user->id}}</p>
         </div>
         <div>
             <label class="text-reg-bold text-pink-500">Name</label>
-            <p class="text-reg">Risma Handayani</p>
+            <p class="text-reg">{{$user->name}}</p>
         </div>
         <div>
             <label class="text-reg-bold text-pink-500">E-mail</label>
-            <p class="text-reg">rismahandayani801@gmail.com</p>
+            <p class="text-reg">{{$user->email}}</p>
         </div>
         <div>
             <label class="text-reg-bold text-pink-500">Birth Date</label>
-            <p class="text-reg">24-06-2004</p>
+            <p class="text-reg">{{$user->birth_date}}</p>
         </div>
         <div>
             <label class="text-reg-bold text-pink-500">No. Telepon</label>
-            <p class="text-reg">0814-1322-5122</p>
+            <p class="text-reg">{{$user->phone}}</p>
         </div>
         <div>
             <label class="text-reg-bold text-pink-500">Address</label>
-            <p class="text-reg">Kp. Sari Gading rt.05/rw.07</p>
+            <p class="text-reg">{{$user->address}}</p>
         </div>
     </div>
 </body>

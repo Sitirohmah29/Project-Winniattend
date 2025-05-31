@@ -23,8 +23,8 @@
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
-<body class="bg-white font-poppins">
-    <div 
+<body class="container bg-white font-poppins">
+    <div
         x-data="{
             showForm: false,
             passwordVisible: false,
@@ -54,7 +54,7 @@
             </p>
 
             <!-- Get Started Button -->
-            <a 
+            <a
                 href="{{ route('login') }}"
                 class="py-2 px-12 h-8 text-xs text-white transition-colors bg-blue-500 hover:bg-black hover:text-blue-400 rounded-3xl shadow-lg w-55 font-semibold flex items-center justify-center mt-60 block"
             >
