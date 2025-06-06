@@ -25,7 +25,7 @@
         }
     </style>
 </head>
-<body class="bg-gray-50 font-poppins">
+<body class="bg-[#F5FAFF] font-poppins">
     <div class="-w-full mx-auto bg-white min-h-screen shadow-sm">
         <!-- Header -->
         <header class="px-6 py-4 relative flex items-center">

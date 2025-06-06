@@ -16,16 +16,43 @@
         <h2 class="text-title text-center w-full">Edit Profil</h2>
     </div>
 
-    <div class="flex justify-center items-center">
-        <div class="flex relative w-fit mt-10">
-            <img src="{{ asset('images/risma-cantik.jpg') }}" alt="Foto Profil" class="profile-image" />
-            <i class="fa-solid fa-pen-to-square absolute bottom-1 right-1 p-1"></i>
+    @if(session('success'))
+        <div class="alert alert-success bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+            {{ session('success') }}
         </div>
-    </div>
+    @endif
 
-    <form method="POST" action="{{ route('profile.update') }}">
+    <!-- Error Messages -->
+    @if($errors->any())
+        <div class="alert alert-danger bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            <ul class="list-disc list-inside">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
         @csrf
         @method('PUT')
+
+        <div class="flex justify-center items-center">
+            <div class="flex relative w-fit mt-10">
+                <img id="profile_preview" src="{{ $user->profile_photo ? Storage::url($user->profile_photo) : asset('images/risma-cantik.jpg') }}"
+                alt="Foto Profil"
+                class="profile-image w-32 h-32 rounded-full object-cover border-4 border-gray-300" />
+
+                <label for="profile_photo" class="fa-solid fa-pen-to-square absolute bottom-1 right-1 p-2 bg-blue-500 text-white rounded-full cursor-pointer hover:bg-blue-600 transition-colors">
+                    <input type="file"
+                           id="profile_photo"
+                           name="profile_photo"
+                           accept="image/jpeg,image/png,image/jpg,image/gif"
+                           style="display:none;"
+                           onchange="loadFile(event)">
+                </label>
+            </div>
+        </div>
 
         <div class="grid gap-5">
             <div class="grid gap-2">

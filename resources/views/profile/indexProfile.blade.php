@@ -15,7 +15,7 @@
 
 
 
-<body class="bg-gray-50 font-poppins">
+<body class="bg-[#F5FAFF] font-poppins">
     <div class="py-4 px-4 relative">
     <h2 class="font-bold font-xl text-center">Profile</h2>
 

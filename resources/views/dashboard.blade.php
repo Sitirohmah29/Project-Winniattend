@@ -22,8 +22,24 @@
     <!-- Chart.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 
+    <style>
+        .popup-overlay {
+            transition: all 0.3s ease;
+        }
+        .popup-overlay.show {
+            display: flex !important;
+        }
+        .popup-content {
+            transform: scale(0.8) translateY(-20px);
+            transition: all 0.3s ease;
+        }
+        .popup-overlay.show .popup-content {
+            transform: scale(1) translateY(0);
+        }
+    </style>
+
 </head>
-<body class="bg-gray-50 font-poppins">
+<body class="bg-[#F5FAFF] font-poppins">
     <div class="px-2 py-2">
         <!-- Welcome Header -->
         <div class="flex justify-between items-center mb-6">
@@ -55,10 +71,28 @@
             </button>
         </div>
 
-        <button class="w-full bg-black text-white py-2 rounded-full mt-3 text-xs font-semibold hover:bg-white hover:text-pink-400">
+        <button class="w-full bg-black text-white py-2 rounded-full mt-3 text-xs font-semibold hover:bg-white hover:text-pink-400" onclick="showPermissionPopUp()">
             Permission
         </button>
     </div>
+
+    <div id="permissionPopUp" class="popup-overlay fixed inset-0  bg-opacity-50 flex items-center justify-center z-[9999]" style="display: none;">
+        <div class="popup-content bg-white rounded-lg p-6 max-w-sm mx-4 shadow-xl">
+            <div class="text-center">
+                <div class="mb-4">
+                    <i class="fa-solid fa-check-circle text-4xl text-blue-500 mb-3"></i>
+                    <p class="text-gray-800 mb-3 font-poppins">You have permission on the date</p>
+                    <p id="permissionDate" class="text-xl font-bold text-blue-500 font-poppins"></p>
+                </div>
+                <div class="flex justify-center gap-4">
+                    <button id="closePermissionBtn" onclick="closePermissionPopUp()" class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-pink-600 transition-colors font-semibold font-poppins" aria-label="Konfirmasi Izin">
+                        OK
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
         <!-- Time Track -->
         <div class="mb-4">
@@ -248,6 +282,39 @@
                     });
             });
         }
+    </script>
+
+<script>
+    function showPermissionPopUp() {
+        const now = new Date();
+        const pad = n => n.toString().padStart(2, '0');
+        const tanggal = `${pad(now.getDate())}-${pad(now.getMonth() + 1)}-${now.getFullYear()}`;
+
+        // Update tanggal di popup
+        document.getElementById('permissionDate').textContent = tanggal;
+
+        // Tampilkan popup
+        const popup = document.getElementById('permissionPopUp');
+        popup.style.display = 'flex';
+        setTimeout(() => {
+            popup.classList.add('show');
+        }, 10);
+    }
+
+    function closePermissionPopUp() {
+        const popup = document.getElementById('permissionPopUp');
+        popup.classList.remove('show');
+        setTimeout(() => {
+            popup.style.display = 'none';
+        }, 300);
+    }
+
+    // Tutup popup dengan tombol ESC
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+            closePermissionPopUp();
+        }
+    });
     </script>
 </body>
 </html>

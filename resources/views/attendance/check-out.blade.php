@@ -51,7 +51,7 @@
         <a href="{{ url('dashboard') }}" class="mr-4">
           <i class="fa-solid fa-chevron-left"></i>
         </a>
-        <h1 class="text-lg font-semibold text-center flex-1">Punch out</h1>
+        <h1 class="text-lg font-semibold text-center flex-1">Check Out</h1>
       </div>
     </div>
 
@@ -121,12 +121,13 @@
   </div>
 
   <!-- Custom Popup -->
-  <div id="checkOutPopup" class="popup-overlay fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999]" style="display: none;">
+  <div id="checkOutPopup" class="popup-overlay fixed inset-0 bg-opacity-50 flex items-center justify-center z-[9999]">
     <div class="popup-content bg-white rounded-lg p-6 max-w-sm mx-4 shadow-xl">
       <div class="text-center">
         <div class="mb-4">
-          <p class="text-gray-800 mb-3">You go home at</p>
-          <p id="checkOutTime" class="text-xl font-bold text-blue-600"></p>
+            <i class="fa-solid fa-check-circle text-4xl text-blue-500 mb-3"></i>
+            <p class="text-gray-800 mb-3">You go home at</p>
+            <p id="checkOutTime" class="text-xl font-bold text-blue-600"></p>
         </div>
         <div class="flex justify-center">
           <button onclick="closePopup()" class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-pink-600 transition-colors font-semibold">

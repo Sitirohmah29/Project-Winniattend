@@ -29,6 +29,15 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+    public function getProfilePhotoUrlAttribute()
+    {
+        if ($this->profile_photo) {
+            return asset('storage/' . $this->profile_photo);
+        }
+
+        return asset('images/default-profile.jpg'); // Default image
+    }
+
     public function roles()
     {
         return $this->belongsToMany(Role::class, 'user_roles');
