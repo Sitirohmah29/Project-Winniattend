@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('brith_date');
+            $table->date('birth_date');
             $table->string('address');
             $table->string('email')->unique();
             $table->string('phone');
@@ -30,8 +30,10 @@ return new class extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void
+    public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn(['name', 'birth_date', 'phone', 'address', 'profile_photo']);
+        });
     }
 };

@@ -21,75 +21,129 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <!-- Chart.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+
+    <style>
+        .popup-overlay {
+            transition: all 0.3s ease;
+        }
+        .popup-overlay.show {
+            display: flex !important;
+        }
+        .popup-content {
+            transform: scale(0.8) translateY(-20px);
+            transition: all 0.3s ease;
+        }
+        .popup-overlay.show .popup-content {
+            transform: scale(1) translateY(0);
+        }
+    </style>
+
 </head>
-<body class="bg-gray-50 font-poppins">
-    <div class="max-w-md mx-auto px-4 py-6">
+<body class="bg-[#F5FAFF] font-poppins">
+    <div class="px-2 py-2">
         <!-- Welcome Header -->
         <div class="flex justify-between items-center mb-6">
             <div>
-                <h1 class="text-2xl font-bold text-pink-500">Welcome!</h1>
+                <h1 class="text-xl font-semibold text-pink-400">Welcome!</h1>
                 <p class="text-gray-800 font-medium">Risma Handayani</p>
             </div>
-            <div class="bg-gray-800 text-white rounded-full p-2 w-10 h-10 flex items-center justify-center">
-                <i class="fa fa-bell"></i>
+            <div class="bg-gray-800 text-white rounded-full p-2 w-7 h-7 flex items-center justify-center">
+                <a href="{{url('/notification')}}"><i class="fa fa-bell"></i></a>
             </div>
         </div>
 
         <!-- Time Card -->
-        <div class="bg-blue-500 text-white rounded-xl p-4 mb-6">
+        <div class="bg-blue-500 text-white rounded-xl p-2 mb-4">
             <div class="text-center mb-1">
-                <h2 class="text-3xl font-bold">12.14</h2>
-                <p class="text-sm mb-1">Monday, 03 March 2025</p>
-                <p class="text-sm">Your Working hours are 01.00 am - 06.00 am</p>
+                <h2 class="text-xl font-semibold">12.14</h2>
+                <p class="text-sm font-thin">Monday, 03 March 2025</p>
+                <p class="text-sm font-thin">Your Working hours are 01.00 am - 06.00 am</p>
             </div>
 
             <div class="grid grid-cols-2 gap-3 mt-4">
-                <button class="bg-white text-gray-800 py-2 rounded-md text-sm font-medium">
-                    Check In
-                </button>
-                <button class="bg-white text-gray-800 py-2 rounded-md text-sm font-medium">
-                    Check Out
-                </button>
-            </div>
+               <button type="button" onclick="window.location.href='{{ url('/attendance/check-in') }}'"
+               class="bg-white text-black py-2 px-4 rounded-full text-xs font-semibold hover:bg-black hover:text-blue-400">
+               Check In
+            </button>
 
-            <button class="w-full bg-gray-800 text-white py-2 rounded-md mt-3 text-sm font-medium">
-                Permission
+            <button class="bg-white text-black py-2 rounded-full text-xs font-semibold hover:bg-black hover:text-blue-400" onclick="window.location.href='{{ url('/attendance/check-out') }}'">
+                Check Out
             </button>
         </div>
 
-        <!-- Time Track -->
-        <div class="mb-6">
-            <h2 class="text-xl font-semibold text-gray-800 mb-3">Time Track</h2>
-            <div class="bg-white rounded-xl p-4 shadow-sm">
-                <div class="h-48">
-                    <canvas id="timeTrackChart"></canvas>
-                </div>
+        <button class="w-full bg-black text-white py-2 rounded-full mt-3 text-xs font-semibold hover:bg-white hover:text-pink-400" onclick="showPermissionPopUp()">
+            Permission
+        </button>
+    </div>
 
-                <div class="flex justify-between mt-3">
-                    <div class="flex flex-wrap gap-4">
-                        <div class="flex items-center gap-1">
-                            <span class="w-3 h-3 rounded-full bg-green-400"></span>
-                            <span class="text-xs text-gray-600">On Time</span>
-                        </div>
-                        <div class="flex items-center gap-1">
-                            <span class="w-3 h-3 rounded-full bg-red-500"></span>
-                            <span class="text-xs text-gray-600">Late</span>
-                        </div>
-                        <div class="flex items-center gap-1">
-                            <span class="w-3 h-3 rounded-full bg-gray-800"></span>
-                            <span class="text-xs text-gray-600">Absent</span>
-                        </div>
-                        <div class="flex items-center gap-1">
-                            <span class="w-3 h-3 rounded-full bg-blue-400"></span>
-                            <span class="text-xs text-gray-600">Permission</span>
-                        </div>
-                    </div>
-                    <button class="bg-blue-500 text-white text-xs py-1 px-3 rounded-full">
-                        See Full Report
+    <div id="permissionPopUp" class="popup-overlay fixed inset-0  bg-opacity-50 flex items-center justify-center z-[9999]" style="display: none;">
+        <div class="popup-content bg-white rounded-lg p-6 max-w-sm mx-4 shadow-xl">
+            <div class="text-center">
+                <div class="mb-4">
+                    <i class="fa-solid fa-check-circle text-4xl text-blue-500 mb-3"></i>
+                    <p class="text-gray-800 mb-3 font-poppins">You have permission on the date</p>
+                    <p id="permissionDate" class="text-xl font-bold text-blue-500 font-poppins"></p>
+                </div>
+                <div class="flex justify-center gap-4">
+                    <button id="closePermissionBtn" onclick="closePermissionPopUp()" class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-pink-600 transition-colors font-semibold font-poppins" aria-label="Konfirmasi Izin">
+                        OK
                     </button>
                 </div>
             </div>
         </div>
+    </div>
+
+
+        <!-- Time Track -->
+        <div class="mb-4">
+            <h2 class="text-xl font-semibold text-gray-800 mb-3">Time Track</h2>
+
+            <div class="bg-white rounded-xl p-4 shadow-sm">
+              <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+
+                <!-- Chart Section -->
+                <div class="w-full md:w-3/4 h-48">
+                  <canvas id="timeTrackChart"></canvas>
+                </div>
+
+                <!-- Legend & Button Section -->
+                <div class="w-full md:w-1/2 flex flex-col justify-between gap-6">
+
+                  <!-- Legend -->
+                  <div class="grid lg:grid-cols-1 md:grid-cols-2 grid-cols-4 gap-4">
+                    <div class="flex items-center gap-2">
+                      <span class="w-3 h-3 rounded-full bg-green-400"></span>
+                      <span class="text-xs text-gray-600">On Time</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <span class="w-3 h-3 rounded-full bg-red-500"></span>
+                      <span class="text-xs text-gray-600">Late</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <span class="w-3 h-3 rounded-full bg-gray-800"></span>
+                      <span class="text-xs text-gray-600">Absent</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <span class="w-3 h-3 rounded-full bg-blue-400"></span>
+                      <span class="text-xs text-gray-600">Permission</span>
+                    </div>
+                  </div>
+
+                  <!-- Button -->
+                    <div class="flex justify-end mt-auto">
+                        <button
+                        onclick="window.location.href='{{ url('/indexReport') }}'"
+                        class="px-4 py-2 text-xs font-semibold text-white bg-blue-500 rounded-full shadow-lg transition-colors hover:bg-black hover:text-blue-400"
+                        >
+                        See Full Report
+                        </button>
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
 
         <!-- Announcements -->
         <div class="mb-6">
@@ -228,6 +282,39 @@
                     });
             });
         }
+    </script>
+
+<script>
+    function showPermissionPopUp() {
+        const now = new Date();
+        const pad = n => n.toString().padStart(2, '0');
+        const tanggal = `${pad(now.getDate())}-${pad(now.getMonth() + 1)}-${now.getFullYear()}`;
+
+        // Update tanggal di popup
+        document.getElementById('permissionDate').textContent = tanggal;
+
+        // Tampilkan popup
+        const popup = document.getElementById('permissionPopUp');
+        popup.style.display = 'flex';
+        setTimeout(() => {
+            popup.classList.add('show');
+        }, 10);
+    }
+
+    function closePermissionPopUp() {
+        const popup = document.getElementById('permissionPopUp');
+        popup.classList.remove('show');
+        setTimeout(() => {
+            popup.style.display = 'none';
+        }, 300);
+    }
+
+    // Tutup popup dengan tombol ESC
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+            closePermissionPopUp();
+        }
+    });
     </script>
 </body>
 </html>

@@ -1,0 +1,18 @@
+.text-big {
+    @apply text-xl font-semibold;
+}
+
+.text-title2 {
+    @apply text-xl font-bold;
+}
+
+.text-title {
+    @apply text-base font-semibold;
+}
+.text-reg {
+    @apply text-sm;
+}
+
+.text-reg-bold {
+    @apply text-sm font-bold;
+}
