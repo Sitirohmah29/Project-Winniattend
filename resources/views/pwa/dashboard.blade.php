@@ -53,12 +53,46 @@
         </div>
 
         <!-- Time Card -->
-        <div class="bg-blue-500 text-white rounded-xl p-2 mb-4">
+        <div id="infoPersonal" class="bg-blue-500 text-white rounded-xl p-2 mb-4">
             <div class="text-center mb-1">
-                <h2 class="text-xl font-semibold">12.14</h2>
-                <p class="text-sm font-thin">Monday, 03 March 2025</p>
+                <h2 id="Time" class="text-xl font-semibold">12.14</h2>
+                <div class="flex flex-row gap-1 items-center justify-center">
+                    <p id="Day" class="text-sm font-thin"></p>
+                    <p>,</p>
+                    <p id="Date" class="text-sm font-thin"></p>
+                </div>
                 <p class="text-sm font-thin">Your Working hours are 01.00 am - 06.00 am</p>
             </div>
+
+            <script>
+                // Fungsi untuk menambahkan angka 0 di depan angka < 10
+                function pad(number) {
+                  return number < 10 ? '0' + number : number;
+                }
+
+                function infoPersonal() {
+                  const now = new Date();
+
+                  const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                  const hari = days[now.getDay()]; // getDay() mengembalikan 0-6 (Minggu-Sabtu)
+
+                  const tanggal = `${pad(now.getDate())}-${pad(now.getMonth() + 1)}-${now.getFullYear()}`;
+
+                  // Format waktu hh:mm:ss (24 jam)
+                  const waktu = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+
+                  // Update elemen hari, tanggal, dan waktu
+                  document.getElementById('Day').textContent = hari;
+                  document.getElementById('Date').textContent = tanggal;
+                  document.getElementById('Time').textContent = waktu;
+                }
+
+                // Panggil fungsi sekali saat halaman dimuat
+                infoPersonal();
+
+                // Update waktu, tanggal, dan hari setiap 1 detik
+                setInterval(infoPersonal, 1000);
+              </script>
 
             <div class="grid grid-cols-2 gap-3 mt-4">
                <button type="button" onclick="window.location.href='{{ url('/attendance/check-in') }}'"
@@ -74,6 +108,40 @@
         <button class="w-full bg-black text-white py-2 rounded-full mt-3 text-xs font-semibold hover:bg-white hover:text-pink-400" onclick="showPermissionPopUp()">
             Permission
         </button>
+
+        {{-- modal permission pop up --}}
+        <script>
+            function showPermissionPopUp() {
+                const now = new Date();
+                const pad = n => n.toString().padStart(2, '0');
+                const tanggal = `${pad(now.getDate())}-${pad(now.getMonth() + 1)}-${now.getFullYear()}`;
+
+                // Update tanggal di popup
+                document.getElementById('permissionDate').textContent = tanggal;
+
+                // Tampilkan popup
+                const popup = document.getElementById('permissionPopUp');
+                popup.style.display = 'flex';
+                setTimeout(() => {
+                    popup.classList.add('show');
+                }, 10);
+            }
+
+            function closePermissionPopUp() {
+                const popup = document.getElementById('permissionPopUp');
+                popup.classList.remove('show');
+                setTimeout(() => {
+                    popup.style.display = 'none';
+                }, 300);
+            }
+
+            // Tutup popup dengan tombol ESC
+            document.addEventListener('keydown', e => {
+                if (e.key === 'Escape') {
+                    closePermissionPopUp();
+                }
+            });
+            </script>
     </div>
 
     <div id="permissionPopUp" class="popup-overlay fixed inset-0  bg-opacity-50 flex items-center justify-center z-[9999]" style="display: none;">
@@ -284,37 +352,6 @@
         }
     </script>
 
-<script>
-    function showPermissionPopUp() {
-        const now = new Date();
-        const pad = n => n.toString().padStart(2, '0');
-        const tanggal = `${pad(now.getDate())}-${pad(now.getMonth() + 1)}-${now.getFullYear()}`;
 
-        // Update tanggal di popup
-        document.getElementById('permissionDate').textContent = tanggal;
-
-        // Tampilkan popup
-        const popup = document.getElementById('permissionPopUp');
-        popup.style.display = 'flex';
-        setTimeout(() => {
-            popup.classList.add('show');
-        }, 10);
-    }
-
-    function closePermissionPopUp() {
-        const popup = document.getElementById('permissionPopUp');
-        popup.classList.remove('show');
-        setTimeout(() => {
-            popup.style.display = 'none';
-        }, 300);
-    }
-
-    // Tutup popup dengan tombol ESC
-    document.addEventListener('keydown', e => {
-        if (e.key === 'Escape') {
-            closePermissionPopUp();
-        }
-    });
-    </script>
 </body>
 </html>

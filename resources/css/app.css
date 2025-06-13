@@ -13,6 +13,10 @@
     @apply pt-20 py-4 px-4 grid gap-5 bg-[#F5FAFF];
 }
 
+.container-web {
+    @apply mx-[50px] my-[80px] bg-[#F5FAFF] items-center justify-center;
+}
+
 .flex-container {
     @apply flex mt-3 items-center gap-3;
 }
@@ -27,4 +31,8 @@
 
 .grid-con-rounded {
     @apply m-5 p-5 bg-white rounded-xl shadow-xl grid gap-4;
+}
+
+.page-title-back {
+    @apply flex items-center gap-28;
 }

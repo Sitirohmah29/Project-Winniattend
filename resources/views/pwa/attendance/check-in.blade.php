@@ -31,7 +31,7 @@
     <div class="px-4 py-3 bg-white shadow">
       <div class="flex items-center">
         <a href="{{ url('dashboard') }}" class="mr-4">
-          <i class="fas fa-chevron-left text-gray-600"></i>
+          <i class="fas fa-chevron-left text-gray-600 cursor-pointer hover:text-blue-600"></i>
         </a>
         <h1 class="text-sm font-semibold text-center flex-1">Check in</h1>
       </div>

@@ -6,6 +6,7 @@ use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\ProfileController;
 
+//MOBILE
 // Auth routes (no change)
 Route::get('/', [AuthController::class, 'splash'])->name('splash');
 Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -20,10 +21,10 @@ Route::get('/new-pw', [AuthController::class, 'newPassword'])->name('new.passwor
 
 // Sanctum Protected Routes
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::get('/dashboard', fn () => view('dashboard'))->name('Dashboard');
+    Route::get('/dashboard', fn () => view('pwa.dashboard'))->name('Dashboard');
 
     //Page profile route
-    Route::get('/indexProfile', [ProfileController::class, 'showMainProfile'])->name('Profile');
+    Route::get('/indexProfile', [ProfileController::class, 'showMainProfile'])->name('profile.index');
     Route::get('/personInfo', [ProfileController::class, 'showPersonalInfo'])->name('Personal Information');
 
     Route::get('/editProfile', [ProfileController::class, 'showEditProfile'])->name('profile.show');
@@ -51,3 +52,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/face-verification', [AttendanceController::class, 'showfaceVerificationPage'])->name('verification.face-verification');
     Route::get('/face-register', [AttendanceController::class, 'faceVerificationPage'])->name('verification.face-register');
 });
+
+
+//WEB
+Route::get('/signIn', fn () => view('management_system.signIn'))->name('signin');

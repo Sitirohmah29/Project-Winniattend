@@ -16,7 +16,7 @@
 <body class="container bottom-3 ">
     {{-- page information --}}
     <div class="page-title-container">
-        <i class="fa-solid fa-chevron-left" page-title-back
+        <i class="fa-solid fa-chevron-left cursor-pointer hover:text-blue-600" page-title-back
         onclick="window.location.href='{{url('/indexProfile')}}'"></i>
         <h2 class="text-title text-center w-full">Change Password</h2>
     </div>

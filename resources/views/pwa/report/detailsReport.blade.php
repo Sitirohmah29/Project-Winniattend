@@ -18,7 +18,7 @@
 <body class="mt-15 bg-white font-poppins">
      {{-- information page --}}
      <div class="page-title-container">
-        <i class="fa-solid fa-chevron-left" page-title-back
+        <i class="fa-solid fa-chevron-left cursor-pointer hover:text-blue-600" page-title-back
         onclick="window.location.href='{{url('/indexReport')}}'"></i>
         <h2 class="text-title text-center w-full">01 Feb Monday</h2>
     </div>

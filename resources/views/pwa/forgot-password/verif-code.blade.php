@@ -17,7 +17,7 @@
 <body class="container">
           {{-- information page --}}
         <div class="page-title-container">
-            <i class="fa-solid fa-chevron-left" page-title-back
+            <i class="fa-solid fa-chevron-left cursor-pointer hover:text-blue-600" page-title-back
             onclick="window.location.href='{{url('/forgot-password')}}'"></i>
             <h2 class="text-title text-center w-full">Verification Code</h2>
         </div>
@@ -79,9 +79,46 @@
                       });
                     });
                   </script>
-                  <p class="flex text-reg justify-end">If you didn't receive a code!
-                    <span class="ml-1 text-red-500 hover:text-blue-500">Resend</span>
+
+                <p class="flex text-reg justify-end">
+                    If you didn't receive a code!
+                    <button id="resendBtn" class="ml-1 text-red-500 hover:text-blue-500 cursor-pointer" disabled>Resend (60s)</button>
                 </p>
+
+                <script>
+                    document.addEventListener("DOMContentLoaded", function () {
+                    const resendBtn = document.getElementById('resendBtn');
+                    let countdown = 60; // durasi hitung mundur dalam detik
+                    let timerId;
+
+                    function updateButton() {
+                        if (countdown > 0) {
+                        resendBtn.textContent = `Resend (${countdown}s)`;
+                        resendBtn.disabled = true;
+                        countdown--;
+                        } else {
+                        resendBtn.textContent = 'Resend';
+                        resendBtn.disabled = false;
+                        clearInterval(timerId);
+                        }
+                    }
+
+                    // Mulai hitung mundur dengan setInterval
+                    function startCountdown() {
+                        updateButton(); // update langsung saat mulai
+                        timerId = setInterval(updateButton, 1000);
+                    }
+
+                    // Mulai countdown saat halaman dimuat
+                    startCountdown();
+
+                    resendBtn.addEventListener('click', function() {
+                        // Reset countdown dan mulai lagi
+                        countdown = 60;
+                        startCountdown();
+                    });
+                    });
+                </script>
             </div>
         </div>
 

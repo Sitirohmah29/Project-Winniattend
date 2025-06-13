@@ -22,14 +22,13 @@
 
     {{-- username profile --}}
     <div class="pt-4 mt-4 flex flex-col items-center text-center">
-        <img src="{{ asset('images/risma-cantik.jpg') }}"
-             alt="Foto Risma Cantik"
-             class="profile-image" />
+        <img src="{{ $user->profile_photo ? Storage::url($user->profile_photo) : asset('images/risma-cantik.jpg') }}"
+             alt="Foto Profil {{ $user->name }}"
+             class="profile-image w-32 h-32 rounded-full object-cover border-4 border-gray-300" />
 
-        <h2 class="text-title">Risma Handayani</h2>
-        <p class="text-reg text-gray-600">Laravel Developer</p>
+        <h2 class="text-title">{{ $user->name ?? 'Nama Pengguna' }}</h2>
+        <p class="text-reg text-gray-600">{{ $roles->name ?? 'Laravel Developer' }}</p>
 
-        {{-- button edit profile --}}
         <button class="short-button mt-4" onclick="window.location.href='{{url('/editProfile')}}'">
             Edit Profile
         </button>
@@ -111,30 +110,6 @@
                 <button @click="notify = !notify">
                     <i class="fa-solid"
                        :class="notify ? 'fa-toggle-on fa-xl text-green-600' : 'fa-toggle-off fa-xl text-red-600'">
-                    </i>
-                </button>
-            </div>
-
-            {{-- dark mode setting --}}
-            <div
-            x-data="{ darkMode: false }"
-            class="profile-card flex justify-between items-center">
-
-                <div class="flex items-center gap-2">
-                    <div class="icon">
-                        <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M4.36364 6.54546V8H3.63636V6.54546H4.36364ZM6.05704 5.54278L7.08556 6.5713L6.5713 7.08556L5.54278 6.05704L6.05704 5.54278ZM1.94296 5.54278L2.45722 6.05704L1.4287 7.08556L0.914438 6.5713L1.94296 5.54278ZM4.00001 2.01171C5.09811 2.01171 5.98831 2.90189 5.98831 4.00001C5.98831 5.09811 5.09811 5.98831 4.00001 5.98831C3.73876 5.98881 3.47999 5.93772 3.23853 5.83797C2.99707 5.73823 2.77768 5.59179 2.59295 5.40706C2.40822 5.22233 2.26178 5.00294 2.16203 4.76149C2.06229 4.52003 2.01119 4.26126 2.01169 4.00001C2.01169 2.90189 2.90189 2.01171 4.00001 2.01171ZM4.00001 2.73897C3.30355 2.73897 2.73897 3.30356 2.73897 4.00139C2.73865 4.1669 2.77102 4.33084 2.83421 4.48381C2.8974 4.63678 2.99017 4.77577 3.1072 4.8928C3.34357 5.12917 3.66433 5.26166 4.00001 5.26103V2.73897ZM8 3.63636V4.36364H6.54546V3.63636H8ZM1.45454 3.63636V4.36364H0V3.63636H1.45454ZM1.4287 0.914438L2.45722 1.94296L1.94296 2.45722L0.914438 1.4287L1.4287 0.914438ZM6.57132 0.914438L7.08556 1.4287L6.05704 2.45722L5.54278 1.94296L6.57132 0.914438ZM4.36362 0V1.45454H3.63634V0H4.36362Z" fill="black"/>
-                            </svg>
-
-                    </div>
-
-                    <p class="text-white text-reg">Dark Mode</p>
-                </div>
-
-                <button @click="darkMode = !darkMode">
-                    <i class="fa-solid"
-                       :class="darkMode ? 'fa-toggle-on fa-xl text-green-400' : 'fa-toggle-off fa-xl text-red-600'"
-                       class="transition-all duration-200">
                     </i>
                 </button>
             </div>

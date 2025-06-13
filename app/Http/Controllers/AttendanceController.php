@@ -11,13 +11,13 @@ class AttendanceController extends Controller
     //show page check in
     public function showCheckInPage()
     {
-        return view('attendance.check-in');
+        return view('pwa.attendance.check-in');
     }
 
     //show page check out
     public function showCheckOutPage()
     {
-        return view('attendance.check-out');
+        return view('pwa.attendance.check-out');
     }
 
     //logic checkout realtime
@@ -46,11 +46,11 @@ class AttendanceController extends Controller
 
     public function showfaceVerificationPage()
     {
-        return view('verification.face-verification');
+        return view('pwa.verification.face-verification');
     }
     public function faceVerificationPage()
     {
-        return view('verification.face-register');
+        return view('pwa.verification.face-register');
     }
 
 }

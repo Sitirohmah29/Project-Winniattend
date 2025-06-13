@@ -11,16 +11,16 @@ class AuthController extends Controller
 {
     public function splash()
     {
-        return view('splashScreen');
+        return view('pwa.splashScreen');
     }
 
     public function showLoginForm()
     {
-         return view('auth.login');
+         return view('pwa.auth.login');
     }
 
     public function notify(){
-        return view('notification');
+        return view('pwa.notification');
     }
     public function login(Request $request)
     {
@@ -61,11 +61,11 @@ class AuthController extends Controller
     }
 
     public function report (){
-        return view('report.indexReport');
+        return view('pwa.report.indexReport');
     }
 
     public function detailsReportDay() {
-        return view('report.detailsReport');
+        return view('pwa.report.detailsReport');
     }
 
 
@@ -81,15 +81,15 @@ class AuthController extends Controller
 
     public function showForgotPasswordForm()
     {
-        return view('forgot-password.forgot-password');
+        return view('pwa.forgot-password.forgot-password');
     }
 
     public function verificationCode () {
-        return view('forgot-password.verif-code');
+        return view('pwa.forgot-password.verif-code');
     }
 
     public function newPassword (){
-        return view('forgot-password.new-pw');
+        return view('pwa.forgot-password.new-pw');
     }
 
     public function forgotPassword(Request $request)

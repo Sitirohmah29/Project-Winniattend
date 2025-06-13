@@ -49,7 +49,7 @@
     <div class="px-4 py-3 bg-white shadow">
       <div class="flex items-center">
         <a href="{{ url('dashboard') }}" class="mr-4">
-          <i class="fa-solid fa-chevron-left"></i>
+          <i class="fa-solid fa-chevron-left cursor-pointer hover:text-blue-600"></i>
         </a>
         <h1 class="text-lg font-semibold text-center flex-1">Check Out</h1>
       </div>
