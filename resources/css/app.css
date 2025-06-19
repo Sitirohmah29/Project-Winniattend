@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 @source "../views";
-@custom-variant dark (&:where(.dark, .dark *));
 
 @import "tailwindcss";
 @import "./profile.css";
