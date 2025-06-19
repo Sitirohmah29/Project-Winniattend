@@ -15,7 +15,9 @@
 
 
 
+
 <body class="bg-[#F5FAFF] font-poppins">
+
     <div class="py-4 px-4 relative">
     <h2 class="font-bold font-xl text-center">Profile</h2>
 
@@ -26,8 +28,10 @@
              alt="Foto Profil {{ $user->name }}"
              class="profile-image w-32 h-32 rounded-full object-cover border-4 border-gray-300" />
 
+
         <h2 class="text-title">{{ $user->name ?? 'Nama Pengguna' }}</h2>
         <p class="text-reg text-gray-600">{{ $roles->name ?? 'Laravel Developer' }}</p>
+
 
         <button class="short-button mt-4" onclick="window.location.href='{{url('/editProfile')}}'">
             Edit Profile
@@ -114,7 +118,6 @@
                 </button>
             </div>
         </div>
-
 
     </div>
 

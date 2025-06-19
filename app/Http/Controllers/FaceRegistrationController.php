@@ -14,7 +14,7 @@ class FaceRegistrationController extends Controller
     public function index()
     {
         $users = \App\Models\User::select('name', 'profile_photo')->get();
-        return view('verification.face-register', compact('users'));
+        return view('pwa.verification.face-register', compact('users'));
     
     }
 
