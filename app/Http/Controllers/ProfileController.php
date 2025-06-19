@@ -2,61 +2,90 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class ProfileController extends Controller
 {
     public function showMainProfile(){
-        return view('profile.indexProfile');
+        $user = Auth::user();
+        return view('profile.indexProfile', compact('user'));
     }
 
-    public function showEditProfile () {
-        $user= Auth::user();
+    public function showEditProfile() {
+        $user = Auth::user();
         return view('profile.page.editProfile', compact('user'));
     }
 
     public function updatePersonalInfo(Request $request)
     {
-        $user = Auth::user();
+        try {
+            $user = Auth::user();
 
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'birth_date' => 'required|date',
-            'phone' => 'required|string|max:255',
-            'address' => 'required|string|max:255',
-            'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Maks 2MB
-        ]);
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'birth_date' => 'required|date',
+                'phone' => 'required|string|max:255',
+                'address' => 'required|string|max:255',
+                'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Maks 2MB
+            ]);
 
-        $data = [
-            'name' => $request->name,
-            'birth_date' => $request->birth_date,
-            'phone' => $request->phone,
-            'address' => $request->address,
-        ];
+            $data = [
+                'name' => $request->name,
+                'birth_date' => $request->birth_date,
+                'phone' => $request->phone,
+                'address' => $request->address,
+            ];
 
-        if ($request->hasFile('profile_photo')) {
-            // Hapus foto lama jika ada
-            if ($user->profile_photo && Storage::disk('public')->exists($user->profile_photo)) {
-                Storage::disk('public')->delete($user->profile_photo);
+            // Handle profile photo upload
+            if ($request->hasFile('profile_photo')) {
+                $file = $request->file('profile_photo');
+
+                // Validasi file
+                if ($file->isValid()) {
+                    // Hapus foto lama jika ada
+                    if ($user->profile_photo && Storage::disk('public')->exists($user->profile_photo)) {
+                        Storage::disk('public')->delete($user->profile_photo);
+                        Log::info('Old profile photo deleted: ' . $user->profile_photo);
+                    }
+
+                    // Generate nama file unik
+                    $extension = $file->getClientOriginalExtension();
+                    $fileName = 'profile_' . $user->id . '_' . time() . '.' . $extension;
+
+                    // Simpan file baru
+                    $path = $file->storeAs('profile_photos', $fileName, 'public');
+
+                    if ($path) {
+                        $data['profile_photo'] = $path;
+                        Log::info('New profile photo saved: ' . $path);
+                    } else {
+                        Log::error('Failed to save profile photo');
+                        return redirect()->back()->with('error', 'Gagal menyimpan foto profil.');
+                    }
+                } else {
+                    Log::error('Invalid file uploaded');
+                    return redirect()->back()->with('error', 'File yang diupload tidak valid.');
+                }
             }
 
-            // Simpan foto baru dengan nama unik
-            $originalName = $request->file('profile_photo')->getClientOriginalName();
-            $extension = $request->file('profile_photo')->getClientOriginalExtension();
-            $fileName = time() . '_' . $user->id . '.' . $extension;
+            // Update user data
+            $user->update($data);
+            Log::info('User profile updated for user ID: ' . $user->id);
 
-            $path = $request->file('profile_photo')->storeAs('profile_photos', $fileName, 'public');
-            $data['profile_photo'] = $path;
+            return redirect()->route('profile.index')->with('success', 'Profil berhasil diperbarui.');
+
+        } catch (\Exception $e) {
+            Log::error('Error updating profile: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat memperbarui profil: ' . $e->getMessage());
         }
-        $user->update($data);
-
-        return redirect()->route('Profile')->with('success', 'Profile updated successfully.');
     }
 
-    public function showPersonalInfo () {
-        $user = Auth::user(); // ambil user yang sedang login
+    public function showPersonalInfo() {
+        $user = Auth::user();
         return view('profile.page.personInfo', compact('user'));
     }
 }

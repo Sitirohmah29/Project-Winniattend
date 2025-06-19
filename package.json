@@ -15,24 +15,10 @@
         "vite": "^5.0.0"
     },
     "dependencies": {
-        "@tailwindcss/vite": "^4.1.5"
-    },
-    "name": "winniattend",
-    "version": "1.0.0",
-    "description": "WinniAttend is a Laravel-based attendance web application using Tailwind CSS for frontend styling.",
-    "main": "vite.config.js",
-    "directories": {
-        "test": "tests"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/Sitirohmah29/Project-Winniattend.git"
-    },
-    "keywords": [],
-    "author": "",
-    "license": "ISC",
-    "bugs": {
-        "url": "https://github.com/Sitirohmah29/Project-Winniattend/issues"
-    },
-    "homepage": "https://github.com/Sitirohmah29/Project-Winniattend#readme"
+
+        "@tailwindcss/vite": "^4.1.5",
+        "@tensorflow-models/face-landmarks-detection": "^1.0.6",
+        "face-api.js": "^0.22.2"
+    }
+
 }

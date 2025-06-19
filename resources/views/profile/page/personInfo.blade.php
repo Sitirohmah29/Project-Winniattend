@@ -16,16 +16,16 @@
 <body class="container">
     {{-- page information --}}
     <div class="page-title-container">
-        <i class="fa-solid fa-chevron-left" page-title-back
+        <i class="fa-solid fa-chevron-left cursor-pointer hover:text-blue-600" page-title-back
         onclick="window.location.href='{{url('/indexProfile')}}'"></i>
         <h2 class="text-title text-center w-full">Personal Information</h2>
     </div>
 
     {{-- image profile --}}
     <div class="pt-4 mt-4 flex flex-col items-center text-center">
-        <img src="{{ asset('images/risma-cantik.jpg') }}"
-             alt="Foto Risma Cantik"
-             class="profile-image" />
+        <img src="{{ $user->profile_photo ? Storage::url($user->profile_photo) : asset('images/risma-cantik.jpg') }}"
+             alt="Foto Profil {{ $user->name }}"
+             class="profile-image w-32 h-32 rounded-full object-cover border-4 border-gray-300" />
     </div>
 
     {{-- personal information --}}

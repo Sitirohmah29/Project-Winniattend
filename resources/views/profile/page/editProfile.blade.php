@@ -12,7 +12,7 @@
 </head>
 <body class="py-8 px-8 grid gap-8">
     <div class="page-title-container">
-        <i class="fa-solid fa-chevron-left" page-title-back onclick="window.location.href='{{url('/indexProfile')}}'"></i>
+        <i class="fa-solid fa-chevron-left cursor-pointer hover:text-blue-600" page-title-back onclick="window.location.href='{{url('/indexProfile')}}'"></i>
         <h2 class="text-title text-center w-full">Edit Profil</h2>
     </div>
 
@@ -39,9 +39,10 @@
 
         <div class="flex justify-center items-center">
             <div class="flex relative w-fit mt-10">
-                <img id="profile_preview" src="{{ $user->profile_photo ? Storage::url($user->profile_photo) : asset('images/risma-cantik.jpg') }}"
-                alt="Foto Profil"
-                class="profile-image w-32 h-32 rounded-full object-cover border-4 border-gray-300" />
+                <img id="profile_preview"
+                     src="{{ $user->profile_photo ? Storage::url($user->profile_photo) : asset('images/risma-cantik.jpg') }}"
+                     alt="Foto Profil"
+                     class="profile-image w-32 h-32 rounded-full object-cover border-4 border-gray-300" />
 
                 <label for="profile_photo" class="fa-solid fa-pen-to-square absolute bottom-1 right-1 p-2 bg-blue-500 text-white rounded-full cursor-pointer hover:bg-blue-600 transition-colors">
                     <input type="file"
@@ -88,5 +89,36 @@
             <button class="long-button" type="submit">Simpan</button>
         </div>
     </form>
+
+    <script>
+        function loadFile(event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById('profile_preview');
+
+            if (file) {
+                // Validasi ukuran file (max 2MB)
+                if (file.size > 2048 * 1024) {
+                    alert('Ukuran file terlalu besar. Maksimal 2MB.');
+                    event.target.value = '';
+                    return;
+                }
+
+                // Validasi tipe file
+                const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
+                if (!allowedTypes.includes(file.type)) {
+                    alert('Tipe file tidak didukung. Gunakan JPEG, PNG, JPG, atau GIF.');
+                    event.target.value = '';
+                    return;
+                }
+
+                // Preview gambar
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
 </body>
 </html>

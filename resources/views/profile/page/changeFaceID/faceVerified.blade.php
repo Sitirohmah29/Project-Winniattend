@@ -14,7 +14,7 @@
 <body class="container justify-center">
     {{-- information page --}}
     <div class="page-title-container">
-        <i class="fa-solid fa-chevron-left" page-title-back
+        <i class="fa-solid fa-chevron-left cursor-pointer hover:text-blue-600" page-title-back
         onclick="window.location.href='{{url('/changeFace')}}'"></i>
         <h2 class="text-title text-center w-full">Face Verification</h2>
     </div>
