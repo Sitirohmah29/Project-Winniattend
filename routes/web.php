@@ -3,11 +3,11 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\FaceRegistrationController;
 use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\ProfileController;
 
-//MOBILE
-// Auth routes (no change)
+
 Route::get('/', [AuthController::class, 'splash'])->name('splash');
 Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('login', [AuthController::class, 'login'])->name('login.attempt');
@@ -23,10 +23,11 @@ Route::get('/new-pw', [AuthController::class, 'newPassword'])->name('new.passwor
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/dashboard', fn () => view('pwa.dashboard'))->name('Dashboard');
 
+
     //Page profile route
     Route::get('/indexProfile', [ProfileController::class, 'showMainProfile'])->name('profile.index');
-    Route::get('/personInfo', [ProfileController::class, 'showPersonalInfo'])->name('Personal Information');
 
+    Route::get('/personInfo', [ProfileController::class, 'showPersonalInfo'])->name('Personal Information');
     Route::get('/editProfile', [ProfileController::class, 'showEditProfile'])->name('profile.show');
     Route::put('/editProfile', [ProfileController::class, 'updatePersonalInfo'])->name('profile.update');
 
@@ -34,19 +35,20 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/changePw', [PasswordController::class, 'changePassword'])->name('Change.Password');
     Route::post('/changePw', [PasswordController::class, 'updatePassword'])->name('Update.password');
 
-
-    Route::get('/changeFace', [AuthController::class, 'changeFaceID'])->name('Change Face ID');
-    Route::get('/faceVerified', [AuthController::class, 'faceVerification'])->name('Face Verification');
-    Route::get('/indexReport', [AuthController::class, 'report'])->name('Attedance Report');
-    Route::get('/detailsReport', [AuthController::class, 'detailsReportDay'])->name('Details Report');
-    Route::get('/notification', [AuthController::class, 'notify'])->name('notification');
-
-    //checkin
+    // Attendance
     Route::get('/attendance/check-in', [AttendanceController::class, 'showCheckInPage'])->name('attendance.check-in');
-
-    //checkout
     Route::get('/attendance/check-out', [AttendanceController::class, 'showCheckOutPage'])->name('attendance.check-out');
     Route::post('/attendance/check-out', [AttendanceController::class, 'clockCheckOut'])->name('attendance.realtime');
+    Route::get('/attendance/face-verification', [AttendanceController::class, 'showFaceVerificationPage'])->name('attendance.face-verification');
+    Route::post('/attendance/face-verification', [AttendanceController::class, 'faceCheckIn'])->name('attendance.face-check-in');
+    Route::post('/attendance/face-verification', [AttendanceController::class, 'faceVerificationAbsen']);
+
+    // Face Verification (handled by FaceRegistrationController)
+    Route::get('/face-verification', [FaceRegistrationController::class, 'index'])->name('face-verification.index');
+    Route::post('/face-verification/capture', [FaceRegistrationController::class, 'capture'])->name('face-verification.capture');
+    Route::get('/face-verification/history', [FaceRegistrationController::class, 'history'])->name('face-verification.history');
+    Route::delete('/face-verification/{id}', [FaceRegistrationController::class, 'destroy'])->name('face-verification.destroy');
+    Route::get('/face-verification/statistics', [FaceRegistrationController::class, 'statistics'])->name('face-verification.statistics');
 
 
     Route::get('/face-verification', [AttendanceController::class, 'showfaceVerificationPage'])->name('verification.face-verification');
@@ -54,5 +56,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
 });
 
 
-//WEB
-Route::get('/signIn', fn () => view('management_system.signIn'))->name('signin');
+// //WEB
+// Route::get('/signIn', fn () => view('management_system.signIn'))->name('signin');
+
+//     // (Optional) If you still need these for admin or advanced features, keep them:
+//     // Route::get('/face-verification/status', [AttendanceController::class, 'getFaceVerificationStatus'])->name('face.verification.status');
+//     // Route::post('/face-verification/reset', [AttendanceController::class, 'resetFaceVerification'])->name('face.verification.reset');
+//     // Route::get('/face-verification/status/{userId}', [AttendanceController::class, 'getFaceVerificationStatus'])->name('face.verification.status.user')->middleware('can:view-users');
+// });
+

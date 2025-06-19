@@ -24,7 +24,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
 </head>
 
-<body class="container font-poppins">
+<body class="container bg-white font-poppins">
     <div
     x-data="{
         showForm: true,
@@ -39,9 +39,9 @@
     }"
 
         @scroll.window="handleScroll()"
-        class="flex flex-col items-center justify-center min-h-screen p-6 relative overflow-hidden"
+        class="flex flex-col items-center justify-center min-h-screen p-6 relative overflow-hidden bg-white"
     >
-        <div class="flex flex-col items-center justify-center flex-1 text-center w-full max-w-md fixed">
+        <div class="flex flex-col items-center justify-center flex-1 text-center w-full max-w-full fixed bg-white">
             <!-- Logo -->
             <div :class="showForm ? 'transform -translate-y-10 scale-100 transition-all duration-500' : 'mt-2 transition-all duration-500'">
                 <img src="{{ asset('images/logo.png') }}" alt="WinniCode Garuda Teknologi Logo" class="w-70" />
@@ -113,7 +113,7 @@
                         </span>
                     </div>
 
-                    <button class="long-button mt-30">
+                    <button class="long-button mt-10">
                         Next
                     </button>
                 </form>

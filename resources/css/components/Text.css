@@ -1,5 +1,5 @@
 .text-big {
-    @apply text-2xl font-bold;
+    @apply text-xl font-semibold;
 }
 
 .text-title2 {

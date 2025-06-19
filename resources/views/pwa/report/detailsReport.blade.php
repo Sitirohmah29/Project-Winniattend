@@ -19,17 +19,18 @@
      {{-- information page --}}
      <div class="page-title-container">
         <i class="fa-solid fa-chevron-left cursor-pointer hover:text-blue-600" page-title-back
+
         onclick="window.location.href='{{url('/indexReport')}}'"></i>
         <h2 class="text-title text-center w-full">01 Feb Monday</h2>
     </div>
 
     {{-- Details Report --}}
-    <div class=" bg-white shadow  px-4 rounded-md">
-        <p class="text-xl font-semibold text-blue-600 mb-2"> Details </p>
+    <div class=" bg-white shadow rounded-md">
+        <p class="text-xl font-semibold text-blue-600 mb-2 ml-5"> Details </p>
 
         <div class="w-full space-y-4 ">
             <!-- bagian map -->
-            <div id="map" class="m-5 p-5 rounded-md relative p-10" style="min-height: 200px;">
+            <div id="map" class="grid-con-rounded shadow-2xl" style="min-height: 200px;">
                 <div class="absolute bottom-5 left-2 bg-opacity-90 rounded-md shadow p-3 z-[500] max-w-xs">
                     <h2 class="text-sm font-semibold mb-2">Available</h2>
                     <div class="flex items-start">
