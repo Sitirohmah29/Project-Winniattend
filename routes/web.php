@@ -56,3 +56,17 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
 //WEB
 Route::get('/signIn', fn () => view('management_system.signIn'))->name('signin');
+
+Route::get('/dashboardWeb', fn () => view('management_system.dashboardWeb'))->name('Dashboard');
+Route::get('/notificationWeb', fn () => view('management_system.notificationWeb'))->name('notifications');
+
+Route::get('/indexAttedance', fn () => view('management_system.attedance_management.indexAttedance'))->name('Attedance Management');
+Route::get('/checkinAttedance', fn () => view('management_system.attedance_management.checkinAttedance'))->name('checkin Attedance');
+
+Route::get('/indexManagUser', fn () => view('management_system.user_management.indexManagUser'))->name('User Management');
+
+Route::get('/indexReport', fn () => view('management_system.report_analytics.indexReport'))->name('Report_and_analytics');
+Route::get('/attedanceReport', fn () => view('management_system.report_analytics.attedanceReport'))->name('Attedance Report');
+Route::get('/payrollReport', fn () => view('management_system.report_analytics.payrollReport'))->name('Payroll Report');
+
+Route::get('/indexSecurity', fn () => view('management_system.security_settings.indexSecurity'))->name('Security_and_Settings');
