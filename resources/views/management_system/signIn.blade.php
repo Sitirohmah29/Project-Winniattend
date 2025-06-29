@@ -13,7 +13,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 
-<body class="container-web font-poppins">
+<body class="container-web max-w-screen mx-auto px-4 font-poppins overflow-x-hidden">
     <div class="hero flex flex-row gap-[90px] items-center justify-between">
         <div class="welcome flex-col gap-[20px]">
             <p class="text-gray-500 italic text-3xl">Welcome to the</p>
@@ -21,8 +21,7 @@
             <p class="text-5xl font-bold text-gray-700">Management System</p>
         </div>
 
-        <form>
-        <div class="form w-xl flex flex-col gap-[50px] py-[80px] px-[80px] rounded-2xl shadow-2xl">
+        <div class="form w-xl flex flex-col gap-[50px] py-[40px] px-[70px] rounded-2xl shadow-2xl">
                 <p class="text-5xl text-center text-blue-500 font-bold">Admin Login</p>
 
                     <div class="flex flex-row gap-[15px]">
@@ -42,17 +41,16 @@
                         </div>
 
                         <div class="flex justify-between">
-                            <div class="remember">
+                            <div class="remember flex flex-row gap-3">
                                 <input type="checkbox">
-                                <pc class="text-xl text-gray-400">Remember me</pc>
+                                <p class="text-lg text-gray-400">Remember me</p>
                             </div>
 
-                            <p class="text-xl text-blue-500">Forget password?<span class="text-xl text-red-500"> Click here</span></p>
+                            <p class="text-lg text-blue-500">Forget password?<span class="text-lg text-red-500"> Click here</span></p>
                         </div>
                     </div>
 
-                    <buttonc type="submit" class="p-[10px] w-auto bg-blue-500 text-white font-semibold text-center rounded-md ">Login</buttonc>
-            </form>
+                    <button  class="p-[10px] w-auto  bg-blue-500 hover:bg-pink-500 text-white font-semibold text-center rounded-md " onclick="window.location.href='{{ url('/dashboardWeb') }}'">Login</button>
         </div>
     </div>
 </body>
