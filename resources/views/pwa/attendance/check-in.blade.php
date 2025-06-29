@@ -39,7 +39,7 @@
 
     <!-- Map Section (Static Info Only) -->
     <div id="map" class="w-full h-80 rounded-md relative">
-      <div class="absolute bottom-5 left-2 bg-opacity-90 rounded-md shadow p-3 z-[500] max-w-xs">
+      <div class="absolute bottom-5 left-2 bg-white bg-opacity-90 rounded-md shadow p-3 z-[500] max-w-xs">
         <h2 class="text-sm font-semibold mb-2">Available</h2>
         <div class="flex items-start">
           <div class="flex-shrink-0 mt-1">
@@ -97,24 +97,78 @@
         </button>
       </form>
     </div>
+    
+    <!-- Custom Popup untuk Face ID -->
+    <div id="faceIdPopup" class="popup-overlay fixed inset-0 bg-opacity-50 flex items-center justify-center z-[9999] mb-150" style="display: none;">
+      <div class="popup-content bg-white rounded-lg p-6 max-w-sm mx-4 shadow-xl relative">
+        <div>
+          <div class="mb-4 flex text-center justify-between">
+            <p class="font-bold mb-0 flex-1 pr-3 leading-snug">
+            You haven’t Registered your Face ID yet
+          </p>
+          <!-- Tombol Close -->
+          <button onclick="closeFaceIdPopup()" aria-label="Close popup" 
+            class="text-gray-600 hover:text-gray-900 focus:outline-none text-2xl font-bold rounded-full leading-none">
+            &times;
+          </button>
+        </div>
+        <div class="flex justify-center">
+          <button onclick="redirectToFaceId()" 
+            class="px-6 py-2 bg-blue-500 text-white hover:bg-pink-600 transition-colors font-semibold h-8 w-40 text-xs rounded-3xl shadow-lg ">
+            Regist Now
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Simple Face ID Check -->
   <script>
+    // Fungsi utama untuk cek Face ID
     function checkFaceID() {
       const hasFaceID = localStorage.getItem('face_id');
-
       if (!hasFaceID) {
-        alert("Face ID belum terdaftar. Silakan daftarkan wajah Anda terlebih dahulu.");
-        window.location.href = "{{ url('/face-verification') }}"; // arahkan ke halaman pendaftaran face ID
+        showFaceIdPopup();
       } else {
-        window.location.href = "{{ url('/punch-in/scan') }}"; // arahkan langsung ke halaman presensi
+        window.location.href = "{{ url('/punch-in/scan') }}";
       }
     }
+  
+    // Fungsi untuk menampilkan popup
+    function showFaceIdPopup() {
+      const popup = document.getElementById('faceIdPopup');
+      popup.style.display = 'flex';
+      // Jika ingin animasi, tambahkan class show setelah sedikit delay
+      setTimeout(() => {
+        popup.classList.add('show');
+      }, 10);
+    }
+  
+    // Fungsi untuk redirect ke halaman pendaftaran Face ID
+    function redirectToFaceId() {
+      window.location.href = "{{ url('/face-verification') }}";
+    }
+  
+    // (Opsional) Fungsi untuk menutup popup jika ingin menambahkan tombol close
+    function closeFaceIdPopup() {
+      const popup = document.getElementById('faceIdPopup');
+      popup.classList.remove('show');
+      setTimeout(() => {
+        popup.style.display = 'none';
+      }, 300); // Sesuaikan dengan durasi animasi CSS jika ada
+    }
+    function closeFaceIdPopup() {
+      const popup = document.getElementById('faceIdPopup');
+      popup.classList.remove('show');
+        setTimeout(() => {
+          popup.style.display = 'none';
+        }, 300);
+    }
   </script>
+  
   <!-- Tambahkan di akhir sebelum </body> -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
   document.addEventListener("DOMContentLoaded", function () {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function (position) {
@@ -153,7 +207,6 @@
       alert("Browser tidak mendukung Geolocation.");
     }
   });
-</script>
-
-</body>
+  </script>
+  </body>
 </html>

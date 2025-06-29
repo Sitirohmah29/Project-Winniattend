@@ -35,9 +35,9 @@
             }
         }"
         @scroll.window="handleScroll()"
-        class="flex flex-col items-center justify-center min-h-screen p-6 relative overflow-hidden"
+        class="flex flex-col items-center justify-center min-h-screen p-6 relative overflow-hidden bg-white"
     >
-        <div class="flex flex-col items-center justify-center flex-1 text-center w-full max-w-md">
+        <div class="flex flex-col items-center justify-center flex-1 text-center w-full max-w-full">
             <!-- Logo -->
             <div :class="showForm ? 'transform -translate-y-10 scale-100 transition-all duration-500' : 'mt-10 transition-all duration-500'">
                 <img src="{{ asset('images/logo.png') }}" alt="WinniCode Garuda Teknologi Logo" class="w-50">
@@ -56,7 +56,7 @@
             <!-- Get Started Button -->
             <a
                 href="{{ route('login') }}"
-                class="py-2 px-12 h-8 text-xs text-white transition-colors bg-blue-500 hover:bg-black hover:text-blue-400 rounded-3xl shadow-lg w-55 font-semibold flex items-center justify-center mt-60 block"
+                class="py-2 px-12 h-8 text-xs text-white transition-colors bg-blue-500 hover:bg-black hover:text-blue-400 rounded-3xl shadow-lg w-55 font-semibold flex items-center justify-center mt-60 "
             >
                 Get Started
             </a>
