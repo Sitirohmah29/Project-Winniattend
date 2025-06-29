@@ -67,7 +67,7 @@ Route::get('/face-registration/check', function () {
 //WEB
 Route::get('/signIn', fn () => view('management_system.signIn'))->name('signin');
 
-Route::get('/dashboardWeb', fn () => view('management_system.dashboardWeb'))->name('Dashboard');
+Route::get('/dashboardWeb', fn () => view('management_system.dashboardWeb'))->name('Dashboardweb');
 Route::get('/notificationWeb', fn () => view('management_system.notificationWeb'))->name('notifications');
 
 Route::get('/indexAttedance', fn () => view('management_system.attedance_management.indexAttedance'))->name('Attedance Management');
