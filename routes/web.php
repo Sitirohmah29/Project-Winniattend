@@ -22,7 +22,9 @@ Route::get('/new-pw', [AuthController::class, 'newPassword'])->name('new.passwor
 // Sanctum Protected Routes
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/dashboard', fn () => view('pwa.dashboard'))->name('Dashboard');
-
+    Route::get('/notification', fn () => view('pwa.notification'))->name('Notification');
+    Route::get('/indexReport', fn () => view('pwa.report.indexReport'))->name('indexReport');
+    Route::get('/detailsReport', fn () => view('pwa.report.detailsReport'))->name('');
 
     //Page profile route
     Route::get('/indexProfile', [ProfileController::class, 'showMainProfile'])->name('profile.index');
@@ -39,9 +41,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/attendance/check-in', [AttendanceController::class, 'showCheckInPage'])->name('attendance.check-in');
     Route::get('/attendance/check-out', [AttendanceController::class, 'showCheckOutPage'])->name('attendance.check-out');
     Route::post('/attendance/check-out', [AttendanceController::class, 'clockCheckOut'])->name('attendance.realtime');
-    Route::get('/attendance/face-verification', [AttendanceController::class, 'showFaceVerificationPage'])->name('attendance.face-verification');
-    Route::post('/attendance/face-verification', [AttendanceController::class, 'faceCheckIn'])->name('attendance.face-check-in');
-    Route::post('/attendance/face-verification', [AttendanceController::class, 'faceVerificationAbsen']);
+    Route::post('/attendance/face-verification-checkout', [AttendanceController::class, 'faceVerificationCheckOut'])->name('attendance.face-verification-checkout');
+    Route::get('/attendance/face-verification', [AttendanceController::class, 'showFaceVerificationPage'])->name('attendance.face-verification.show');
+    Route::post('/attendance/face-verification', [AttendanceController::class, 'faceVerificationAbsen'])->name('attendance.face-verification');
+    Route::post('/attendance/permission', [AttendanceController::class, 'setPermission'])->name('attendance.permission');
 
     // Face Verification (handled by FaceRegistrationController)
     Route::get('/face-verification', [FaceRegistrationController::class, 'index'])->name('face-verification.index');
@@ -54,14 +57,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/face-verification', [AttendanceController::class, 'showfaceVerificationPage'])->name('verification.face-verification');
     Route::get('/face-register', [AttendanceController::class, 'faceVerificationPage'])->name('verification.face-register');
 });
+Route::get('/face-registration/check', function () {
+    $registered = \App\Models\FaceRegistration::where('user_id', Auth::id())->exists();
+    return response()->json(['registered' => $registered]);
+})->middleware('auth');
 
-
-// //WEB
-// Route::get('/signIn', fn () => view('management_system.signIn'))->name('signin');
-
-//     // (Optional) If you still need these for admin or advanced features, keep them:
-//     // Route::get('/face-verification/status', [AttendanceController::class, 'getFaceVerificationStatus'])->name('face.verification.status');
-//     // Route::post('/face-verification/reset', [AttendanceController::class, 'resetFaceVerification'])->name('face.verification.reset');
-//     // Route::get('/face-verification/status/{userId}', [AttendanceController::class, 'getFaceVerificationStatus'])->name('face.verification.status.user')->middleware('can:view-users');
-// });
 

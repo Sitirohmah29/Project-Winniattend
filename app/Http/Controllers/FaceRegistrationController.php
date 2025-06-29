@@ -23,9 +23,16 @@ class FaceRegistrationController extends Controller
      */
     public function capture(Request $request)
     {
+        // Cek apakah user sudah pernah register wajah
+    $existing = FaceRegistration::where('user_id', Auth::id())->first();
+    if ($existing) {
+        return response()->json([
+            'success' => false,
+            'message' => 'You have already registered your face.'
+        ], 409);
+    }
         $request->validate([
             'image' => 'required|string',
-            'verification_type' => 'required|in:check_in,check_out',
         ]);
 
         try {
@@ -44,7 +51,8 @@ class FaceRegistrationController extends Controller
             }
 
             // Generate unique filename
-            $fileName = 'face_verification_' . Auth::id() . '_' . time() . '_' . Str::random(10) . '.jpg';
+            $userName = trim(Auth::user()->name); // Ambil nama asli, tanpa underscore
+            $fileName = $userName . '.jpg';
             $filePath = 'face_verifications/' . date('Y/m/d') . '/' . $fileName;
 
             // Create directory if it doesn't exist
@@ -80,8 +88,6 @@ class FaceRegistrationController extends Controller
                 'user_id' => Auth::id(),
                 'image_path' => $filePath,
                 'image_name' => $fileName,
-                'verification_type' => $request->input('verification_type'),
-                'status' => 'verified', // You can set this to 'pending' if you want manual verification
                 'metadata' => $metadata,
                 'captured_at' => now(),
             ]);
@@ -92,7 +98,6 @@ class FaceRegistrationController extends Controller
                 'data' => [
                     'id' => $facerFaceRegistration->id,
                     'image_url' => $facerFaceRegistration->image_url,
-                    'status' => $facerFaceRegistration->status,
                     'captured_at' => $facerFaceRegistration->captured_at->format('Y-m-d H:i:s'),
                 ]
             ]);
@@ -157,8 +162,6 @@ class FaceRegistrationController extends Controller
         
         $stats = [
             'total_verifications' => FaceRegistration::where('user_id', $userId)->count(),
-            'check_in_count' => FaceRegistration::where('user_id', $userId)->byType('check_in')->count(),
-            'check_out_count' => FaceRegistration::where('user_id', $userId)->byType('check_out')->count(),
             'recent_verifications' => FaceRegistration::where('user_id', $userId)->recent(7)->count(),
             'last_verification' => FaceRegistration::where('user_id', $userId)
                 ->latest()

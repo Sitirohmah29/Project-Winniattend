@@ -14,7 +14,7 @@ class User extends Authenticatable
 
 
     protected $fillable = [
-        'name', 'email', 'birth_date', 'phone', 'address', 'password', 'profile_photo', 'is_active',
+        'name', 'email', 'birth_date', 'phone', 'address', 'password', 'profile_photo', 'is_active', 'role', 'email_verified_at'
     ];
 
 
@@ -38,21 +38,13 @@ class User extends Authenticatable
         return asset('images/default-profile.jpg'); // Default image
     }
 
-    public function roles()
-    {
-        return $this->belongsToMany(Role::class, 'user_roles');
-    }
-
+    
     public function attendances()
     {
         return $this->hasMany(Attendance::class);
     }
 
-    public function faceData()
-    {
-        return $this->hasMany(FaceData::class);
-    }
-
+    
     public function payrollreports()
     {
         return $this->hasMany(PayrollReport::class);

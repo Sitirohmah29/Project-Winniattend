@@ -17,14 +17,11 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->string('image_path');
             $table->string('image_name');
-            $table->enum('verification_type', ['check_in', 'check_out'])->default('check_in');
-            $table->enum('status', ['pending', 'verified', 'failed'])->default('pending');
             $table->text('metadata')->nullable(); // Store additional info like image dimensions, file size, etc.
             $table->timestamp('captured_at');
             $table->timestamps();
-
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->index(['user_id', 'verification_type', 'created_at']);
+            $table->index(['user_id',  'created_at']);
         });
 
     }

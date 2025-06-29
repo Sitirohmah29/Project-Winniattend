@@ -4,123 +4,255 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Attendance;
-use App\Models\FaceVerification;
+use App\Models\FaceRegistration;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class AttendanceController extends Controller
 {
-    // Method untuk halaman check-in
+    // Halaman check-in
     public function showCheckInPage()
     {
         return view('pwa.attendance.check-in');
     }
 
-    // Method untuk halaman check-out
+    // Halaman check-out
     public function showCheckOutPage()
     {
         return view('pwa.attendance.check-out');
     }
 
-    // Logic untuk check-out
+    // Logic check-out
     public function clockCheckOut(Request $request)
     {
         $request->validate([
             'checkout_time' => 'required|date_format:Y-m-d H:i:s',
+            'latitude' => 'nullable|numeric',
+            'longitude' => 'nullable|numeric',
         ]);
 
         $attendance = Attendance::where('user_id', auth()->id())
-            ->whereDate('date', now()->toDateString())
+            ->whereDate('check_in', now()->toDateString())
             ->first();
 
         if ($attendance) {
-            $attendance->checkout_time = $request->checkout_time;
-            $attendance->latitude = $request->latitude;
-            $attendance->longitude = $request->longitude;
+            $attendance->check_out = $request->checkout_time;
+            $attendance->check_out_location = $request->latitude && $request->longitude 
+                ? $request->latitude . ',' . $request->longitude 
+                : null;
             $attendance->save();
         }
 
         return redirect()->back()->with('success', 'Check out Successfully!');
     }
 
-    // Method untuk halaman verifikasi wajah
+    // Halaman verifikasi wajah
     public function showfaceVerificationPage()
     {
+        $user = Auth::user();
+        // $faceImages = collect(Storage::allFiles('public/face_verifications'))
+        //     ->filter(function ($file) use ($user) {
+        //         return strtolower(pathinfo($file, PATHINFO_FILENAME)) === strtolower($user->name)
+        //         && in_array(strtolower(pathinfo($file, PATHINFO_EXTENSION)), ['jpg', 'jpeg', 'png']);
+        //     })
+        //     ->map(function ($file) {
+        //         return [
+        //             'name' => pathinfo($file, PATHINFO_FILENAME),
+        //             'path' => Storage::url($file),
+        //         ];
+        //     })
+        //     ->values();
+        $faceImages = FaceRegistration::where('user_id', $user->id)->get()->map(function ($item) {
+            return [
+                'name' => pathinfo($item->image_name, PATHINFO_FILENAME),
+                'path' => Storage::url($item->image_path),
+            ];
+        });
 
-        $users = \App\Models\User::select('name', 'profile_photo')->get();
-        return view('pwa.verification.face-verification', compact('users'));
-
+        return view('pwa.verification.face-verification', compact('faceImages'));
     }
-    
-    // Method untuk halaman registrasi wajah
+
+    // Halaman registrasi wajah
     public function faceVerificationPage()
     {
         return view('pwa.verification.face-register');
     }
 
-public function faceCheckIn(Request $request)
-{
-    $request->validate([
-        'name' => 'required|string'
-    ]);
+    // Proses absen dengan face verification
+    public function faceVerificationAbsen(Request $request)
+    {
+        try {
+            if ($request->isJson()) {
+                $data = $request->json()->all();
+                $request->merge($data);
+            }
 
-    $user = \App\Models\User::where('name', $request->name)->first();
-    if (!$user) {
-        return response()->json(['success' => false, 'message' => 'User not found'], 404);
+            Log::info('Face Verification Request', $request->all());
+
+            $request->validate([
+                'user_id' => 'required|integer|exists:users,id',
+                'latitude' => 'nullable|numeric',
+                'longitude' => 'nullable|numeric',
+            ]);
+
+            $userId = $request->user_id;
+            $today = now()->toDateString();
+
+            // Cek apakah sudah absen hari ini
+            $existingAttendance = Attendance::where('user_id', $userId)
+                ->whereDate('check_in', $today)
+                ->first();
+
+            if ($existingAttendance) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'User has already checked in today',
+                    'data' => $existingAttendance
+                ], 409);
+            }
+
+            // Simpan absen baru
+            $attendance = Attendance::create([
+                'user_id' => $userId,
+                'status' => 'present',
+                'check_in' => now(),
+                'check_in_location' => ($request->latitude && $request->longitude) 
+                    ? $request->latitude . ',' . $request->longitude 
+                    : null,
+                'shift' => 'Shift 1',
+            ]);
+
+            Log::info('Attendance created successfully', [
+                'user_id' => $userId,
+                'attendance_id' => $attendance->id,
+                'location' => $attendance->check_in_location
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Absen berhasil',
+                'data' => [
+                    'id' => $attendance->id,
+                    'user_id' => $userId,
+                    'check_in' => $attendance->check_in,
+                    'location' => $attendance->check_in_location,
+                    'shift' => $attendance->shift,
+                    'status' => $attendance->status
+                ]
+            ]);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            Log::error('Validation error in face verification', ['errors' => $e->errors()]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation error',
+                'errors' => $e->errors()
+            ], 422);
+
+        } catch (\Exception $e) {
+            Log::error('Unexpected error in face verification', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan sistem'
+            ], 500);
+        }
     }
 
-    // Cek apakah sudah absen hari ini
+
+public function faceVerificationCheckOut(Request $request)
+{
+    try {
+        if ($request->isJson()) {
+            $data = $request->json()->all();
+            $request->merge($data);
+        }
+
+        Log::info('Face Verification Check Out Request', $request->all());
+
+        $request->validate([
+            'user_id' => 'required|integer|exists:users,id',
+            'latitude' => 'nullable|numeric',
+            'longitude' => 'nullable|numeric',
+            'checkout_time' => 'required|date_format:Y-m-d H:i:s',
+        ]);
+
+        $userId = $request->user_id;
+        $today = now()->toDateString();
+
+        // Cari attendance hari ini
+        $attendance = Attendance::where('user_id', $userId)
+            ->whereDate('check_in', $today)
+            ->first();
+
+        if (!$attendance) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Belum melakukan check-in hari ini',
+            ], 404);
+        }
+
+        // Update data check out
+        $attendance->check_out = $request->checkout_time;
+        $attendance->check_out_location = ($request->latitude && $request->longitude)
+            ? $request->latitude . ',' . $request->longitude
+            : null;
+        $attendance->status = 'checked_out';
+        $attendance->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Check out berhasil',
+            'data' => [
+                'id' => $attendance->id,
+                'user_id' => $userId,
+                'check_out' => $attendance->check_out,
+                'location' => $attendance->check_out_location,
+                'status' => $attendance->status
+            ]
+        ]);
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        Log::error('Validation error in face verification check out', ['errors' => $e->errors()]);
+        return response()->json([
+            'success' => false,
+            'message' => 'Validation error',
+            'errors' => $e->errors()
+        ], 422);
+
+    } catch (\Exception $e) {
+        Log::error('Unexpected error in face verification check out', [
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ]);
+        return response()->json([
+            'success' => false,
+            'message' => 'Terjadi kesalahan sistem'
+        ], 500);
+    }
+}
+
+public function setPermission(Request $request)
+{
+    $userId = Auth::id();
     $today = now()->toDateString();
-    $attendance = \App\Models\Attendance::firstOrCreate(
-        ['user_id' => $user->id, 'punch_in' => $today],
-        [
-            'user_roles_id' => $user->roles()->first()?->id,
-            'status' => 'present',
-            'punch_in' => now(),
-            'shift' => null,
-        ]
+
+    $attendance = Attendance::firstOrCreate(
+        ['user_id' => $userId, 'check_in' => $today],
+        ['shift' => 'Shift 1']
     );
+
+    $attendance->permission = true;
+    $attendance->save();
 
     return response()->json([
         'success' => true,
-        'message' => 'Absen berhasil',
-        'data' => $attendance
-    ]);
-    
-}
-
-public function faceVerificationAbsen(Request $request)
-{
-    $request->validate([
-        'name' => 'required|string',
-        'latitude' => 'nullable|numeric',
-        'longitude' => 'nullable|numeric',
-    ]);
-
-    $user = \App\Models\User::where('name', $request->name)->first();
-    if (!$user) {
-        return response()->json(['success' => false, 'message' => 'User not found'], 404);
-    }
-
-    $today = now()->toDateString();
-    $attendance = \App\Models\Attendance::firstOrCreate(
-        ['user_id' => $user->id, 'punch_in' => $today],
-        [
-            'user_roles_id' => $user->roles()->first()?->id,
-            'status' => 'present',
-            'punch_in' => now(),
-            'punch_in_location' => $request->latitude && $request->longitude ? $request->latitude . ',' . $request->longitude : null,
-            'shift' => null,
-        ]
-    );
-
-    return response()->json([
-        'success' => true,
-        'message' => 'Absen berhasil',
+        'message' => 'Permission berhasil dicatat',
         'data' => $attendance
     ]);
 }
 
-  
 }

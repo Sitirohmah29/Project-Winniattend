@@ -52,7 +52,7 @@
     </style>
 </head>
 <body class="bg-white font-poppins">
-    <div class="max-w-md mx-auto bg-white min-h-screen shadow-sm relative justify-center">
+    <div class="max-w-full mx-auto bg-white min-h-screen shadow-sm relative justify-center">
         <!-- Header -->
         <header class="px-6 py-4 relative flex items-center">
             <a href="{{url('/attendance/check-in')}}" class="absolute left-6">
@@ -107,7 +107,19 @@
 
     <!-- JavaScript for camera activation and capture -->
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async() => {
+            try {
+        const res = await fetch('/api/face-registration/check', { headers: { 'Accept': 'application/json' } });
+        const data = await res.json();
+        if (data.registered) {
+            window.location.href = '/attendance/face-verification';
+            return;
+        }
+    } catch (e) {
+        console.error('Error checking face registration:', e);
+        showStatus('Failed to check face registration. Please try again.', 'error');
+        return;
+    }
             const video = document.getElementById('cameraFeed');
             const canvas = document.getElementById('captureCanvas');
             const captureBtn = document.getElementById('captureBtn');

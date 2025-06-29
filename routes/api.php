@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\FaceRegistrationController;
+use App\Models\FaceRegistration;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -26,3 +27,9 @@ Route::middleware(['auth', 'web'])->prefix('api')->group(function () {
     Route::get('/face/status', [FaceRegistrationController::class, 'status']);
     Route::delete('/face/registration', [FaceRegistrationController::class, 'delete']);
 });
+Route::middleware('auth:sanctum')->get('/face-registration/check', function () {
+    $registered = FaceRegistration::where('user_id', Auth::id())->exists();
+    return response()->json(['registered' => $registered]);
+});
+
+Route::middleware('auth:sanctum')->post('/attendance/face-verification', [AttendanceController::class, 'faceVerificationAbsen']);

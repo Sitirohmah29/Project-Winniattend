@@ -22,8 +22,8 @@ return new class extends Migration
             $table->string('profile_photo')->nullable();
             $table->boolean('is_active')->default(1);
             $table->dateTime('email_verified_at')->nullable();
-            $table->dateTime('created_at')->nullable();
-            $table->dateTime('updated_at')->nullable();
+            $table->enum('role', ['admin', 'karyawan'])->default('karyawan');
+            $table->timestamps();
         });
     }
 

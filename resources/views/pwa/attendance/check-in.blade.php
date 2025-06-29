@@ -126,13 +126,22 @@
   <script>
     // Fungsi utama untuk cek Face ID
     function checkFaceID() {
-      const hasFaceID = localStorage.getItem('face_id');
-      if (!hasFaceID) {
-        showFaceIdPopup();
+  fetch('/face-registration/check', {
+    headers: { 'Accept': 'application/json' }
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.registered) {
+        window.location.href = "{{ url('/attendance/face-verification') }}";
       } else {
-        window.location.href = "{{ url('/punch-in/scan') }}";
+        showFaceIdPopup();
       }
-    }
+    })
+    .catch(() => {
+      // Jika error, tetap tampilkan popup
+      showFaceIdPopup();
+    });
+}
   
     // Fungsi untuk menampilkan popup
     function showFaceIdPopup() {
@@ -146,7 +155,7 @@
   
     // Fungsi untuk redirect ke halaman pendaftaran Face ID
     function redirectToFaceId() {
-      window.location.href = "{{ url('/face-verification') }}";
+      window.location.href = "{{ url('/face-register') }}";
     }
   
     // (Opsional) Fungsi untuk menutup popup jika ingin menambahkan tombol close

@@ -14,10 +14,10 @@ return new class extends Migration
          Schema::create('attendance_reports', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->integer('working_days');
-            $table->string('total_overtime'); // Total Overtime (e.g. "8 hours")
-            $table->string('total_work_duration'); // Total Work Duration (e.g. "176 hours")
-            $table->string('month'); // e.g. "January"
+            $table->integer('working_days')->nullable(); // Total Working Days
+            $table->string('total_overtime')->nullable(); // Total Overtime (e.g. "8 hours")
+            $table->string('total_work_duration')->nullable(); // Total Work Duration (e.g. "176 hours")
+            $table->string('month')->nullable(); // e.g. "January"
             $table->timestamps();
         });
     }

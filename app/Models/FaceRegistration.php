@@ -15,8 +15,6 @@ class FaceRegistration extends Model
         'user_id',
         'image_path',
         'image_name',
-        'verification_type',
-        'status',
         'metadata',
         'captured_at',
     ];
@@ -42,21 +40,6 @@ class FaceRegistration extends Model
         return asset('storage/' . $this->image_path);
     }
 
-    /**
-     * Scope to get verifications by type.
-     */
-    public function scopeByType($query, $type)
-    {
-        return $query->where('verification_type', $type);
-    }
-
-    /**
-     * Scope to get verifications by status.
-     */
-    public function scopeByStatus($query, $status)
-    {
-        return $query->where('status', $status);
-    }
 
     /**
      * Scope to get recent verifications.

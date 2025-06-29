@@ -86,7 +86,7 @@
         <input type="hidden" name="in_allowed_range" value="0" />
         <input type="hidden" name="checkout_time" id="checkout_time"/>
 
-        <button type="button" id="scanFaceBtn" onclick="showCheckOutPopup()" class="w-32 h-32 flex items-center justify-center hover:scale-105 transition-transform duration-200">
+        <button type="button" id="scanFaceBtn" onclick="doFaceCheckOut()" class="w-32 h-32 flex items-center justify-center hover:scale-105 transition-transform duration-200">
           <div class="flex items-center justify-center">
             <svg
               width="123"
@@ -214,6 +214,37 @@
         popup.classList.add('show');
       }, 10);
     }
+
+    function doFaceCheckOut() {
+    // Ambil data dari form
+    const userId = {{ Auth::id() }};
+    const latitude = document.querySelector('input[name="latitude"]').value;
+    const longitude = document.querySelector('input[name="longitude"]').value;
+    const checkout_time = document.getElementById('checkout_time').value;
+
+    fetch('{{ route("attendance.face-verification-checkout") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({
+            user_id: userId,
+            latitude: latitude,
+            longitude: longitude,
+            checkout_time: checkout_time
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showCheckOutPopup();
+        } else {
+            alert(data.message || 'Check out gagal!');
+        }
+    })
+    .catch(() => alert('Gagal mengirim data check out!'));
+}
 
 //logic close pop up
     function closePopup() {

@@ -110,39 +110,85 @@
         </button>
 
         {{-- modal permission pop up --}}
-        <script>
-            function showPermissionPopUp() {
-                const now = new Date();
-                const pad = n => n.toString().padStart(2, '0');
-                const tanggal = `${pad(now.getDate())}-${pad(now.getMonth() + 1)}-${now.getFullYear()}`;
+     
 
-                // Update tanggal di popup
-                document.getElementById('permissionDate').textContent = tanggal;
+<script>
+function showPermissionPopUp() {
+    // Tampilkan tanggal hari ini di popup
+    const now = new Date();
+    const pad = n => n < 10 ? '0' + n : n;
+    const tanggal = `${pad(now.getDate())}-${pad(now.getMonth() + 1)}-${now.getFullYear()}`;
+    document.getElementById('permissionDate').textContent = tanggal;
 
-                // Tampilkan popup
-                const popup = document.getElementById('permissionPopUp');
-                popup.style.display = 'flex';
-                setTimeout(() => {
-                    popup.classList.add('show');
-                }, 10);
-            }
+    const popup = document.getElementById('permissionPopUp');
+    popup.style.display = 'flex';
+    setTimeout(() => {
+        popup.classList.add('show');
+    }, 10);
+}
 
-            function closePermissionPopUp() {
-                const popup = document.getElementById('permissionPopUp');
-                popup.classList.remove('show');
-                setTimeout(() => {
-                    popup.style.display = 'none';
-                }, 300);
-            }
+function submitPermission() {
+    fetch('{{ route("attendance.permission") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({})
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            closePermissionPopUp();
+            showPermissionSuccessPopUp();
+        } else {
+            alert('Gagal mencatat permission!');
+        }
+    });
+}
 
-            // Tutup popup dengan tombol ESC
-            document.addEventListener('keydown', e => {
-                if (e.key === 'Escape') {
-                    closePermissionPopUp();
-                }
-            });
-            </script>
+function closePermissionPopUp() {
+    const popup = document.getElementById('permissionPopUp');
+    popup.classList.remove('show');
+    setTimeout(() => {
+        popup.style.display = 'none';
+    }, 300);
+}
+
+// Popup sukses permission
+function showPermissionSuccessPopUp() {
+    const popup = document.getElementById('permissionSuccessPopUp');
+    popup.style.display = 'flex';
+    setTimeout(() => {
+        popup.classList.add('show');
+    }, 10);
+}
+function closePermissionSuccessPopUp() {
+    const popup = document.getElementById('permissionSuccessPopUp');
+    popup.classList.remove('show');
+    setTimeout(() => {
+        popup.style.display = 'none';
+    }, 300);
+}
+
+// Tutup popup dengan tombol ESC
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+        closePermissionPopUp();
+        closePermissionSuccessPopUp();
+    }
+});
+</script>
+
+<div id="permissionSuccessPopUp" class="popup-overlay fixed inset-0 bg-opacity-50 flex items-center justify-center z-[9999]" style="display: none;">
+    <div class="popup-content bg-white rounded-lg p-6 max-w-sm mx-4 shadow-xl text-center">
+        <i class="fa-solid fa-circle-check text-4xl text-green-500 mb-3"></i>
+        <p class="text-gray-800 mb-3 font-poppins font-semibold">Permission berhasil dicatat!</p>
+        <button onclick="closePermissionSuccessPopUp()" class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-pink-600 transition-colors font-semibold font-poppins mt-2">
+            Tutup
+        </button>
     </div>
+</div>
 
     <div id="permissionPopUp" class="popup-overlay fixed inset-0  bg-opacity-50 flex items-center justify-center z-[9999]" style="display: none;">
         <div class="popup-content bg-white rounded-lg p-6 max-w-sm mx-4 shadow-xl">
@@ -153,7 +199,7 @@
                     <p id="permissionDate" class="text-xl font-bold text-blue-500 font-poppins"></p>
                 </div>
                 <div class="flex justify-center gap-4">
-                    <button id="closePermissionBtn" onclick="closePermissionPopUp()" class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-pink-600 transition-colors font-semibold font-poppins" aria-label="Konfirmasi Izin">
+                    <button id="closePermissionBtn" onclick="submitPermission()" class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-pink-600 transition-colors font-semibold font-poppins" aria-label="Konfirmasi Izin">
                         OK
                     </button>
                 </div>
