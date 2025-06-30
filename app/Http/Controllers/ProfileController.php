@@ -10,12 +10,14 @@ use Illuminate\Support\Facades\Log;
 
 class ProfileController extends Controller
 {
-    public function showMainProfile(){
+    public function showMainProfile()
+    {
         $user = Auth::user();
         return view('profile.indexProfile', compact('user'));
     }
 
-    public function showEditProfile() {
+    public function showEditProfile()
+    {
         $user = Auth::user();
         return view('profile.page.editProfile', compact('user'));
     }
@@ -26,7 +28,7 @@ class ProfileController extends Controller
             $user = Auth::user();
 
             $request->validate([
-                'name' => 'required|string|max:255',
+                'fullname' => 'required|string|max:255',
                 'birth_date' => 'required|date',
                 'phone' => 'required|string|max:255',
                 'address' => 'required|string|max:255',
@@ -34,7 +36,7 @@ class ProfileController extends Controller
             ]);
 
             $data = [
-                'name' => $request->name,
+                'fullname' => $request->name,
                 'birth_date' => $request->birth_date,
                 'phone' => $request->phone,
                 'address' => $request->address,
@@ -77,14 +79,14 @@ class ProfileController extends Controller
             Log::info('User profile updated for user ID: ' . $user->id);
 
             return redirect()->route('profile.index')->with('success', 'Profil berhasil diperbarui.');
-
         } catch (\Exception $e) {
             Log::error('Error updating profile: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Terjadi kesalahan saat memperbarui profil: ' . $e->getMessage());
         }
     }
 
-    public function showPersonalInfo() {
+    public function showPersonalInfo()
+    {
         $user = Auth::user();
         return view('profile.page.personInfo', compact('user'));
     }

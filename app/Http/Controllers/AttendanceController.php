@@ -114,7 +114,7 @@ class AttendanceController extends Controller
 
             // Cek apakah sudah absen hari ini
             $existingAttendance = Attendance::where('user_id', $userId)
-                ->whereDate('check_in', $today)
+                ->where('date', $today)
                 ->first();
 
             if ($existingAttendance) {
@@ -133,12 +133,12 @@ class AttendanceController extends Controller
 
             $attendance = Attendance::create([
                 'user_id' => $userId,
-                'status' => 'present',
-                'check_in' => now(),
+                'date' => now()->toDateString(),
+                'status' => 'onTime',
+                'check_in' => now()->format('H:i:s'),
                 'check_in_location' => $locationName,
                 'latitude' => $request->latitude,
                 'longitude' => $request->longitude,
-                'shift' => 'Shift 1',
             ]);
 
             Log::info('Attendance created successfully', [
@@ -155,7 +155,6 @@ class AttendanceController extends Controller
                     'user_id' => $userId,
                     'check_in' => $attendance->check_in,
                     'location' => $attendance->check_in_location,
-                    'shift' => $attendance->shift,
                     'status' => $attendance->status
                 ]
             ]);
@@ -201,7 +200,7 @@ class AttendanceController extends Controller
 
             // Cari attendance hari ini
             $attendance = Attendance::where('user_id', $userId)
-                ->whereDate('check_in', $today)
+                ->where('date', $today)
                 ->first();
 
             if (!$attendance) {
@@ -211,17 +210,19 @@ class AttendanceController extends Controller
                 ], 404);
             }
 
+
             // Update data check out
             $locationName = null;
             if ($request->latitude && $request->longitude) {
                 $locationName = $this->getLocationName($request->latitude, $request->longitude);
             }
 
-            $attendance->check_out = $request->checkout_time;
+            // Gunakan waktu dari request (checkout_time) atau waktu server
+            $attendance->check_out = Carbon::parse($request->checkout_time)->format('H:i:s');
             $attendance->check_out_location = $locationName;
             $attendance->latitude = $request->latitude;
             $attendance->longitude = $request->longitude;
-            $attendance->status = 'checked_out';
+            // Jangan update status ke 'checked_out', biarkan tetap 'onTime' atau 'Late'
             $attendance->save();
 
             return response()->json([
@@ -259,8 +260,10 @@ class AttendanceController extends Controller
         $userId = Auth::id();
         $today = now()->toDateString();
 
+        // Cari atau buat attendance berdasarkan user_id dan date (BUKAN check_in)
         $attendance = Attendance::firstOrCreate(
-            ['user_id' => $userId, 'check_in' => $today],
+            ['user_id' => $userId, 'date' => $today],
+            // Tambahkan default value lain jika perlu, misal shift
             ['shift' => 'Shift 1']
         );
 
