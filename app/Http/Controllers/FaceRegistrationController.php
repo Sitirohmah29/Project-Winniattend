@@ -15,7 +15,6 @@ class FaceRegistrationController extends Controller
     {
         $users = \App\Models\User::select('name', 'profile_photo')->get();
         return view('pwa.verification.face-register', compact('users'));
-    
     }
 
     /**
@@ -24,13 +23,13 @@ class FaceRegistrationController extends Controller
     public function capture(Request $request)
     {
         // Cek apakah user sudah pernah register wajah
-    $existing = FaceRegistration::where('user_id', Auth::id())->first();
-    if ($existing) {
-        return response()->json([
-            'success' => false,
-            'message' => 'You have already registered your face.'
-        ], 409);
-    }
+        $existing = FaceRegistration::where('user_id', Auth::id())->first();
+        if ($existing) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You have already registered your face.'
+            ], 409);
+        }
         $request->validate([
             'image' => 'required|string',
         ]);
@@ -38,7 +37,7 @@ class FaceRegistrationController extends Controller
         try {
             // Get the base64 image data
             $imageData = $request->input('image');
-            
+
             // Remove data:image/jpeg;base64, part
             $imageData = preg_replace('#^data:image/\w+;base64,#i', '', $imageData);
             $imageData = base64_decode($imageData);
@@ -51,7 +50,7 @@ class FaceRegistrationController extends Controller
             }
 
             // Generate unique filename
-            $userName = trim(Auth::user()->name); // Ambil nama asli, tanpa underscore
+            $userName = trim(Auth::user()->fullname); // Ambil nama asli, tanpa underscore
             $fileName = $userName . '.jpg';
             $filePath = 'face_verifications/' . date('Y/m/d') . '/' . $fileName;
 
@@ -101,7 +100,6 @@ class FaceRegistrationController extends Controller
                     'captured_at' => $facerFaceRegistration->captured_at->format('Y-m-d H:i:s'),
                 ]
             ]);
-
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -159,7 +157,7 @@ class FaceRegistrationController extends Controller
     public function statistics()
     {
         $userId = Auth::id();
-        
+
         $stats = [
             'total_verifications' => FaceRegistration::where('user_id', $userId)->count(),
             'recent_verifications' => FaceRegistration::where('user_id', $userId)->recent(7)->count(),
