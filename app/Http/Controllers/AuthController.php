@@ -19,9 +19,10 @@ class AuthController extends Controller
          return view('pwa.auth.login');
     }
 
-    public function notify(){
-        return view('pwa.notification');
+    public function showAdminLoginForm () {
+        return view('management_system.signIn');
     }
+
     public function login(Request $request)
     {
         $request->validate([
@@ -51,6 +52,9 @@ class AuthController extends Controller
         return redirect()->intended('dashboard');
     }
 
+    public function notify(){
+        return view('pwa.notification');
+    }
 
     public function changeFaceID() {
         return view('profile.page.changeFaceID.changeFace');
@@ -68,7 +72,7 @@ class AuthController extends Controller
         return view('pwa.report.detailsReport');
     }
 
-
+    //logout
     public function logout(Request $request)
     {
         Auth::logout();
@@ -79,6 +83,7 @@ class AuthController extends Controller
         return redirect('/');
     }
 
+    //forgot password
     public function showForgotPasswordForm()
     {
         return view('pwa.forgot-password.forgot-password');

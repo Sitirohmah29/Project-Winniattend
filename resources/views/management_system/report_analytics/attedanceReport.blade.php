@@ -23,7 +23,7 @@
                 <div class="dashboard flex flex-row gap-2 items-center" onclick="window.location.href='{{ url('/dashboardWeb')}}'">
                     <svg width="20" height="18" viewBox="0 0 25 23" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M0.6875 2.90625C0.6875 2.28465 0.954185 1.68851 1.42889 1.24897C1.90359 0.80943 2.54742 0.5625 3.21875 0.5625H8.28125C8.95258 0.5625 9.59641 0.80943 10.0711 1.24897C10.5458 1.68851 10.8125 2.28465 10.8125 2.90625V7.59375C10.8125 8.21535 10.5458 8.81149 10.0711 9.25103C9.59641 9.69057 8.95258 9.9375 8.28125 9.9375H3.21875C2.54742 9.9375 1.90359 9.69057 1.42889 9.25103C0.954185 8.81149 0.6875 8.21535 0.6875 7.59375V2.90625ZM14.1875 2.90625C14.1875 2.28465 14.4542 1.68851 14.9289 1.24897C15.4036 0.80943 16.0474 0.5625 16.7188 0.5625H21.7812C22.4526 0.5625 23.0964 0.80943 23.5711 1.24897C24.0458 1.68851 24.3125 2.28465 24.3125 2.90625V7.59375C24.3125 8.21535 24.0458 8.81149 23.5711 9.25103C23.0964 9.69057 22.4526 9.9375 21.7812 9.9375H16.7188C16.0474 9.9375 15.4036 9.69057 14.9289 9.25103C14.4542 8.81149 14.1875 8.21535 14.1875 7.59375V2.90625ZM0.6875 15.4062C0.6875 14.7846 0.954185 14.1885 1.42889 13.749C1.90359 13.3094 2.54742 13.0625 3.21875 13.0625H8.28125C8.95258 13.0625 9.59641 13.3094 10.0711 13.749C10.5458 14.1885 10.8125 14.7846 10.8125 15.4062V20.0938C10.8125 20.7154 10.5458 21.3115 10.0711 21.751C9.59641 22.1906 8.95258 22.4375 8.28125 22.4375H3.21875C2.54742 22.4375 1.90359 22.1906 1.42889 21.751C0.954185 21.3115 0.6875 20.7154 0.6875 20.0938V15.4062ZM14.1875 15.4062C14.1875 14.7846 14.4542 14.1885 14.9289 13.749C15.4036 13.3094 16.0474 13.0625 16.7188 13.0625H21.7812C22.4526 13.0625 23.0964 13.3094 23.5711 13.749C24.0458 14.1885 24.3125 14.7846 24.3125 15.4062V20.0938C24.3125 20.7154 24.0458 21.3115 23.5711 21.751C23.0964 22.1906 22.4526 22.4375 21.7812 22.4375H16.7188C16.0474 22.4375 15.4036 22.1906 14.9289 21.751C14.4542 21.3115 14.1875 20.7154 14.1875 20.0938V15.4062Z" fill="#6D6D6D"/>
-                        </svg>
+                    </svg>
 
                     <button class="text-gray-500 text-sm">Dashboard</button>
                 </div>
@@ -51,7 +51,6 @@
                     <svg width="20" height="20" viewBox="0 0 25 19" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M23.4375 18.875C23.4375 18.875 25 18.875 25 17.3125C25 15.75 23.4375 11.0625 17.1875 11.0625C10.9375 11.0625 9.375 15.75 9.375 17.3125C9.375 18.875 10.9375 18.875 10.9375 18.875H23.4375ZM10.9719 17.3125C10.9603 17.3109 10.9489 17.3088 10.9375 17.3062C10.9391 16.8938 11.1984 15.6969 12.125 14.6187C12.9875 13.6078 14.5031 12.625 17.1875 12.625C19.8703 12.625 21.3859 13.6094 22.25 14.6187C23.1766 15.6969 23.4344 16.8953 23.4375 17.3062L23.425 17.3094C23.4177 17.3106 23.4104 17.3116 23.4031 17.3125H10.9719ZM17.1875 7.9375C18.0163 7.9375 18.8112 7.60826 19.3972 7.02221C19.9833 6.43616 20.3125 5.6413 20.3125 4.8125C20.3125 3.9837 19.9833 3.18884 19.3972 2.60279C18.8112 2.01674 18.0163 1.6875 17.1875 1.6875C16.3587 1.6875 15.5638 2.01674 14.9778 2.60279C14.3917 3.18884 14.0625 3.9837 14.0625 4.8125C14.0625 5.6413 14.3917 6.43616 14.9778 7.02221C15.5638 7.60826 16.3587 7.9375 17.1875 7.9375ZM21.875 4.8125C21.875 5.42807 21.7538 6.03761 21.5182 6.60633C21.2826 7.17504 20.9373 7.69179 20.5021 8.12706C20.0668 8.56234 19.55 8.90762 18.9813 9.14319C18.4126 9.37875 17.8031 9.5 17.1875 9.5C16.5719 9.5 15.9624 9.37875 15.3937 9.14319C14.825 8.90762 14.3082 8.56234 13.8729 8.12706C13.4377 7.69179 13.0924 7.17504 12.8568 6.60633C12.6212 6.03761 12.5 5.42807 12.5 4.8125C12.5 3.5693 12.9939 2.37701 13.8729 1.49794C14.752 0.61886 15.9443 0.125 17.1875 0.125C18.4307 0.125 19.623 0.61886 20.5021 1.49794C21.3811 2.37701 21.875 3.5693 21.875 4.8125ZM10.8375 11.5C10.2125 11.3032 9.56818 11.1738 8.91562 11.1141C8.54896 11.0792 8.18082 11.062 7.8125 11.0625C1.5625 11.0625 0 15.75 0 17.3125C0 18.3547 0.520312 18.875 1.5625 18.875H8.15C7.91837 18.3872 7.80285 17.8524 7.8125 17.3125C7.8125 15.7344 8.40156 14.1219 9.51562 12.775C9.89531 12.3156 10.3375 11.8859 10.8375 11.5ZM7.6875 12.625C6.76274 14.0145 6.26319 15.6435 6.25 17.3125H1.5625C1.5625 16.9062 1.81875 15.7031 2.75 14.6187C3.60156 13.625 5.08125 12.6563 7.6875 12.6266V12.625ZM2.34375 5.59375C2.34375 4.35055 2.83761 3.15826 3.71669 2.27919C4.59576 1.40011 5.78805 0.90625 7.03125 0.90625C8.27445 0.90625 9.46674 1.40011 10.3458 2.27919C11.2249 3.15826 11.7188 4.35055 11.7188 5.59375C11.7188 6.83695 11.2249 8.02924 10.3458 8.90831C9.46674 9.78739 8.27445 10.2812 7.03125 10.2812C5.78805 10.2812 4.59576 9.78739 3.71669 8.90831C2.83761 8.02924 2.34375 6.83695 2.34375 5.59375ZM7.03125 2.46875C6.20245 2.46875 5.40759 2.79799 4.82154 3.38404C4.23549 3.97009 3.90625 4.76495 3.90625 5.59375C3.90625 6.42255 4.23549 7.21741 4.82154 7.80346C5.40759 8.38951 6.20245 8.71875 7.03125 8.71875C7.86005 8.71875 8.65491 8.38951 9.24096 7.80346C9.82701 7.21741 10.1562 6.42255 10.1562 5.59375C10.1562 4.76495 9.82701 3.97009 9.24096 3.38404C8.65491 2.79799 7.86005 2.46875 7.03125 2.46875Z" fill="#6D6D6D"/>
                         </svg>
-
                     <button class="text-gray-500 text-sm">Management User</button>
                 </div>
 
@@ -96,7 +95,7 @@
         </div>
 
         {{-- Content --}}
-        <div class="content flex flex-col gap-6 ml-58 p-6 w-full overflow-y-auto justify-center">
+        <div class="content flex flex-col gap-6 ml-58 p-6 w-full overflow-y-auto justify-center mb-22">
             <!-- Header -->
                 <div class="flex flex-row gap-2 items-center bg-blue-500 text-white p-4 rounded-lg">
                     <button class="text-lg"  onclick="window.location.href='{{ url('/indexReport') }}'">Report & Analytics</button>
@@ -112,23 +111,65 @@
                         <p class="text-black text-xl font-bold">Attedance Report</p>
                     </div>
 
-                    <div x-data="{ open: false, selected: 'January', months: ['Montly-January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] }" class="relative">
-                        <button @click="open = !open" class="flex items-center bg-white rounded-full shadow-md px-4 py-2 cursor-pointer w-[200px] justify-between">
-                            <div class="flex items-center gap-2">
-                                <i class="fa fa-filter text-gray-500"></i>
-                                <span class="italic text-gray-700" x-text="selected"></span>
-                            </div>
-                            <i class="fa fa-chevron-down text-gray-500 text-sm"></i>
-                        </button>
-
-                        <!-- Dropdown List -->
-                        <ul x-show="open" @click.away="open = false" class="absolute mt-2 w-full bg-white border border-gray-200 rounded-md shadow-lg z-10">
-                            <template x-for="month in months" :key="month">
-                                <li @click="selected = month; open = false" class="px-4 py-2 hover:bg-gray-100 cursor-pointer text-gray-700">
-                                    <span x-text="month"></span>
-                                </li>
-                            </template>
-                        </ul>
+                    <!-- FILTER BULAN & TAHUN + EXPORT BUTTON DINAMIS -->
+                    <div x-data="{
+                            openMonth: false,
+                            openYear: false,
+                            months: [
+                                {name: 'January', value: 1},
+                                {name: 'February', value: 2},
+                                {name: 'March', value: 3},
+                                {name: 'April', value: 4},
+                                {name: 'May', value: 5},
+                                {name: 'June', value: 6},
+                                {name: 'July', value: 7},
+                                {name: 'August', value: 8},
+                                {name: 'September', value: 9},
+                                {name: 'October', value: 10},
+                                {name: 'November', value: 11},
+                                {name: 'December', value: 12}
+                            ],
+                            years: Array.from({length: 6}, (_, i) => new Date().getFullYear() - i),
+                            selectedMonth: new Date().getMonth() + 1,
+                            selectedYear: new Date().getFullYear(),
+                        }" class="flex flex-row gap-2 items-center">
+                        <!-- Dropdown Bulan -->
+                        <div class="relative">
+                            <button @click="openMonth = !openMonth" class="flex items-center bg-white rounded-full shadow-md px-4 py-2 cursor-pointer w-[170px] justify-between">
+                                <div class="flex items-center gap-2">
+                                    <i class="fa fa-filter text-gray-500"></i>
+                                    <span class="italic text-gray-700" x-text="months.find(m => m.value === selectedMonth).name"></span>
+                                </div>
+                                <i class="fa fa-chevron-down text-gray-500 text-sm"></i>
+                            </button>
+                            <ul x-show="openMonth" @click.away="openMonth = false" class="absolute mt-2 w-full bg-white border border-gray-200 rounded-md shadow-lg z-10">
+                                <template x-for="month in months" :key="month.value">
+                                    <li @click="selectedMonth = month.value; openMonth = false" class="px-4 py-2 hover:bg-gray-100 cursor-pointer text-gray-700">
+                                        <span x-text="month.name"></span>
+                                    </li>
+                                </template>
+                            </ul>
+                        </div>
+                        <!-- Dropdown Tahun -->
+                        <div class="relative">
+                            <button @click="openYear = !openYear" class="flex items-center bg-white rounded-full shadow-md px-4 py-2 cursor-pointer w-[120px] justify-between">
+                                <span class="italic text-gray-700" x-text="selectedYear"></span>
+                                <i class="fa fa-chevron-down text-gray-500 text-sm"></i>
+                            </button>
+                            <ul x-show="openYear" @click.away="openYear = false" class="absolute mt-2 w-full bg-white border border-gray-200 rounded-md shadow-lg z-10">
+                                <template x-for="year in years" :key="year">
+                                    <li @click="selectedYear = year; openYear = false" class="px-4 py-2 hover:bg-gray-100 cursor-pointer text-gray-700">
+                                        <span x-text="year"></span>
+                                    </li>
+                                </template>
+                            </ul>
+                        </div>
+                        <!-- Tombol Export PDF -->
+                        <a :href="'{{ route('attendance.export') }}?month=' + selectedMonth + '&year=' + selectedYear"
+                           class="ml-4 text-white text-md bg-pink-400 rounded-2xl px-5 py-3 font-semibold shadow-md hover:bg-pink-500 transition"
+                           target="_blank">
+                            <i class="fa fa-file-pdf mr-2"></i> Export
+                        </a>
                     </div>
                 </div>
 
@@ -239,8 +280,6 @@
                         </tbody>
                     </table>
                 </div>
-
-                <button class="ml-145 fixed bottom-0 left-0 right-0 mb-8 w-xs text-white text-md bg-pink-400 rounded-2xl px-5 py-3 font-semibold">Export</button>
         </div>
     </div>
 </body>

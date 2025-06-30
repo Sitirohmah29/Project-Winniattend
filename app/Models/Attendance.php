@@ -8,7 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Attendance extends Model
 {
     use HasFactory;
+    protected $table = 'attendance'; // Ganti sesuai nama tabel di database, misal 'attendance' atau 'attedance'
     protected $fillable = [
+
         'user_id',
         'date',
         'check_in',
@@ -19,6 +21,7 @@ class Attendance extends Model
         'longitude',
         'status',
         'permission'
+
     ];
 
     public function user()
