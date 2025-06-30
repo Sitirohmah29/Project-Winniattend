@@ -13,17 +13,19 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->unsignedBigInteger('role_id');
+            $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
+            $table->string('fullname');
             $table->date('birth_date');
+            $table->enum('shift', ['shift-1', 'shift-2', 'shift-3'])->default('shift-1');
             $table->string('address');
             $table->string('email')->unique();
             $table->string('phone');
             $table->string('password');
             $table->string('profile_photo')->nullable();
             $table->boolean('is_active')->default(1);
-            $table->dateTime('email_verified_at')->nullable();
-            $table->enum('role', ['admin', 'karyawan'])->default('karyawan');
             $table->timestamps();
+            $table->index(['role_id',  'created_at']);
         });
     }
 

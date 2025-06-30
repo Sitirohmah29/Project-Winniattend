@@ -6,7 +6,7 @@ use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\FaceRegistrationController;
 use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\ProfileController;
-
+use App\Http\Controllers\UserController;
 
 Route::get('/', [AuthController::class, 'splash'])->name('splash');
 Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -21,10 +21,10 @@ Route::get('/new-pw', [AuthController::class, 'newPassword'])->name('new.passwor
 
 // Sanctum Protected Routes
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::get('/dashboard', fn () => view('pwa.dashboard'))->name('Dashboard');
-    Route::get('/notification', fn () => view('pwa.notification'))->name('Notification');
-    Route::get('/indexReport', fn () => view('pwa.report.indexReport'))->name('indexReport');
-    Route::get('/detailsReport', fn () => view('pwa.report.detailsReport'))->name('');
+    Route::get('/dashboard', fn() => view('pwa.dashboard'))->name('Dashboard');
+    Route::get('/notification', fn() => view('pwa.notification'))->name('Notification');
+    Route::get('/indexReport', fn() => view('pwa.report.indexReport'))->name('indexReport');
+    Route::get('/detailsReport', fn() => view('pwa.report.detailsReport'))->name('');
 
     //Page profile route
     Route::get('/indexProfile', [ProfileController::class, 'showMainProfile'])->name('profile.index');
@@ -65,21 +65,26 @@ Route::get('/face-registration/check', function () {
 
 
 //WEB
-Route::get('/signIn', fn () => view('management_system.signIn'))->name('signin');
+Route::get('/signIn', fn() => view('management_system.signIn'))->name('signin');
 
-Route::get('/dashboardWeb', fn () => view('management_system.dashboardWeb'))->name('Dashboardweb');
-Route::get('/notificationWeb', fn () => view('management_system.notificationWeb'))->name('notifications');
+Route::get('/dashboardWeb', fn() => view('management_system.dashboardWeb'))->name('Dashboardweb');
+Route::get('/notificationWeb', fn() => view('management_system.notificationWeb'))->name('notifications');
 
-Route::get('/indexAttedance', fn () => view('management_system.attedance_management.indexAttedance'))->name('Attedance Management');
-Route::get('/checkinAttedance', fn () => view('management_system.attedance_management.checkinAttedance'))->name('checkin Attedance');
+Route::get('/indexAttedance', fn() => view('management_system.attedance_management.indexAttedance'))->name('Attedance Management');
+Route::get('/checkinAttedance', fn() => view('management_system.attedance_management.checkinAttedance'))->name('checkin Attedance');
 
-Route::get('/indexManagUser', fn () => view('management_system.user_management.indexManagUser'))->name('User Management');
+// Route::get('/indexManagUser', fn() => view('management_system.user_management.indexManagUser'))->name('User Management');
+Route::post('/users', [UserController::class, 'store'])->name('users.store');
+Route::get('/indexManagUser', [UserController::class, 'create'])->name('users.create');
+Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
+Route::put('/users/{id}', [UserController::class, 'update'])->name('users.update');
+Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
 
-Route::get('/indexReport', fn () => view('management_system.report_analytics.indexReport'))->name('Report_and_analytics');
-Route::get('/attedanceReport', fn () => view('management_system.report_analytics.attedanceReport'))->name('Attedance Report');
-Route::get('/payrollReport', fn () => view('management_system.report_analytics.payrollReport'))->name('Payroll Report');
+Route::get('/indexReport', fn() => view('management_system.report_analytics.indexReport'))->name('Report_and_analytics');
+Route::get('/attedanceReport', fn() => view('management_system.report_analytics.attedanceReport'))->name('Attedance Report');
+Route::get('/payrollReport', fn() => view('management_system.report_analytics.payrollReport'))->name('Payroll Report');
 
-Route::get('/indexSecurity', fn () => view('management_system.security_settings.indexSecurity'))->name('Security_and_Settings');
+Route::get('/indexSecurity', fn() => view('management_system.security_settings.indexSecurity'))->name('Security_and_Settings');
 
 // //WEB
 // Route::get('/signIn', fn () => view('management_system.signIn'))->name('signin');
@@ -89,4 +94,3 @@ Route::get('/indexSecurity', fn () => view('management_system.security_settings.
 //     // Route::post('/face-verification/reset', [AttendanceController::class, 'resetFaceVerification'])->name('face.verification.reset');
 //     // Route::get('/face-verification/status/{userId}', [AttendanceController::class, 'getFaceVerificationStatus'])->name('face.verification.status.user')->middleware('can:view-users');
 // });
-
