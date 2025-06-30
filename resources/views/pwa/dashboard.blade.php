@@ -110,185 +110,186 @@
         </button>
 
         {{-- modal permission pop up --}}
-     
 
-<script>
-function showPermissionPopUp() {
-    // Tampilkan tanggal hari ini di popup
-    const now = new Date();
-    const pad = n => n < 10 ? '0' + n : n;
-    const tanggal = `${pad(now.getDate())}-${pad(now.getMonth() + 1)}-${now.getFullYear()}`;
-    document.getElementById('permissionDate').textContent = tanggal;
 
-    const popup = document.getElementById('permissionPopUp');
-    popup.style.display = 'flex';
-    setTimeout(() => {
-        popup.classList.add('show');
-    }, 10);
-}
+        <script>
+        function showPermissionPopUp() {
+            // Tampilkan tanggal hari ini di popup
+            const now = new Date();
+            const pad = n => n < 10 ? '0' + n : n;
+            const tanggal = `${pad(now.getDate())}-${pad(now.getMonth() + 1)}-${now.getFullYear()}`;
+            document.getElementById('permissionDate').textContent = tanggal;
 
-function submitPermission() {
-    fetch('{{ route("attendance.permission") }}', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-        },
-        body: JSON.stringify({})
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.success) {
-            closePermissionPopUp();
-            showPermissionSuccessPopUp();
-        } else {
-            alert('Gagal mencatat permission!');
+            const popup = document.getElementById('permissionPopUp');
+            popup.style.display = 'flex';
+            setTimeout(() => {
+                popup.classList.add('show');
+            }, 10);
         }
-    });
-}
 
-function closePermissionPopUp() {
-    const popup = document.getElementById('permissionPopUp');
-    popup.classList.remove('show');
-    setTimeout(() => {
-        popup.style.display = 'none';
-    }, 300);
-}
+        function submitPermission() {
+            fetch('{{ route("attendance.permission") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({})
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    closePermissionPopUp();
+                    showPermissionSuccessPopUp();
+                } else {
+                    alert('Gagal mencatat permission!');
+                }
+            });
+        }
 
-// Popup sukses permission
-function showPermissionSuccessPopUp() {
-    const popup = document.getElementById('permissionSuccessPopUp');
-    popup.style.display = 'flex';
-    setTimeout(() => {
-        popup.classList.add('show');
-    }, 10);
-}
-function closePermissionSuccessPopUp() {
-    const popup = document.getElementById('permissionSuccessPopUp');
-    popup.classList.remove('show');
-    setTimeout(() => {
-        popup.style.display = 'none';
-    }, 300);
-}
+        function closePermissionPopUp() {
+            const popup = document.getElementById('permissionPopUp');
+            popup.classList.remove('show');
+            setTimeout(() => {
+                popup.style.display = 'none';
+            }, 300);
+        }
 
-// Tutup popup dengan tombol ESC
-document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') {
-        closePermissionPopUp();
-        closePermissionSuccessPopUp();
-    }
-});
-</script>
+        // Popup sukses permission
+        function showPermissionSuccessPopUp() {
+            const popup = document.getElementById('permissionSuccessPopUp');
+            popup.style.display = 'flex';
+            setTimeout(() => {
+                popup.classList.add('show');
+            }, 10);
+        }
+        function closePermissionSuccessPopUp() {
+            const popup = document.getElementById('permissionSuccessPopUp');
+            popup.classList.remove('show');
+            setTimeout(() => {
+                popup.style.display = 'none';
+            }, 300);
+        }
 
-<div id="permissionSuccessPopUp" class="popup-overlay fixed inset-0 bg-opacity-50 flex items-center justify-center z-[9999]" style="display: none;">
-    <div class="popup-content bg-white rounded-lg p-6 max-w-sm mx-4 shadow-xl text-center">
-        <i class="fa-solid fa-circle-check text-4xl text-green-500 mb-3"></i>
-        <p class="text-gray-800 mb-3 font-poppins font-semibold">Permission berhasil dicatat!</p>
-        <button onclick="closePermissionSuccessPopUp()" class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-pink-600 transition-colors font-semibold font-poppins mt-2">
-            Tutup
-        </button>
-    </div>
-</div>
+        // Tutup popup dengan tombol ESC
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') {
+                closePermissionPopUp();
+                closePermissionSuccessPopUp();
+            }
+        });
+        </script>
 
-    <div id="permissionPopUp" class="popup-overlay fixed inset-0  bg-opacity-50 flex items-center justify-center z-[9999]" style="display: none;">
-        <div class="popup-content bg-white rounded-lg p-6 max-w-sm mx-4 shadow-xl">
-            <div class="text-center">
-                <div class="mb-4">
-                    <i class="fa-solid fa-check-circle text-4xl text-blue-500 mb-3"></i>
-                    <p class="text-gray-800 mb-3 font-poppins">You have permission on the date</p>
-                    <p id="permissionDate" class="text-xl font-bold text-blue-500 font-poppins"></p>
-                </div>
-                <div class="flex justify-center gap-4">
-                    <button id="closePermissionBtn" onclick="submitPermission()" class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-pink-600 transition-colors font-semibold font-poppins" aria-label="Konfirmasi Izin">
-                        OK
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-        <!-- Time Track -->
-        <div class="mb-4">
-            <h2 class="text-xl font-semibold text-gray-800 mb-3">Time Track</h2>
-
-            <div class="bg-white rounded-xl p-4 shadow-sm">
-              <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-
-                <!-- Chart Section -->
-                <div class="w-full md:w-3/4 h-48">
-                  <canvas id="timeTrackChart"></canvas>
-                </div>
-
-                <!-- Legend & Button Section -->
-                <div class="w-full md:w-1/2 flex flex-col justify-between gap-6">
-
-                  <!-- Legend -->
-                  <div class="grid lg:grid-cols-1 md:grid-cols-2 grid-cols-4 gap-4">
-                    <div class="flex items-center gap-2">
-                      <span class="w-3 h-3 rounded-full bg-green-400"></span>
-                      <span class="text-xs text-gray-600">On Time</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                      <span class="w-3 h-3 rounded-full bg-red-500"></span>
-                      <span class="text-xs text-gray-600">Late</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                      <span class="w-3 h-3 rounded-full bg-gray-800"></span>
-                      <span class="text-xs text-gray-600">Absent</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                      <span class="w-3 h-3 rounded-full bg-blue-400"></span>
-                      <span class="text-xs text-gray-600">Permission</span>
-                    </div>
-                  </div>
-
-                  <!-- Button -->
-                    <div class="flex justify-end mt-auto">
-                        <button
-                        onclick="window.location.href='{{ url('/indexReport') }}'"
-                        class="px-4 py-2 text-xs font-semibold text-white bg-blue-500 rounded-full shadow-lg transition-colors hover:bg-black hover:text-blue-400"
-                        >
-                        See Full Report
-                        </button>
-                    </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-
-
-        <!-- Announcements -->
-        <div class="mb-6">
-            <div class="flex justify-between items-center mb-3">
-                <h2 class="text-xl font-semibold text-gray-800">Announcements</h2>
-                <a href="#" class="text-blue-500 text-sm">See all &gt;</a>
-            </div>
-
-            <div class="bg-white rounded-xl p-4 shadow-sm overflow-x-auto">
-                <div class="flex space-x-4 min-w-max">
-                    <div class="w-64 h-20 flex-shrink-0">
-                        <img src="{{ asset('images/announcement.png') }}" alt="Important Announcement" class="w-full h-full object-cover">
-                    </div>
-                    <div class="w-64 h-20 flex-shrink-0">
-                        <img src="{{ asset('images/announcement.png') }}" alt="Important Announcement" class="w-full h-full object-cover">
-                    </div>
-                </div>
+        <div id="permissionSuccessPopUp" class="popup-overlay fixed inset-0 bg-opacity-50 flex items-center justify-center z-[9999]" style="display: none;">
+            <div class="popup-content bg-white rounded-lg p-6 max-w-sm mx-4 shadow-xl text-center">
+                <i class="fa-solid fa-circle-check text-4xl text-green-500 mb-3"></i>
+                <p class="text-gray-800 mb-3 font-poppins font-semibold">Permission berhasil dicatat!</p>
+                <button onclick="closePermissionSuccessPopUp()" class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-pink-600 transition-colors font-semibold font-poppins mt-2">
+                    Tutup
+                </button>
             </div>
         </div>
 
-        <!-- Bottom Navigation -->
-        <div class="fixed bottom-6 left-0 right-0 flex justify-center">
-            <div class="bg-white rounded-full shadow-lg px-6 py-2 flex space-x-8">
-                <a href="#" class="text-blue-500">
-                    <i class="fa fa-home text-xl"></i>
-                </a>
-                <a href="{{url('/indexProfile')}}" class="text-gray-400">
-                    <i class="fa fa-user text-xl"></i>
-                </a>
+            <div id="permissionPopUp" class="popup-overlay fixed inset-0  bg-opacity-50 flex items-center justify-center z-[9999]" style="display: none;">
+                <div class="popup-content bg-white rounded-lg p-6 max-w-sm mx-4 shadow-xl">
+                    <div class="text-center">
+                        <div class="mb-4">
+                            <i class="fa-solid fa-check-circle text-4xl text-blue-500 mb-3"></i>
+                            <p class="text-gray-800 mb-3 font-poppins">You have permission on the date</p>
+                            <p id="permissionDate" class="text-xl font-bold text-blue-500 font-poppins"></p>
+                        </div>
+                        <div class="flex justify-center gap-4">
+                            <button id="closePermissionBtn" onclick="submitPermission()" class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-pink-600 transition-colors font-semibold font-poppins" aria-label="Konfirmasi Izin">
+                                OK
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
+
+            </div>
+
+            <!-- Time Track -->
+            <div class="mb-4">
+                <h2 class="text-xl font-semibold text-gray-800 mb-3">Time Track</h2>
+
+                <div class="bg-white rounded-xl p-4 shadow-sm">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+
+                    <!-- Chart Section -->
+                    <div class="w-full md:w-3/4 h-48">
+                    <canvas id="timeTrackChart"></canvas>
+                    </div>
+
+                    <!-- Legend & Button Section -->
+                    <div class="w-full md:w-1/2 flex flex-col justify-between gap-6">
+
+                    <!-- Legend -->
+                    <div class="grid lg:grid-cols-1 md:grid-cols-2 grid-cols-4 gap-4">
+                        <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-green-400"></span>
+                        <span class="text-xs text-gray-600">On Time</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-red-500"></span>
+                        <span class="text-xs text-gray-600">Late</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-gray-800"></span>
+                        <span class="text-xs text-gray-600">Absent</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-blue-400"></span>
+                        <span class="text-xs text-gray-600">Permission</span>
+                        </div>
+                    </div>
+
+                    <!-- Button -->
+                        <div class="flex justify-end mt-auto">
+                            <button
+                            onclick="window.location.href='{{ url('/indexReport') }}'"
+                            class="px-4 py-2 text-xs font-semibold text-white bg-blue-500 rounded-full shadow-lg transition-colors hover:bg-black hover:text-blue-400"
+                            >
+                            See Full Report
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+
+
+
+            <!-- Announcements -->
+            <div class="mb-6">
+                <div class="flex justify-between items-center mb-3">
+                    <h2 class="text-xl font-semibold text-gray-800">Announcements</h2>
+                    <a href="#" class="text-blue-500 text-sm">See all &gt;</a>
+                </div>
+
+                <div class="bg-white rounded-xl p-4 shadow-sm overflow-x-auto">
+                    <div class="flex space-x-4 min-w-max">
+                        <div class="w-64 h-20 flex-shrink-0">
+                            <img src="{{ asset('images/announcement.png') }}" alt="Important Announcement" class="w-full h-full object-cover">
+                        </div>
+                        <div class="w-64 h-20 flex-shrink-0">
+                            <img src="{{ asset('images/announcement.png') }}" alt="Important Announcement" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Navigation -->
+            <div class="fixed bottom-6 left-0 right-0 flex justify-center">
+                <div class="bg-white rounded-full shadow-lg px-6 py-2 flex space-x-8">
+                    <a href="#" class="text-blue-500">
+                        <i class="fa fa-home text-xl"></i>
+                    </a>
+                    <a href="{{url('/indexProfile')}}" class="text-gray-400">
+                        <i class="fa fa-user text-xl"></i>
+                    </a>
+                </div>
+            </div>
     </div>
 
     <!-- Chart.js Initialization -->

@@ -6,7 +6,7 @@ use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\FaceRegistrationController;
 use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\ProfileController;
-
+use App\Http\Controllers\ReportController;
 
 Route::get('/', [AuthController::class, 'splash'])->name('splash');
 Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -75,8 +75,11 @@ Route::get('/checkinAttedance', fn () => view('management_system.attedance_manag
 
 Route::get('/indexManagUser', fn () => view('management_system.user_management.indexManagUser'))->name('User Management');
 
-Route::get('/indexReport', fn () => view('management_system.report_analytics.indexReport'))->name('Report_and_analytics');
+Route::get('/indexReportWeb', fn () => view('management_system.report_analytics.indexReportWeb'))->name('Report_and_analytics');
 Route::get('/attedanceReport', fn () => view('management_system.report_analytics.attedanceReport'))->name('Attedance Report');
+Route::get('/attendance/export-pdf', [ReportController::class, 'exportPDF'])
+    ->name('attendance.export');// jika perlu
+
 Route::get('/payrollReport', fn () => view('management_system.report_analytics.payrollReport'))->name('Payroll Report');
 
 Route::get('/indexSecurity', fn () => view('management_system.security_settings.indexSecurity'))->name('Security_and_Settings');
