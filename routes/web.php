@@ -6,11 +6,11 @@ use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\FaceRegistrationController;
 use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\ProfileController;
-<<<<<<< HEAD
 use App\Http\Controllers\ReportController;
-=======
 use App\Http\Controllers\UserController;
->>>>>>> e36c41207b80397dec25bcd16c10b74fe6995a0d
+
+
+
 
 Route::get('/', [AuthController::class, 'splash'])->name('splash');
 Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -84,18 +84,19 @@ Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('users.edi
 Route::put('/users/{id}', [UserController::class, 'update'])->name('users.update');
 Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
 
-<<<<<<< HEAD
+
 Route::get('/indexReportWeb', fn () => view('management_system.report_analytics.indexReportWeb'))->name('Report_and_analytics');
 Route::get('/attedanceReport', fn () => view('management_system.report_analytics.attedanceReport'))->name('Attedance Report');
 Route::get('/attendance/export-pdf', [ReportController::class, 'exportPDF'])
     ->name('attendance.export');// jika perlu
 
 Route::get('/payrollReport', fn () => view('management_system.report_analytics.payrollReport'))->name('Payroll Report');
-=======
+
+
 Route::get('/indexReport', fn() => view('management_system.report_analytics.indexReport'))->name('Report_and_analytics');
 Route::get('/attedanceReport', fn() => view('management_system.report_analytics.attedanceReport'))->name('Attedance Report');
 Route::get('/payrollReport', fn() => view('management_system.report_analytics.payrollReport'))->name('Payroll Report');
->>>>>>> e36c41207b80397dec25bcd16c10b74fe6995a0d
+
 
 Route::get('/indexSecurity', fn() => view('management_system.security_settings.indexSecurity'))->name('Security_and_Settings');
 
