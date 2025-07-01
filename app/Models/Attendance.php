@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Attendance extends Model
 {
     use HasFactory;
-    protected $table = 'attendance'; // Ganti sesuai nama tabel di database, misal 'attendance' atau 'attedance'
+    // protected $table = 'attendance'; 
     protected $fillable = [
 
         'user_id',

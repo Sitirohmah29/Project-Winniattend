@@ -12,6 +12,13 @@ use Illuminate\Support\Facades\Storage;
 
 class AttendanceController extends Controller
 {
+
+    public function index()
+    {
+        $attendances = \App\Models\Attendance::with(['user.role'])->get();
+        return view('management_system.attedance_management.indexAttedance', compact('attendances'));
+    }
+
     // Halaman check-in
     public function showCheckInPage()
     {
@@ -275,5 +282,12 @@ class AttendanceController extends Controller
             'message' => 'Permission berhasil dicatat',
             'data' => $attendance
         ]);
+    }
+
+    public function dashboard()
+    {
+        // Ambil 10 data terakhir, relasi ke user
+        $attendances = Attendance::with('user')->orderByDesc('date')->limit(10)->get();
+        return view('management_system.dashboardWeb', compact('attendances'));
     }
 }

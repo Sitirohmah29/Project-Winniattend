@@ -27,8 +27,8 @@
                 class="profile-image w-32 h-32 rounded-full object-cover border-4 border-gray-300" />
 
 
-            <h2 class="text-title">{{ $user->name ?? 'Nama Pengguna' }}</h2>
-            <p class="text-reg text-gray-600">{{ $roles->name ?? 'Laravel Developer' }}</p>
+            <h2 class="text-title">{{ $user->fullname ?? 'Nama Pengguna' }}</h2>
+            <p class="text-reg text-gray-600">{{ $user->role->name ?? 'Role' }}</p>
 
 
             <button class="short-button mt-4" onclick="window.location.href='{{ url('/editProfile') }}'">

@@ -12,7 +12,7 @@ class ProfileController extends Controller
 {
     public function showMainProfile()
     {
-        $user = Auth::user();
+        $user = Auth::user()->load('role');
         return view('profile.indexProfile', compact('user'));
     }
 
@@ -36,7 +36,7 @@ class ProfileController extends Controller
             ]);
 
             $data = [
-                'fullname' => $request->name,
+                'fullname' => $request->fullname,
                 'birth_date' => $request->birth_date,
                 'phone' => $request->phone,
                 'address' => $request->address,
