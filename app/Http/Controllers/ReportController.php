@@ -26,8 +26,8 @@ class ReportController extends Controller
         }
         $year = $request->get('year', now()->year);
 
-        $records = Attendance::whereMonth('date', $monthNumber)
-            ->whereYear('date', $year)
+        $records = Attendance::whereMonth('check_in', $monthNumber)
+            ->whereYear('check_in', $year)
             ->with(['user'])
             ->get();
 
@@ -104,8 +104,8 @@ class ReportController extends Controller
             $monthNumber = Carbon::parse($selectedMonth)->month;
         }
         $year = $request->get('year', now()->year);
-        $records = Attendance::whereMonth('date', $monthNumber)
-            ->whereYear('date', $year)
+        $records = Attendance::whereMonth('check_in', $monthNumber)
+            ->whereYear('check_in', $year)
             ->with(['user'])
             ->get();
         $groupedRecords = $this->processAttendanceData($records);
