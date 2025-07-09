@@ -95,11 +95,13 @@
           </svg>
           </div>
         </button>
+      </div>
+
       </form>
     </div>
-    
+
     <!-- Custom Popup untuk Face ID -->
-    <div id="faceIdPopup" class="popup-overlay fixed inset-0 bg-opacity-50 flex items-center justify-center z-[9999] mb-150" style="display: none;">
+    <div id="faceIdPopup" class="popup-overlay mt-15 fixed top-0 left-0 right-0 inset-0 bg-opacity-50 flex items-center justify-center z-[9999] mb-150" style="display: none;">
       <div class="popup-content bg-white rounded-lg p-6 max-w-sm mx-4 shadow-xl relative">
         <div>
           <div class="mb-4 flex text-center justify-between">
@@ -107,13 +109,13 @@
             You haven’t Registered your Face ID yet
           </p>
           <!-- Tombol Close -->
-          <button onclick="closeFaceIdPopup()" aria-label="Close popup" 
+          <button onclick="closeFaceIdPopup()" aria-label="Close popup"
             class="text-gray-600 hover:text-gray-900 focus:outline-none text-2xl font-bold rounded-full leading-none">
             &times;
           </button>
         </div>
         <div class="flex justify-center">
-          <button onclick="redirectToFaceId()" 
+          <button onclick="redirectToFaceId()"
             class="px-6 py-2 bg-blue-500 text-white hover:bg-pink-600 transition-colors font-semibold h-8 w-40 text-xs rounded-3xl shadow-lg ">
             Regist Now
           </button>
@@ -142,7 +144,7 @@
       showFaceIdPopup();
     });
 }
-  
+
     // Fungsi untuk menampilkan popup
     function showFaceIdPopup() {
       const popup = document.getElementById('faceIdPopup');
@@ -152,12 +154,12 @@
         popup.classList.add('show');
       }, 10);
     }
-  
+
     // Fungsi untuk redirect ke halaman pendaftaran Face ID
     function redirectToFaceId() {
       window.location.href = "{{ url('/face-register') }}";
     }
-  
+
     // (Opsional) Fungsi untuk menutup popup jika ingin menambahkan tombol close
     function closeFaceIdPopup() {
       const popup = document.getElementById('faceIdPopup');
@@ -173,8 +175,10 @@
           popup.style.display = 'none';
         }, 300);
     }
+setInterval(updateClock, 1000);
+updateClock();
   </script>
-  
+
   <!-- Tambahkan di akhir sebelum </body> -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>

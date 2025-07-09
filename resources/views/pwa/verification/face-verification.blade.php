@@ -24,12 +24,12 @@
     </header>
 
     <div class="flex flex-col items-center mt-6">
-        <div class="relative w-64 h-64 flex items-center justify-center">
-            <div class="absolute inset-0 rounded-[36px] pointer-events-none z-10"
+        <div class="relative w-62 h-62 flex items-center justify-center">
+            <div class="absolute inset-0 rounded-full pointer-events-none z-10"
                 style="background: linear-gradient(135deg, #6a7cff 0%, #ff6adf 100%); padding: 0.35rem;">
             </div>
             <video id="video" autoplay muted playsinline
-                class="relative w-60 h-60 rounded-[28px] object-cover z-20 border-8 border-transparent -scale-x-100"
+                class="relative w-61 h-61 rounded-full object-cover z-20 border-8 border-transparent -scale-x-100"
                 style="box-shadow: 0 4px 24px 0 rgba(106,124,255,0.10);">
             </video>
         </div>
@@ -48,17 +48,17 @@
                         </div>
                     </div>
                     {{-- Display verification status --}}
-                    <h2 class="text-xl font-bold text-blue-600" id="cardStatus">Waiting for verification...</h2>
+                    <h2 class="text-xl text-center font-bold text-blue-600" id="cardStatus">Waiting for verification...</h2>
                     {{-- Display detected user's name --}}
                     <p class="text-gray-500 text-sm" id="cardName">-</p>
                 </div>
                 {{-- Details card (Face ID, Shift, Location) --}}
                 <div class="bg-white rounded-2xl shadow px-4 py-4 mt-4">
-                    <div class="flex justify-between text-gray-500 text-lg font-medium">
-                        <span>Face ID</span>
+                    <div class="flex justify-between text-gray-500 text-sm font-medium">
+                        <span >Face ID</span>
                         <span>Shift</span>
                     </div>
-                    <div class="flex justify-between font-bold text-sm mb-2">
+                    <div class="flex justify-between font-bold text-lg mb-2">
                         {{-- Display detected face ID --}}
                         <span class="text-black" id="cardFaceId">-</span>
                         {{-- Display shift information --}}
@@ -67,6 +67,11 @@
                     <div class="mt-2 text-gray-500 text-sm font-medium">Location</div>
                     {{-- Display user's current location --}}
                     <div class="font-bold text-black" id="cardLocation">Getting location...</div>
+                    {{-- Realtime clock for check-in --}}
+                    <div class="flex flex-col mt-4">
+                        <p class="text-gray-500 text-sm font-medium">Check-in Time:</p>
+                        <p id="realtime-clock" class="text-blue-600 text-lg font-bold text-center"></p>
+                    </div>
                 </div>
             </div>
             {{-- Done button to submit attendance --}}
@@ -104,6 +109,18 @@
         let detectedUser = null; // Stores the name of the detected user
         let userLocation = { latitude: null, longitude: null }; // Stores user's geographical coordinates
         let isProcessing = false; // Flag to prevent multiple attendance submissions
+
+        // Realtime clock for check-in
+        function updateClock() {
+            const now = new Date();
+            currentTime = now;
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const seconds = now.getSeconds().toString().padStart(2, '0');
+            document.getElementById('realtime-clock').textContent = `${hours}:${minutes}:${seconds}`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
 
         // Function to get the user's current geographical location
         function getUserLocation() {

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Attendance;
 use App\Models\FaceRegistration;
+use App\Models\Role;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -12,13 +14,6 @@ use Illuminate\Support\Facades\Storage;
 
 class AttendanceController extends Controller
 {
-
-    public function index()
-    {
-        $attendances = \App\Models\Attendance::with(['user.role'])->get();
-        return view('management_system.attedance_management.indexAttedance', compact('attendances'));
-    }
-
     // Halaman check-in
     public function showCheckInPage()
     {
@@ -53,6 +48,61 @@ class AttendanceController extends Controller
         }
 
         return redirect()->back()->with('success', 'Check out Successfully!');
+    }
+
+    
+    public function index(){
+        $attendances = \App\Models\Attendance::with(['user.role'])->get();
+        return view('management_system.attedance_management.indexAttedance', compact('attendances'));
+    }
+
+    public function search(Request $request)
+    {
+        $query = Attendance::with('user.role'); // relasi ke user & role
+
+        if ($request->has('search') && $request->search !== '') {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->whereHas('user', function ($q2) use ($search) {
+                    $q2->where('fullname', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
+                })
+                ->orWhere('date', 'like', "%{$search}%");
+            });
+        }
+
+        // Filter by month if provided
+        if ($request->filled('month') && $request->month !== 'All') {
+            // Array untuk mapping nama bulan ke nomor bulan
+            $monthMapping = [
+                'January' => 1,
+                'February' => 2,
+                'March' => 3,
+                'April' => 4,
+                'May' => 5,
+                'June' => 6,
+                'July' => 7,
+                'August' => 8,
+                'September' => 9,
+                'October' => 10,
+                'November' => 11,
+                'December' => 12
+            ];
+
+            if (isset($monthMapping[$request->month])) {
+                $monthNumber = $monthMapping[$request->month];
+                $query->whereMonth('date', $monthNumber);
+            }
+        }
+
+        $attendances = $query->get();
+        return view('management_system.attedance_management.indexAttedance', compact('attendances'));
+    }
+
+   public function showCheckInDetail($id){
+        $attendance = Attendance::with('user.role')->findOrFail($id);
+
+        return view('management_system.attedance_management.checkinAttedance', compact('attendance'));
     }
 
     // Halaman verifikasi wajah
@@ -98,9 +148,7 @@ class AttendanceController extends Controller
             return null;
         }
     }
-
-    // Proses absen dengan face verification
-    public function faceVerificationAbsen(Request $request)
+public function faceVerificationAbsen(Request $request)
     {
         try {
             if ($request->isJson()) {
@@ -183,7 +231,6 @@ class AttendanceController extends Controller
             ], 500);
         }
     }
-
 
     public function faceVerificationCheckOut(Request $request)
     {
@@ -284,10 +331,4 @@ class AttendanceController extends Controller
         ]);
     }
 
-    public function dashboard()
-    {
-        // Ambil 10 data terakhir, relasi ke user
-        $attendances = Attendance::with('user')->orderByDesc('date')->limit(10)->get();
-        return view('management_system.dashboardWeb', compact('attendances'));
-    }
 }

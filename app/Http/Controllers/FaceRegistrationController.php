@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
+use App\Models\User;
+
 
 class FaceRegistrationController extends Controller
 {
@@ -171,4 +173,103 @@ class FaceRegistrationController extends Controller
             'data' => $stats
         ]);
     }
+
+    //CHANGE FACE ID
+    public function changeFaceID() {
+        return view('profile.page.changeFaceID.changeFace');
+    }
+
+    public function changeFaceVerified() {
+        return view('profile.page.changeFaceID.faceVerified');
+    }
+
+    public function updateFaceID(Request $request)
+    {
+        $user = auth()->user();
+
+        $base64Image = $request->input('image'); // perbaiki typo dari '\mage' ke 'image'
+
+        if (!$base64Image) {
+            return back()->with('error', 'Tidak ada gambar yang dikirim.');
+        }
+
+        // Hapus semua data lama (record & file) milik user
+        $oldFaces = \App\Models\FaceRegistration::where('user_id', $user->id)->get();
+        foreach ($oldFaces as $oldFace) {
+            if (\Storage::disk('public')->exists($oldFace->image_path)) {
+                \Storage::disk('public')->delete($oldFace->image_path);
+            }
+            $oldFace->delete();
+        }
+
+        // Generate nama file unik: fullname_userid_timestamp.jpg
+        $userName = preg_replace('/[^A-Za-z0-9]/', '', $user->fullname ?? $user->name ?? 'user');
+        $timestamp = now()->format('YmdHis');
+        $imageName = $userName . '_' . $user->id . '_' . $timestamp . '.jpg';
+        $filePath = 'face_verifications/' . date('Y/m/d') . '/' . $imageName;
+
+        // Decode base64 dan simpan file ke storage
+        $imageData = preg_replace('#^data:image/\w+;base64,#i', '', $base64Image);
+        $imageData = base64_decode($imageData);
+        \Storage::disk('public')->put($filePath, $imageData);
+
+        // Simpan ke tabel face_registrations
+        $faceReg = \App\Models\FaceRegistration::create([
+            'user_id' => $user->id,
+            'image_path' => $filePath,
+            'image_name' => $imageName,
+            'metadata' => null,
+            'captured_at' => now(),
+        ]);
+
+        return redirect()->route('faceID.verified')->with('success', 'Face ID updated');
+    }
+
+    //     public function updateFaceID(Request $request)
+    // {
+    //     $user = auth()->user();
+    //     $base64Image = $request->input('image');
+
+    //     if (!$base64Image) {
+    //         return back()->with('error', 'Tidak ada gambar yang dikirim.');
+    //     }
+
+    //     // Hapus semua data lama (record & file) milik user
+    //     $oldFaces = \App\Models\FaceRegistration::where('user_id', $user->id)->get();
+    //     foreach ($oldFaces as $oldFace) {
+    //         if (\Storage::disk('public')->exists($oldFace->image_path)) {
+    //             \Storage::disk('public')->delete($oldFace->image_path);
+    //         }
+    //         $oldFace->delete();
+    //     }
+
+    //     // Generate nama file unik: fullname_userid_timestamp.jpg
+    //     $userName = preg_replace('/[^A-Za-z0-9]/', '', $user->fullname ?? $user->name ?? 'user');
+    //     $timestamp = now()->format('YmdHis');
+    //     $imageName = $userName . '_' . $user->id . '_' . $timestamp . '.jpg';
+    //     $filePath = 'face_verifications/' . date('Y/m/d') . '/' . $imageName;
+
+    //     // Decode base64 dan resize dengan Intervention Image
+    //     $imageData = preg_replace('#^data:image/\w+;base64,#i', '', $base64Image);
+    //     $imageData = base64_decode($imageData);
+    //     $image = \Intervention\Image\Facades\Image::make($imageData)
+    //         ->resize(400, 400, function ($constraint) {
+    //             $constraint->aspectRatio();
+    //             $constraint->upsize();
+    //         })
+    //         ->encode('jpg', 80);
+
+    //     \Storage::disk('public')->put($filePath, (string) $image);
+
+    //     // Simpan ke tabel face_registrations
+    //     $faceReg = \App\Models\FaceRegistration::create([
+    //         'user_id' => $user->id,
+    //         'image_path' => $filePath,
+    //         'image_name' => $imageName,
+    //         'metadata' => null,
+    //         'captured_at' => now(),
+    //     ]);
+
+    //     return redirect()->route('faceID.verified')->with('success', 'Face ID updated');
+    // }
 }

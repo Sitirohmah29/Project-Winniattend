@@ -23,7 +23,7 @@
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
-<body class="container bg-white font-poppins">
+<body class="container min-h-screen min-w-screen w-screen h-screen flex items-center justify-center overflow-hidden font-poppins">
     <div
         x-data="{
             showForm: false,
@@ -35,7 +35,7 @@
             }
         }"
         @scroll.window="handleScroll()"
-        class="flex flex-col items-center justify-center min-h-screen p-6 relative overflow-hidden bg-white"
+        class="flex flex-col items-center justify-center min-h-screen p-6 relative overflow-hidden "
     >
         <div class="flex flex-col items-center justify-center flex-1 text-center w-full max-w-full">
             <!-- Logo -->
@@ -56,7 +56,7 @@
             <!-- Get Started Button -->
             <a
                 href="{{ route('login') }}"
-                class="py-2 px-12 h-8 text-xs text-white transition-colors bg-blue-500 hover:bg-black hover:text-blue-400 rounded-3xl shadow-lg w-55 font-semibold flex items-center justify-center mt-60 "
+                class="py-2 px-12 h-8 text-xs text-white transition-colors bg-blue-500 hover:bg-black hover:text-blue-400 rounded-3xl shadow-lg w-55 font-semibold flex items-center justify-center mt-60 mb-30 "
             >
                 Get Started
             </a>

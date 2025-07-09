@@ -26,10 +26,10 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 </head>
-<body class="bg-white font-poppins">
+<body class=" font-poppins">
   <div class="flex flex-col h-screen">
     <!-- Header -->
-    <div class="px-4 py-3 bg-white shadow">
+    <div class="px-4 py-3  shadow">
       <div class="flex items-center">
         <a href="{{ url('dashboard') }}" class="mr-4">
           <i class="fas fa-chevron-left text-gray-600"></i>
@@ -37,7 +37,7 @@
         <h1 class="text-sm font-semibold text-center flex-1">Punch in</h1>
       </div>
     </div>
-    
+
     <!-- Map Container -->
     <div id="map" class="w-full h-80 rounded-md relative">
       <div class="absolute bottom-5 left-2 bg-opacity-90 rounded-md shadow p-3 z-[500] max-w-xs">
@@ -46,7 +46,7 @@
           <div class="flex items-start">
             <div class="flex-shrink-0 mt-1">
               <div class="h-5 w-5 rounded-full bg-red-500 flex items-center justify-center">
-                <div class="h-2 w-2 rounded-full bg-white"></div>
+                <div class="h-2 w-2 rounded-full"></div>
               </div>
             </div>
             <div class="ml-3">
@@ -127,7 +127,7 @@
   </div>
 
   <!-- Pop-up Modal -->
-<div 
+<div
 x-data="{ showModal: false }"
 x-show="showModal"
 x-cloak
@@ -169,17 +169,17 @@ class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-5
         allowedRadius: 100 // in meters
       }
     ];
-    
+
     let map, userMarker, userCircle, officeMarkers = [], userPosition;
-    
+
     document.addEventListener('DOMContentLoaded', function() {
       initMap();
     });
-    
+
     function initMap() {
       // Initialize the map with a temporary default view that will be updated with user's position
       map = L.map('map');
-      
+
       // Try to get user's position first before setting the view
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
@@ -198,13 +198,13 @@ class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-5
         // Fallback if geolocation is not supported
         map.setView(officeLocations[0].position, 16);
       }
-      
+
       // Add OpenStreetMap tile layer
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         maxZoom: 19
       }).addTo(map);
-      
+
       // Add office markers and circles
       officeLocations.forEach(office => {
         // Create custom icon for office using Tailwind classes
@@ -218,13 +218,13 @@ class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-5
           iconSize: [24, 24],
           iconAnchor: [12, 24]
         });
-        
+
         // Add marker for office
         const marker = L.marker(office.position, {
           icon: officeIcon,
           title: office.name
         }).addTo(map);
-        
+
         // Add circle to show allowed radius
         const circle = L.circle(office.position, {
           color: 'red',
@@ -232,24 +232,24 @@ class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-5
           fillOpacity: 0.15,
           radius: office.allowedRadius
         }).addTo(map);
-        
+
         // Add popup with office info
         marker.bindPopup(`<b>${office.name}</b><br>${office.address}`);
-        
+
         officeMarkers.push({ marker, circle, info: office });
       });
-      
+
       const statusIndicator = document.getElementById('status-indicator');
       const statusMessage = document.getElementById('status-message');
       const scanBtn = document.getElementById('scanFaceBtn');
       const scanText = document.getElementById('scan-text');
-      
+
       // Show loading indicator while getting location
       const loadingDiv = document.createElement('div');
       loadingDiv.className = 'absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-70 z-10';
       loadingDiv.innerHTML = '<div class="text-center"><i class="fas fa-spinner fa-spin text-2xl text-blue-500"></i><p class="mt-2 text-gray-700">Getting your location...</p></div>';
       document.getElementById('map').appendChild(loadingDiv);
-      
+
       // Get user location and track it
       if (navigator.geolocation) {
         navigator.geolocation.watchPosition(function(position) {
@@ -260,10 +260,10 @@ class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-5
           const lat = position.coords.latitude;
           const lng = position.coords.longitude;
           userPosition = [lat, lng];
-          
+
           document.getElementById('latitude').value = lat;
           document.getElementById('longitude').value = lng;
-          
+
           // Create or update user marker
           if (!userMarker) {
             // Create blue marker for user
@@ -277,14 +277,14 @@ class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-5
               iconSize: [24, 24],
               iconAnchor: [12, 24]
             });
-            
+
             userMarker = L.marker(userPosition, {
               icon: userIcon,
               title: "Your Location"
             }).addTo(map);
-            
+
             userMarker.bindPopup("You are here").openPopup();
-            
+
             // Center map on user with animation
             map.flyTo(userPosition, 16, {
               animate: true,
@@ -292,14 +292,14 @@ class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-5
             });
           } else {
             userMarker.setLatLng(userPosition);
-            
+
             // Re-center map on user position when location updates
             // Only if the "center-on-me" setting is active
             if (window.centerOnUserEnabled) {
               map.panTo(userPosition);
             }
           }
-          
+
           // Create a "Center on me" button if it doesn't exist yet
           if (!window.centerButton) {
             const centerButton = L.control({position: 'bottomright'});
@@ -309,10 +309,10 @@ class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-5
               return div;
             };
             centerButton.addTo(map);
-            
+
             window.centerOnUserEnabled = true;
             window.centerButton = true;
-            
+
             // Add click event listener to the button after it's added to the map
             setTimeout(() => {
               document.getElementById('center-on-me').addEventListener('click', function() {
@@ -321,47 +321,47 @@ class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-5
                   map.flyTo(userPosition, 16, {animate: true, duration: 0.5});
                 }
               });
-              
+
               // Disable automatic centering when user manually pans the map
               map.on('dragstart', function() {
                 window.centerOnUserEnabled = false;
               });
             }, 100);
           }
-          
+
           // Check distance to all office locations and find the closest one
           let closestOffice = null;
           let minDistance = Infinity;
           let inAllowedRange = false;
-          
+
           officeLocations.forEach(office => {
             const distance = calculateDistance(
               lat, lng,
               office.position[0], office.position[1]
             );
-            
+
             if (distance < minDistance) {
               minDistance = distance;
               closestOffice = office;
-              
+
               // Check if user is within allowed radius
               if (distance <= office.allowedRadius / 1000) { // Convert meters to km
                 inAllowedRange = true;
               }
             }
           });
-          
+
           // Update UI with closest office info
           if (closestOffice) {
             document.getElementById('selected-location-name').textContent = closestOffice.name;
             document.getElementById('selected-location-address').textContent = closestOffice.address;
             document.getElementById('punch_in_location').value = closestOffice.name + ", " + closestOffice.address.split(',')[2].trim();
-            
-            const distanceText = minDistance < 1 ? 
-              `${(minDistance * 1000).toFixed(0)} meters away` : 
+
+            const distanceText = minDistance < 1 ?
+              `${(minDistance * 1000).toFixed(0)} meters away` :
               `${minDistance.toFixed(2)} km away`;
             document.getElementById('distance-info').textContent = distanceText;
-            
+
             // Update status indicator
             if (inAllowedRange) {
               statusIndicator.classList.remove('hidden');
@@ -393,21 +393,21 @@ class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-5
         alert("Geolocation is not supported by your browser.");
       }
     }
-    
+
     // Haversine formula to calculate distance between two points
     function calculateDistance(lat1, lon1, lat2, lon2) {
       const R = 6371; // Radius of the earth in km
       const dLat = deg2rad(lat2 - lat1);
       const dLon = deg2rad(lon2 - lon1);
-      const a = 
+      const a =
         Math.sin(dLat/2) * Math.sin(dLat/2) +
-        Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
-        Math.sin(dLon/2) * Math.sin(dLon/2); 
-      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+        Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+        Math.sin(dLon/2) * Math.sin(dLon/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
       const d = R * c; // Distance in km
       return d;
     }
-    
+
     function deg2rad(deg) {
       return deg * (Math.PI/180);
     }
@@ -425,10 +425,10 @@ class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-5
       if (document.getElementById('scanFaceBtn').disabled) {
         return;
       }
-      
+
       cameraContainer.classList.remove('hidden');
       cameraContainer.classList.add('flex');
-      
+
       navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } })
         .then(mediaStream => {
           stream = mediaStream;
@@ -450,7 +450,7 @@ class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-5
 
     document.getElementById('captureBtn').addEventListener('click', () => {
       const inAllowedRange = document.getElementById('in_allowed_range').value;
-      
+
       if (inAllowedRange !== '1') {
         alert('You must be within the attendance area to punch in.');
         stopCamera();
@@ -458,7 +458,7 @@ class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-5
         cameraContainer.classList.remove('flex');
         return;
       }
-      
+
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
       canvas.getContext('2d').drawImage(video, 0, 0);
@@ -470,11 +470,11 @@ class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-5
           const file = new File([blob], "face-photo.jpg", { type: "image/jpeg" });
           const formData = new FormData(document.getElementById('punchInForm'));
           formData.set('punch_in_photo', file);
-          
+
           // Show loading state
           document.getElementById('captureBtn').textContent = 'Processing...';
           document.getElementById('captureBtn').disabled = true;
-          
+
           fetch("", {
             method: 'POST',
             body: formData
@@ -506,7 +506,7 @@ class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-5
         video.srcObject = null;
       }
     }
-    
+
     // Handle page visibility changes to manage camera resources
     document.addEventListener('visibilitychange', () => {
       if (document.hidden && !cameraContainer.classList.contains('hidden')) {

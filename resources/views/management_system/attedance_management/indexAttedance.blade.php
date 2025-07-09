@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -73,7 +72,7 @@
                 </div>
 
                 <div class="report flex flex-row gap-2 items-center"
-                    onclick="window.location.href='{{ url('/indexReport') }}'">
+                    onclick="window.location.href='{{ url('/indexReportWeb') }}'">
                     <svg width="20" height="18" viewBox="0 0 25 23" fill="none"
                         xmlns="http://www.w3.org/2000/svg">
                         <path
@@ -137,34 +136,48 @@
 
             <div class="flex gap-4 items-center justify-between">
                 <!-- Search Box -->
-                <div class="flex items-center bg-white rounded-full shadow-md px-4 py-2 w-[800px]">
+                <form method="GET" action="{{ route('attendance.search') }}" class="flex items-center bg-white rounded-full shadow-md px-4 py-2 w-[800px]">
                     <i class="fa fa-search text-gray-500 mr-2"></i>
-                    <input type="text" placeholder="Search"
-                        class="w-full bg-transparent outline-none text-base italic text-gray-700" />
-                </div>
+                    <input
+                        type="text"
+                        name="search"
+                        placeholder="Search by name, role, or date"
+                        value="{{ request('search') }}"
+                        class="w-full bg-transparent outline-none text-base italic text-gray-700"
+                    />
+                    <button type="submit" class="ml-2 text-gray-500 hover:text-gray-700">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </form>
 
                 <!-- Month Filter -->
-                <div x-data="{ open: false, selected: 'January', months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] }" class="relative">
-                    <button @click="open = !open"
-                        class="flex items-center bg-white rounded-full shadow-md px-4 py-2 cursor-pointer w-[150px] justify-between">
-                        <div class="flex items-center gap-2">
-                            <i class="fa fa-filter text-gray-500"></i>
-                            <span class="italic text-gray-700" x-text="selected"></span>
-                        </div>
-                        <i class="fa fa-chevron-down text-gray-500 text-sm"></i>
-                    </button>
-
-                    <!-- Dropdown List -->
-                    <ul x-show="open" @click.away="open = false"
-                        class="absolute mt-2 w-full bg-white border border-gray-200 rounded-md shadow-lg z-10">
-                        <template x-for="month in months" :key="month">
-                            <li @click="selected = month; open = false"
-                                class="px-4 py-2 hover:bg-gray-100 cursor-pointer text-gray-700">
-                                <span x-text="month"></span>
-                            </li>
-                        </template>
-                    </ul>
-                </div>
+                <form method="GET" action="{{ route('attendance.search') }}" class="relative">
+                    <div x-data="{ 
+                        open: false, 
+                        selected: '{{ request('month') ?? 'All' }}', 
+                        months: ['All', 'January', 'February', 'March', 'April', 'May', 'June', 
+                                'July', 'August', 'September', 'October', 'November', 'December'] 
+                    }" class="relative w-56">
+                        <input type="hidden" name="month" :value="selected">
+                        <button type="button" @click="open = !open"
+                            class="flex items-center bg-white rounded-full shadow-md px-4 py-2 cursor-pointer w-full justify-between border border-gray-300">
+                            <div class="flex items-center gap-2">
+                                <i class="fa fa-filter text-gray-500"></i>
+                                <span class="italic text-gray-700" x-text="selected"></span>
+                            </div>
+                            <i class="fa fa-chevron-down text-gray-500 text-sm"></i>
+                        </button>
+                        <ul x-show="open" @click.away="open = false"
+                            class="absolute left-0 right-0 mt-2 w-full bg-white border border-gray-200 rounded-md shadow-lg z-20 max-h-72 overflow-y-auto">
+                            <template x-for="month in months" :key="month">
+                                <li @click="selected = month; open = false; $el.closest('form').submit()"
+                                    class="px-4 py-2 hover:bg-blue-100 cursor-pointer text-gray-700">
+                                    <span x-text="month"></span>
+                                </li>
+                            </template>
+                        </ul>
+                    </div>
+                </form>
             </div>
 
             <!-- Table -->
@@ -189,8 +202,14 @@
                                 <td class="px-4 py-2">{{ $attendance->user->fullname ?? '-' }}</td>
                                 <td class="px-4 py-2">{{ $attendance->user->role->name ?? '-' }}</td>
                                 <td class="px-4 py-2">{{ $attendance->date ?? '-' }}</td>
-                                <td class="px-4 py-2 underline">
-                                    {{ $attendance->check_in ? \Carbon\Carbon::parse($attendance->check_in)->format('H:i') : '-' }}
+                                <td class="px-4 py-2 underline text-blue-500">
+                                    @if ($attendance->check_in)
+                                        <a href="{{ route('attendance.detail.checkin', $attendance->id) }}">
+                                            {{ \Carbon\Carbon::parse($attendance->check_in)->format('H:i') }}
+                                        </a>
+                                    @else
+                                        -
+                                    @endif
                                 </td>
                                 <td class="px-4 py-2 underline">
                                     {{ $attendance->check_out ? \Carbon\Carbon::parse($attendance->check_out)->format('H:i') : '-' }}

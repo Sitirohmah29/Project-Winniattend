@@ -3,15 +3,15 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FaceRegistrationController;
 use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\ProfileController;
-
 use App\Http\Controllers\ReportController;
-
 use App\Http\Controllers\UserController;
+use App\Models\Attendance;
 
-
+// PWA ROUTE
 Route::get('/', [AuthController::class, 'splash'])->name('splash');
 Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('login', [AuthController::class, 'login'])->name('login.attempt');
@@ -41,6 +41,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/changePw', [PasswordController::class, 'changePassword'])->name('Change.Password');
     Route::post('/changePw', [PasswordController::class, 'updatePassword'])->name('Update.password');
 
+    Route::get('/changeFace', [FaceRegistrationController::class, 'changeFaceID'])->name('change.faceID');
+    Route::get('/faceVerified', [FaceRegistrationController::class, 'changeFaceVerified'])->name('faceID.verified');
+    Route::post('/faceVerified', [FaceRegistrationController::class, 'updateFaceID'])->name('Update.faceid');
+
     // Attendance
     Route::get('/attendance/check-in', [AttendanceController::class, 'showCheckInPage'])->name('attendance.check-in');
     Route::get('/attendance/check-out', [AttendanceController::class, 'showCheckOutPage'])->name('attendance.check-out');
@@ -57,7 +61,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::delete('/face-verification/{id}', [FaceRegistrationController::class, 'destroy'])->name('face-verification.destroy');
     Route::get('/face-verification/statistics', [FaceRegistrationController::class, 'statistics'])->name('face-verification.statistics');
 
-
     Route::get('/face-verification', [AttendanceController::class, 'showfaceVerificationPage'])->name('verification.face-verification');
     Route::get('/face-register', [AttendanceController::class, 'faceVerificationPage'])->name('verification.face-register');
 });
@@ -68,32 +71,37 @@ Route::get('/face-registration/check', function () {
 
 
 
-//WEB
+//MANAGEMENT SYSTEM
+// sign In
 Route::get('/signIn', fn() => view('management_system.signIn'))->name('signin');
 
-
+// DASHBOARD
+Route::get('/dashboardWeb', [DashboardController::class, 'dashboard']);
 Route::get('/notificationWeb', fn() => view('management_system.notificationWeb'))->name('notifications');
+// Route::get('/dashboardWeb/employees', [DashboardController::class, 'countEmployee'])->name('dashboardWeb.employees');
 
-Route::get('/indexAttedance', [AttendanceController::class, 'index'])->name('attendances.index');
-Route::get('/checkinAttedance', fn() => view('management_system.attedance_management.checkinAttedance'))->name('checkin Attedance');
-
-// Route::get('/indexManagUser', fn() => view('management_system.user_management.indexManagUser'))->name('User Management');
+//MANAGEMENT USER
 Route::post('/users', [UserController::class, 'store'])->name('users.store');
 Route::get('/indexManagUser', [UserController::class, 'create'])->name('users.create');
 Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
 Route::put('/users/{id}', [UserController::class, 'update'])->name('users.update');
 Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
+Route::get('/users', [UserController::class, 'search'])->name('users.search');
 
-Route::get('/dashboardWeb', [AttendanceController::class, 'dashboard']);
+// ATTEDANCE MANAGEMENT
+Route::get('/indexAttedance', [AttendanceController::class, 'index'])->name('attendances.index');
+Route::get('/checkin/{Attendance}', [AttendanceController::class, 'showCheckInDetail'])->name('attendance.detail.checkin');
+Route::get('/attedance', [AttendanceController::class, 'search'])->name('attendance.search');
+//REPORT & ANALYTICS
 Route::get('/indexReportWeb', fn() => view('management_system.report_analytics.indexReportWeb'))->name('Report_and_analytics');
+//report & analytics - attedance report
 Route::get('/attedanceReport', fn() => view('management_system.report_analytics.attedanceReport'))->name('Attedance Report');
 Route::get('/attendance/export-pdf', [ReportController::class, 'exportPDF'])
     ->name('attendance.export'); // jika perlu
+Route::get('/attedanceReport', [ReportController::class, 'attendanceReport'])->name('Attendance.report');
+Route::get('/report/attendance', [ReportController::class, 'attendanceReport'])->name('attendance.report');
 
-Route::get('/payrollReport', fn() => view('management_system.report_analytics.payrollReport'))->name('Payroll Report');
-
-// Route::get('/indexReport', fn() => view('management_system.report_analytics.indexReport'))->name('Report_and_analytics');
-Route::get('/attedanceReport', fn() => view('management_system.report_analytics.attedanceReport'))->name('Attedance Report');
+//report & analytics- payroll report
 Route::get('/payrollReport', fn() => view('management_system.report_analytics.payrollReport'))->name('Payroll Report');
 
 Route::get('/indexSecurity', fn() => view('management_system.security_settings.indexSecurity'))->name('Security_and_Settings');

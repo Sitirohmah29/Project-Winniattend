@@ -211,22 +211,22 @@
                     <h3 class="text-lg text-blue-500 font-semibold">Number of employees</h3>
 
                     <div class="flex flex-col items-center">
-                        <span class="text-black text-4xl font-bold">850</span>
+                        <span class="text-black text-4xl font-bold">{{ $totalEmployees }}</span>
                         <span class="text-black text-base">Employees</span>
                     </div>
 
                     <div class="flex flex-col w-full gap-3">
                         <div class="flex flex-row w-full justify-between items-center">
                             <span class="text-black text-sm">Laravel Developer</span>
-                            <span class="text-gray-500 text-sm">400/850</span>
+                            <span class="text-gray-500 text-sm">{{$laravelCount}}/{{$totalEmployees}}</span>
                         </div>
                         <div class="flex flex-row w-full justify-between items-center">
                             <span class="text-black text-sm">Fullstack Developer</span>
-                            <span class="text-gray-500 text-sm">300/850</span>
+                            <span class="text-gray-500 text-sm">{{$fullstackCount}} / {{$totalEmployees}}</span>
                         </div>
                         <div class="flex flex-row w-full justify-between items-center">
                             <span class="text-black text-sm">Copy Writer</span>
-                            <span class="text-gray-500 text-sm">150/850</span>
+                            <span class="text-gray-500 text-sm">{{$copywriterCount}} / {{$totalEmployees}}</span>
                         </div>
                     </div>
                 </div>

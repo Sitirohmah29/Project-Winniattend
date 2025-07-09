@@ -24,7 +24,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
 </head>
 
-<body class="container bg-white font-poppins">
+<body class="container font-poppins">
     <div
     x-data="{
         showForm: true,
@@ -39,10 +39,10 @@
     }"
 
         @scroll.window="handleScroll()"
-        class="flex flex-col items-center justify-center min-h-screen p-6 relative overflow-hidden bg-white"
+        class="flex flex-col items-center justify-center min-h-screen p-6 relative overflow-hidden"
     >
 
-        <div class="flex flex-col items-center justify-center flex-1 text-center w-full max-w-full fixed bg-white">
+        <div class="flex flex-col items-center justify-center flex-1 text-center w-full max-w-full fixed">
             <!-- Logo -->
             <div :class="showForm ? 'transform -translate-y-10 scale-100 transition-all duration-500' : 'mt-2 transition-all duration-500'">
                 <img src="{{ asset('images/logo.png') }}" alt="WinniCode Garuda Teknologi Logo" class="w-70" />
@@ -60,11 +60,7 @@
         class="w-full mx-auto pt-8 top-45 shadow-[0_-8px_15px_-3px_rgba(0,0,0,0.08)] rounded-t-3xl bg-white"
 
             >
-            <div class="flex justify-center items-center pt-2 pb-1">
-                <button class="w-12 h-1 bg-gray-300 rounded-full" onclick="window.location.href='{{ url('/') }}'"></button>
-            </div>
-
-                <h2 class="text-center text-xl font-semibold pt-6 ">
+                <h2 class="text-center text-xl font-semibold pt-2 ">
                     <span class="text-blue-500">Sign In</span>
                 </h2>
 
@@ -80,7 +76,7 @@
                     @csrf
 
                     <div>
-                        <label for="email" class="block text-xs font-semibold mb-4 text-left">E-mail</label>
+                        <label for="email" class="block text-xs font-semibold mb-2 text-left">E-mail</label>
                         <input
                             type="email"
                             id="email"
@@ -90,7 +86,7 @@
                     </div>
 
                     <div>
-                        <label for="password" class="block text-xs font-semibold mb-4 text-left">Password</label>
+                        <label for="password" class="block text-xs font-semibold mb-2 text-left">Password</label>
                         <div class="relative">
                             <input
                                 :type="passwordVisible ? 'text' : 'password'"
@@ -115,7 +111,7 @@
                         </span>
                     </div>
 
-                    <button class="long-button mt-10">
+                    <button class="long-button mt-8 mb-20">
                         Next
                     </button>
                 </form>

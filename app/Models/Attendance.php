@@ -7,6 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Attendance extends Model
 {
+    // Attendance.php
+    const STATUS_PRESENT = 0;
+    const STATUS_PERMISSION = 1;
+    const STATUS_SICK = 2;
+
     use HasFactory;
     // protected $table = 'attendance'; 
     protected $fillable = [
@@ -23,6 +28,16 @@ class Attendance extends Model
         'permission'
 
     ];
+
+    public function getStatusLabelAttribute()
+    {
+        return match ($this->status) {
+            0 => 'present',
+            1 => 'permission',
+            2 => 'sick',
+            default => 'unknown',
+        };
+    }
 
     public function user()
     {

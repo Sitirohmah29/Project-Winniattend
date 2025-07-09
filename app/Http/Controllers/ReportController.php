@@ -5,14 +5,15 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use App\Models\Attendance;
+use App\Models\User;
 use Carbon\Carbon;
 
 class ReportController extends Controller
 {
-    public function index()
-    {
-        return view('reports.attendance-report');
-    }
+    // public function index()
+    // {
+    //     return view('reports.attendance-report');
+    // }
 
     public function exportPDF(Request $request)
     {
@@ -114,5 +115,77 @@ class ReportController extends Controller
             'month' => $selectedMonth,
             'year' => $year
         ]);
+    }
+
+    public function attendanceReport(Request $request)
+    {
+        $month = $request->get('month', now()->month);
+        $year = $request->get('year', now()->year);
+
+        $users = User::with(['attendances' => function ($query) use ($month, $year) {
+            $query->whereMonth('date', $month)
+                ->whereYear('date', $year);
+        }])->get();
+
+        $reportData = $users->map(function ($user) {
+            $onTime = 0;
+            $late = 0;
+            $permission = 0;
+            $workDuration = 0; // in hours
+            $workingDays = 0;
+
+            foreach ($user->attendances as $attendance) {
+                // Hitung permission
+                if ($attendance->status_label === 'permission') {
+                    $permission++;
+                    continue;
+                }
+
+                // if ($attendance->status == 1) {
+                //     $permission++;
+                //     continue;
+                // }
+
+                if ($attendance->status == Attendance::STATUS_PERMISSION) {
+                    $permission++;
+                    continue;
+                }
+                // Hitung onTime & Late
+                if ($attendance->check_in && $user->shift_start) {
+                    $checkIn = \Carbon\Carbon::parse($attendance->check_in);
+                    $shiftStart = \Carbon\Carbon::createFromFormat('H:i:s', $user->shift_start);
+                    
+                    if ($checkIn->lessThanOrEqualTo($shiftStart)) {
+                        $onTime++;
+                    } else {
+                        $late++;
+                    }
+                }
+
+                // Hitung working day
+                $workingDays++;
+
+                // Hitung durasi kerja (hanya jika ada check_out)
+                if ($attendance->check_in && $attendance->check_out) {
+                    $checkIn = \Carbon\Carbon::parse($attendance->check_in);
+                    $checkOut = \Carbon\Carbon::parse($attendance->check_out);
+                    $duration = $checkOut->diffInMinutes($checkIn) / 60; // convert to hours
+                    $workDuration += $duration;
+                }
+            }
+
+            return [
+                'user' => $user,
+                'totalDays' => $workingDays,
+                'onTime' => $onTime,
+                'late' => $late,
+                'absent' => 0, // kamu bisa tambahkan logika ini nanti
+                'permission' => $permission,
+                'overtime' => $user->attendances->sum('overtime_hours') ?? 0,
+                'workDuration' => round($workDuration, 1),
+            ];
+        });
+
+        return view('management_system.report_analytics.attedanceReport', compact('reportData', 'month', 'year'));
     }
 }

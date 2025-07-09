@@ -55,7 +55,7 @@
                     <button class="text-gray-500 text-sm">Management User</button>
                 </div>
 
-                <div class="report flex flex-row gap-2 items-center" onclick="window.location.href='{{ url('/indexReport')}}'">
+                <div class="report flex flex-row gap-2 items-center" onclick="window.location.href='{{ url('/indexReportWeb')}}'">
                     <svg width="20" height="18" viewBox="0 0 25 23" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M17.1875 2.125C17.1875 1.7106 17.3521 1.31317 17.6451 1.02015C17.9382 0.72712 18.3356 0.5625 18.75 0.5625H21.875C22.2894 0.5625 22.6868 0.72712 22.9799 1.02015C23.2729 1.31317 23.4375 1.7106 23.4375 2.125V20.875H24.2188C24.426 20.875 24.6247 20.9573 24.7712 21.1038C24.9177 21.2503 25 21.449 25 21.6562C25 21.8635 24.9177 22.0622 24.7712 22.2087C24.6247 22.3552 24.426 22.4375 24.2188 22.4375H0.78125C0.57405 22.4375 0.375336 22.3552 0.228823 22.2087C0.08231 22.0622 0 21.8635 0 21.6562C0 21.449 0.08231 21.2503 0.228823 21.1038C0.375336 20.9573 0.57405 20.875 0.78125 20.875H1.5625V16.1875C1.5625 15.7731 1.72712 15.3757 2.02015 15.0826C2.31317 14.7896 2.7106 14.625 3.125 14.625H6.25C6.6644 14.625 7.06183 14.7896 7.35485 15.0826C7.64788 15.3757 7.8125 15.7731 7.8125 16.1875V20.875H9.375V9.9375C9.375 9.5231 9.53962 9.12567 9.83265 8.83265C10.1257 8.53962 10.5231 8.375 10.9375 8.375H14.0625C14.4769 8.375 14.8743 8.53962 15.1674 8.83265C15.4604 9.12567 15.625 9.5231 15.625 9.9375V20.875H17.1875V2.125ZM18.75 20.875H21.875V2.125H18.75V20.875ZM14.0625 20.875V9.9375H10.9375V20.875H14.0625ZM6.25 20.875V16.1875H3.125V20.875H6.25Z" fill="#6D6D6D"/>
                         </svg>
@@ -118,21 +118,17 @@
                             <th class="px-4 py-3 font-semibold">Employee</th>
                             <th class="px-4 py-3 font-semibold">Date</th>
                             <th class="px-4 py-3 font-semibold">Location</th>
+                            <th class="px-4 py-3 font-semibold">Check in</th>
                             <th class="px-4 py-3 font-semibold">Face ID</th>
-                            <th class="px-4 py-3 font-semibold">Status</th>
-                            <th class="px-4 py-3 font-semibold">Action</th>
                         </tr>
                     </thead>
                     <tbody class="text-sm text-gray-700">
                         <tr class="hover:bg-gray-50">
-                            <td class="px-4 py-2">John Doe</td>
-                            <td class="px-4 py-2">2025-03-21</td>
-                            <td class="px-4 py-2">IBI Kesatuan</td>
+                            <td class="px-4 py-2">{{ $attendance->user->fullname ?? '-' }}</td>
+                            <td class="px-4 py-2">{{ $attendance->date }}</td>
+                            <td class="px-4 py-2">{{ $attendance->check_in_location ?? '-' }}</td>
+                            <td class="px-4 py-2">{{ \Carbon\Carbon::parse($attendance->check_in)->format('H:i') }}</td>
                             <td class="px-4 py-2">FI23RF21MFLl</td>
-                            <td class="px-4 py-2">Success</td>
-                            <td class="px-4 py-2 text-blue-500">
-                                <i class="fa-solid fa-pen-to-square"></i>
-                            </td>
                         </tr>
                     </tbody>
                 </table>

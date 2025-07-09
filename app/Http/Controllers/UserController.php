@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -99,4 +100,35 @@ class UserController extends Controller
         return redirect()->route('users.create')->with('success', 'User berhasil dihapus!');
     }
     // ...existing code...
+
+    public function search(Request $request)
+    {
+        $query = User::with('role');
+
+        if ($request->filled('search')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('fullname', 'like', "%{$request->search}%")
+                ->orWhere('email', 'like', "%{$request->search}%")
+                ->orWhere('phone', 'like', "%{$request->search}%");
+            });
+        }
+
+        if ($request->filled('role_id')) {
+            $query->where('role_id', $request->role_id);
+        }
+
+        if ($request->filled('shift')) {
+            $query->where('shift', $request->shift);
+        }
+
+        if ($request->filled('is_active')) {
+            $query->where('is_active', $request->is_active);
+        }
+
+        $users = $query->get();
+        $roles = Role::all();
+
+        return view('management_system.user_management.indexManagUser', compact('users', 'roles'));
+    }
+
 }
