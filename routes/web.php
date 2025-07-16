@@ -17,6 +17,10 @@ Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('login', [AuthController::class, 'login'])->name('login.attempt');
 Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
+//Web Route
+Route::get('signIn', [AuthController::class, 'showAdminLoginForm'])->name('admin.login');
+Route::post('signIn', [AuthController::class, 'loginAdmin'])->name('admin.login.attempt');
+
 // Password Reset
 Route::get('/forgot-password', [AuthController::class, 'showForgotPasswordForm'])->name('password.request');
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->name('password.email');
@@ -25,11 +29,7 @@ Route::get('/new-pw', [AuthController::class, 'newPassword'])->name('new.passwor
 
 // Sanctum Protected Routes
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::get('/dashboard', fn() => view('pwa.dashboard'))->name('Dashboard');
     Route::get('/notification', fn() => view('pwa.notification'))->name('Notification');
-    Route::get('/indexReport', fn() => view('pwa.report.indexReport'))->name('indexReport');
-    Route::get('/detailsReport', fn() => view('pwa.report.detailsReport'))->name('');
-
     //Page profile route
     Route::get('/indexProfile', [ProfileController::class, 'showMainProfile'])->name('profile.index');
 
@@ -63,48 +63,47 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::get('/face-verification', [AttendanceController::class, 'showfaceVerificationPage'])->name('verification.face-verification');
     Route::get('/face-register', [AttendanceController::class, 'faceVerificationPage'])->name('verification.face-register');
+
+    // DASHBOARD
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('Dashboard');
+    Route::get('/dashboardWeb', [DashboardController::class, 'dashboard'])->name('dashboardWeb');
+    Route::get('/notificationWeb', fn() => view('management_system.notificationWeb'))->name('notifications');
+    // Route::get('/dashboardWeb/employees', [DashboardController::class, 'countEmployee'])->name('dashboardWeb.employees');
+
+    //MANAGEMENT USER
+    Route::post('/users', [UserController::class, 'store'])->name('users.store');
+    Route::get('/indexManagUser', [UserController::class, 'create'])->name('users.create');
+    Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
+    Route::put('/users/{id}', [UserController::class, 'update'])->name('users.update');
+    Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
+    Route::get('/users', [UserController::class, 'search'])->name('users.search');
+
+    // ATTEDANCE MANAGEMENT
+    Route::get('/indexAttedance', [AttendanceController::class, 'index'])->name('attendances.index');
+    Route::get('/checkin/{Attendance}', [AttendanceController::class, 'showCheckInDetail'])->name('attendance.detail.checkin');
+    Route::get('/attedance', [AttendanceController::class, 'search'])->name('attendance.search');
+    //REPORT & ANALYTICS
+    Route::get('/indexReportWeb', fn() => view('management_system.report_analytics.indexReportWeb'))->name('Report_and_analytics');
+    //report & analytics - attedance report
+    Route::get('/attedanceReport', fn() => view('management_system.report_analytics.attedanceReport'))->name('Attedance Report');
+    Route::get('/attendance/export-pdf', [ReportController::class, 'exportPDF'])
+        ->name('attendance.export'); // jika perlu
+    Route::get('/attedanceReport', [ReportController::class, 'attendanceReport'])->name('Attendance.report');
+    Route::get('/report/attendance', [ReportController::class, 'attendanceReport'])->name('attendance.report');
+    Route::get('/indexReport', [ReportController::class, 'indexReport'])->name('indexReport');
+    Route::get('/report/details/{id}', [ReportController::class, 'detailsReport'])->name('report.details');
+
+    //report & analytics- payroll report
+    Route::get('/payrollReport', [ReportController::class, 'payrollReport'])->name('Payroll Report');
+    Route::get('/payroll/export-pdf', [ReportController::class, 'exportPayrollPDF'])->name('payroll.export');
+
+    Route::get('/indexSecurity', fn() => view('management_system.security_settings.indexSecurity'))->name('Security_and_Settings');
 });
 Route::get('/face-registration/check', function () {
     $registered = \App\Models\FaceRegistration::where('user_id', Auth::id())->exists();
     return response()->json(['registered' => $registered]);
 })->middleware('auth');
 
-
-
-//MANAGEMENT SYSTEM
-// sign In
-Route::get('/signIn', fn() => view('management_system.signIn'))->name('signin');
-
-// DASHBOARD
-Route::get('/dashboardWeb', [DashboardController::class, 'dashboard']);
-Route::get('/notificationWeb', fn() => view('management_system.notificationWeb'))->name('notifications');
-// Route::get('/dashboardWeb/employees', [DashboardController::class, 'countEmployee'])->name('dashboardWeb.employees');
-
-//MANAGEMENT USER
-Route::post('/users', [UserController::class, 'store'])->name('users.store');
-Route::get('/indexManagUser', [UserController::class, 'create'])->name('users.create');
-Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
-Route::put('/users/{id}', [UserController::class, 'update'])->name('users.update');
-Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
-Route::get('/users', [UserController::class, 'search'])->name('users.search');
-
-// ATTEDANCE MANAGEMENT
-Route::get('/indexAttedance', [AttendanceController::class, 'index'])->name('attendances.index');
-Route::get('/checkin/{Attendance}', [AttendanceController::class, 'showCheckInDetail'])->name('attendance.detail.checkin');
-Route::get('/attedance', [AttendanceController::class, 'search'])->name('attendance.search');
-//REPORT & ANALYTICS
-Route::get('/indexReportWeb', fn() => view('management_system.report_analytics.indexReportWeb'))->name('Report_and_analytics');
-//report & analytics - attedance report
-Route::get('/attedanceReport', fn() => view('management_system.report_analytics.attedanceReport'))->name('Attedance Report');
-Route::get('/attendance/export-pdf', [ReportController::class, 'exportPDF'])
-    ->name('attendance.export'); // jika perlu
-Route::get('/attedanceReport', [ReportController::class, 'attendanceReport'])->name('Attendance.report');
-Route::get('/report/attendance', [ReportController::class, 'attendanceReport'])->name('attendance.report');
-
-//report & analytics- payroll report
-Route::get('/payrollReport', fn() => view('management_system.report_analytics.payrollReport'))->name('Payroll Report');
-
-Route::get('/indexSecurity', fn() => view('management_system.security_settings.indexSecurity'))->name('Security_and_Settings');
 
 // //WEB
 // Route::get('/signIn', fn () => view('management_system.signIn'))->name('signin');

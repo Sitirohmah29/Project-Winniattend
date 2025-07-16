@@ -1,259 +1,136 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Management - Attedance Management </title>
-</head>
-
-@vite('resources/css/app.css')
-<!-- Alpine.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.13.0/cdn.min.js" defer></script>
-<!-- Font Awesome -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-
-<body>
-    <div class="dashboard flex flex-row max-w-screen ">
-        {{-- Navbar --}}
-        <div class="navbar fixed left-0 top-0 h-full flex flex-col justify-start bg-white shadow-lg px-6 py-8 w-58 z-10">
-            <img src="{{ asset('images/LogoWinnicode.png') }}" class="w-45 h-18" />
-
-            <div class="nav-list flex flex-col gap-4">
-                <div class="dashboard flex flex-row gap-2 items-center"
-                    onclick="window.location.href='{{ url('/dashboardWeb') }}'">
-                    <svg width="20" height="18" viewBox="0 0 25 23" fill="none"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M0.6875 2.90625C0.6875 2.28465 0.954185 1.68851 1.42889 1.24897C1.90359 0.80943 2.54742 0.5625 3.21875 0.5625H8.28125C8.95258 0.5625 9.59641 0.80943 10.0711 1.24897C10.5458 1.68851 10.8125 2.28465 10.8125 2.90625V7.59375C10.8125 8.21535 10.5458 8.81149 10.0711 9.25103C9.59641 9.69057 8.95258 9.9375 8.28125 9.9375H3.21875C2.54742 9.9375 1.90359 9.69057 1.42889 9.25103C0.954185 8.81149 0.6875 8.21535 0.6875 7.59375V2.90625ZM14.1875 2.90625C14.1875 2.28465 14.4542 1.68851 14.9289 1.24897C15.4036 0.80943 16.0474 0.5625 16.7188 0.5625H21.7812C22.4526 0.5625 23.0964 0.80943 23.5711 1.24897C24.0458 1.68851 24.3125 2.28465 24.3125 2.90625V7.59375C24.3125 8.21535 24.0458 8.81149 23.5711 9.25103C23.0964 9.69057 22.4526 9.9375 21.7812 9.9375H16.7188C16.0474 9.9375 15.4036 9.69057 14.9289 9.25103C14.4542 8.81149 14.1875 8.21535 14.1875 7.59375V2.90625ZM0.6875 15.4062C0.6875 14.7846 0.954185 14.1885 1.42889 13.749C1.90359 13.3094 2.54742 13.0625 3.21875 13.0625H8.28125C8.95258 13.0625 9.59641 13.3094 10.0711 13.749C10.5458 14.1885 10.8125 14.7846 10.8125 15.4062V20.0938C10.8125 20.7154 10.5458 21.3115 10.0711 21.751C9.59641 22.1906 8.95258 22.4375 8.28125 22.4375H3.21875C2.54742 22.4375 1.90359 22.1906 1.42889 21.751C0.954185 21.3115 0.6875 20.7154 0.6875 20.0938V15.4062ZM14.1875 15.4062C14.1875 14.7846 14.4542 14.1885 14.9289 13.749C15.4036 13.3094 16.0474 13.0625 16.7188 13.0625H21.7812C22.4526 13.0625 23.0964 13.3094 23.5711 13.749C24.0458 14.1885 24.3125 14.7846 24.3125 15.4062V20.0938C24.3125 20.7154 24.0458 21.3115 23.5711 21.751C23.0964 22.1906 22.4526 22.4375 21.7812 22.4375H16.7188C16.0474 22.4375 15.4036 22.1906 14.9289 21.751C14.4542 21.3115 14.1875 20.7154 14.1875 20.0938V15.4062Z"
-                            fill="#6D6D6D" />
-                    </svg>
-
-                    <button class="text-gray-500 text-sm">Dashboard</button>
-                </div>
-
-                <div class="Attedance flex flex-row gap-2 items-center"
-                    onclick="window.location.href='{{ url('/indexAttedance') }}'">
-                    <svg width="20" height="20" viewBox="0 0 25 25" fill="none"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <g clip-path="url(#clip0_219_424)">
-                            <path
-                                d="M5.46875 0C5.67595 0 5.87466 0.08231 6.02118 0.228823C6.16769 0.375336 6.25 0.57405 6.25 0.78125V1.5625H18.75V0.78125C18.75 0.57405 18.8323 0.375336 18.9788 0.228823C19.1253 0.08231 19.324 0 19.5312 0C19.7385 0 19.9372 0.08231 20.0837 0.228823C20.2302 0.375336 20.3125 0.57405 20.3125 0.78125V1.5625H21.875C22.7038 1.5625 23.4987 1.89174 24.0847 2.47779C24.6708 3.06384 25 3.8587 25 4.6875V21.875C25 22.7038 24.6708 23.4987 24.0847 24.0847C23.4987 24.6708 22.7038 25 21.875 25H3.125C2.2962 25 1.50134 24.6708 0.915291 24.0847C0.32924 23.4987 0 22.7038 0 21.875V4.6875C0 3.8587 0.32924 3.06384 0.915291 2.47779C1.50134 1.89174 2.2962 1.5625 3.125 1.5625H4.6875V0.78125C4.6875 0.57405 4.76981 0.375336 4.91632 0.228823C5.06284 0.08231 5.26155 0 5.46875 0V0ZM3.125 3.125C2.7106 3.125 2.31317 3.28962 2.02015 3.58265C1.72712 3.87567 1.5625 4.2731 1.5625 4.6875V21.875C1.5625 22.2894 1.72712 22.6868 2.02015 22.9799C2.31317 23.2729 2.7106 23.4375 3.125 23.4375H21.875C22.2894 23.4375 22.6868 23.2729 22.9799 22.9799C23.2729 22.6868 23.4375 22.2894 23.4375 21.875V4.6875C23.4375 4.2731 23.2729 3.87567 22.9799 3.58265C22.6868 3.28962 22.2894 3.125 21.875 3.125H3.125Z"
-                                fill="#5271FF" />
-                            <path
-                                d="M3.90625 6.25C3.90625 6.0428 3.98856 5.84409 4.13507 5.69757C4.28159 5.55106 4.4803 5.46875 4.6875 5.46875H20.3125C20.5197 5.46875 20.7184 5.55106 20.8649 5.69757C21.0114 5.84409 21.0938 6.0428 21.0938 6.25V7.8125C21.0938 8.0197 21.0114 8.21841 20.8649 8.36493C20.7184 8.51144 20.5197 8.59375 20.3125 8.59375H4.6875C4.4803 8.59375 4.28159 8.51144 4.13507 8.36493C3.98856 8.21841 3.90625 8.0197 3.90625 7.8125V6.25ZM17.1875 11.7188C17.1875 11.5115 17.2698 11.3128 17.4163 11.1663C17.5628 11.0198 17.7615 10.9375 17.9688 10.9375H19.5312C19.7385 10.9375 19.9372 11.0198 20.0837 11.1663C20.2302 11.3128 20.3125 11.5115 20.3125 11.7188V13.2812C20.3125 13.4885 20.2302 13.6872 20.0837 13.8337C19.9372 13.9802 19.7385 14.0625 19.5312 14.0625H17.9688C17.7615 14.0625 17.5628 13.9802 17.4163 13.8337C17.2698 13.6872 17.1875 13.4885 17.1875 13.2812V11.7188ZM12.5 11.7188C12.5 11.5115 12.5823 11.3128 12.7288 11.1663C12.8753 11.0198 13.074 10.9375 13.2812 10.9375H14.8438C15.051 10.9375 15.2497 11.0198 15.3962 11.1663C15.5427 11.3128 15.625 11.5115 15.625 11.7188V13.2812C15.625 13.4885 15.5427 13.6872 15.3962 13.8337C15.2497 13.9802 15.051 14.0625 14.8438 14.0625H13.2812C13.074 14.0625 12.8753 13.9802 12.7288 13.8337C12.5823 13.6872 12.5 13.4885 12.5 13.2812V11.7188ZM4.6875 16.4062C4.6875 16.199 4.76981 16.0003 4.91632 15.8538C5.06284 15.7073 5.26155 15.625 5.46875 15.625H7.03125C7.23845 15.625 7.43716 15.7073 7.58368 15.8538C7.73019 16.0003 7.8125 16.199 7.8125 16.4062V17.9688C7.8125 18.176 7.73019 18.3747 7.58368 18.5212C7.43716 18.6677 7.23845 18.75 7.03125 18.75H5.46875C5.26155 18.75 5.06284 18.6677 4.91632 18.5212C4.76981 18.3747 4.6875 18.176 4.6875 17.9688V16.4062ZM9.375 16.4062C9.375 16.199 9.45731 16.0003 9.60382 15.8538C9.75034 15.7073 9.94905 15.625 10.1562 15.625H11.7188C11.926 15.625 12.1247 15.7073 12.2712 15.8538C12.4177 16.0003 12.5 16.199 12.5 16.4062V17.9688C12.5 18.176 12.4177 18.3747 12.2712 18.5212C12.1247 18.6677 11.926 18.75 11.7188 18.75H10.1562C9.94905 18.75 9.75034 18.6677 9.60382 18.5212C9.45731 18.3747 9.375 18.176 9.375 17.9688V16.4062Z"
-                                fill="#5271FF" />
-                        </g>
-                        <defs>
-                            <clipPath id="clip0_219_424">
-                                <rect width="25" height="25" fill="white" />
-                            </clipPath>
-                        </defs>
-                    </svg>
-
-                    <path
-                        d="M0.6875 2.90625C0.6875 2.28465 0.954185 1.68851 1.42889 1.24897C1.90359 0.80943 2.54742 0.5625 3.21875 0.5625H8.28125C8.95258 0.5625 9.59641 0.80943 10.0711 1.24897C10.5458 1.68851 10.8125 2.28465 10.8125 2.90625V7.59375C10.8125 8.21535 10.5458 8.81149 10.0711 9.25103C9.59641 9.69057 8.95258 9.9375 8.28125 9.9375H3.21875C2.54742 9.9375 1.90359 9.69057 1.42889 9.25103C0.954185 8.81149 0.6875 8.21535 0.6875 7.59375V2.90625ZM14.1875 2.90625C14.1875 2.28465 14.4542 1.68851 14.9289 1.24897C15.4036 0.80943 16.0474 0.5625 16.7188 0.5625H21.7812C22.4526 0.5625 23.0964 0.80943 23.5711 1.24897C24.0458 1.68851 24.3125 2.28465 24.3125 2.90625V7.59375C24.3125 8.21535 24.0458 8.81149 23.5711 9.25103C23.0964 9.69057 22.4526 9.9375 21.7812 9.9375H16.7188C16.0474 9.9375 15.4036 9.69057 14.9289 9.25103C14.4542 8.81149 14.1875 8.21535 14.1875 7.59375V2.90625ZM0.6875 15.4062C0.6875 14.7846 0.954185 14.1885 1.42889 13.749C1.90359 13.3094 2.54742 13.0625 3.21875 13.0625H8.28125C8.95258 13.0625 9.59641 13.3094 10.0711 13.749C10.5458 14.1885 10.8125 14.7846 10.8125 15.4062V20.0938C10.8125 20.7154 10.5458 21.3115 10.0711 21.751C9.59641 22.1906 8.95258 22.4375 8.28125 22.4375H3.21875C2.54742 22.4375 1.90359 22.1906 1.42889 21.751C0.954185 21.3115 0.6875 20.7154 0.6875 20.0938V15.4062ZM14.1875 15.4062C14.1875 14.7846 14.4542 14.1885 14.9289 13.749C15.4036 13.3094 16.0474 13.0625 16.7188 13.0625H21.7812C22.4526 13.0625 23.0964 13.3094 23.5711 13.749C24.0458 14.1885 24.3125 14.7846 24.3125 15.4062V20.0938C24.3125 20.7154 24.0458 21.3115 23.5711 21.751C23.0964 22.1906 22.4526 22.4375 21.7812 22.4375H16.7188C16.0474 22.4375 15.4036 22.1906 14.9289 21.751C14.4542 21.3115 14.1875 20.7154 14.1875 20.0938V15.4062Z"
-                        fill="#5271FF" />
-                    </svg>
-
-                    <button class="text-blue-500 text-sm">Attedance Management</button>
-                </div>
-
-                <div class="management-user flex flex-row gap-2 items-center"
-                    onclick="window.location.href='{{ url('/indexManagUser') }}'">
-                    <svg width="20" height="20" viewBox="0 0 25 19" fill="none"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M23.4375 18.875C23.4375 18.875 25 18.875 25 17.3125C25 15.75 23.4375 11.0625 17.1875 11.0625C10.9375 11.0625 9.375 15.75 9.375 17.3125C9.375 18.875 10.9375 18.875 10.9375 18.875H23.4375ZM10.9719 17.3125C10.9603 17.3109 10.9489 17.3088 10.9375 17.3062C10.9391 16.8938 11.1984 15.6969 12.125 14.6187C12.9875 13.6078 14.5031 12.625 17.1875 12.625C19.8703 12.625 21.3859 13.6094 22.25 14.6187C23.1766 15.6969 23.4344 16.8953 23.4375 17.3062L23.425 17.3094C23.4177 17.3106 23.4104 17.3116 23.4031 17.3125H10.9719ZM17.1875 7.9375C18.0163 7.9375 18.8112 7.60826 19.3972 7.02221C19.9833 6.43616 20.3125 5.6413 20.3125 4.8125C20.3125 3.9837 19.9833 3.18884 19.3972 2.60279C18.8112 2.01674 18.0163 1.6875 17.1875 1.6875C16.3587 1.6875 15.5638 2.01674 14.9778 2.60279C14.3917 3.18884 14.0625 3.9837 14.0625 4.8125C14.0625 5.6413 14.3917 6.43616 14.9778 7.02221C15.5638 7.60826 16.3587 7.9375 17.1875 7.9375ZM21.875 4.8125C21.875 5.42807 21.7538 6.03761 21.5182 6.60633C21.2826 7.17504 20.9373 7.69179 20.5021 8.12706C20.0668 8.56234 19.55 8.90762 18.9813 9.14319C18.4126 9.37875 17.8031 9.5 17.1875 9.5C16.5719 9.5 15.9624 9.37875 15.3937 9.14319C14.825 8.90762 14.3082 8.56234 13.8729 8.12706C13.4377 7.69179 13.0924 7.17504 12.8568 6.60633C12.6212 6.03761 12.5 5.42807 12.5 4.8125C12.5 3.5693 12.9939 2.37701 13.8729 1.49794C14.752 0.61886 15.9443 0.125 17.1875 0.125C18.4307 0.125 19.623 0.61886 20.5021 1.49794C21.3811 2.37701 21.875 3.5693 21.875 4.8125ZM10.8375 11.5C10.2125 11.3032 9.56818 11.1738 8.91562 11.1141C8.54896 11.0792 8.18082 11.062 7.8125 11.0625C1.5625 11.0625 0 15.75 0 17.3125C0 18.3547 0.520312 18.875 1.5625 18.875H8.15C7.91837 18.3872 7.80285 17.8524 7.8125 17.3125C7.8125 15.7344 8.40156 14.1219 9.51562 12.775C9.89531 12.3156 10.3375 11.8859 10.8375 11.5ZM7.6875 12.625C6.76274 14.0145 6.26319 15.6435 6.25 17.3125H1.5625C1.5625 16.9062 1.81875 15.7031 2.75 14.6187C3.60156 13.625 5.08125 12.6563 7.6875 12.6266V12.625ZM2.34375 5.59375C2.34375 4.35055 2.83761 3.15826 3.71669 2.27919C4.59576 1.40011 5.78805 0.90625 7.03125 0.90625C8.27445 0.90625 9.46674 1.40011 10.3458 2.27919C11.2249 3.15826 11.7188 4.35055 11.7188 5.59375C11.7188 6.83695 11.2249 8.02924 10.3458 8.90831C9.46674 9.78739 8.27445 10.2812 7.03125 10.2812C5.78805 10.2812 4.59576 9.78739 3.71669 8.90831C2.83761 8.02924 2.34375 6.83695 2.34375 5.59375ZM7.03125 2.46875C6.20245 2.46875 5.40759 2.79799 4.82154 3.38404C4.23549 3.97009 3.90625 4.76495 3.90625 5.59375C3.90625 6.42255 4.23549 7.21741 4.82154 7.80346C5.40759 8.38951 6.20245 8.71875 7.03125 8.71875C7.86005 8.71875 8.65491 8.38951 9.24096 7.80346C9.82701 7.21741 10.1562 6.42255 10.1562 5.59375C10.1562 4.76495 9.82701 3.97009 9.24096 3.38404C8.65491 2.79799 7.86005 2.46875 7.03125 2.46875Z"
-                            fill="#6D6D6D" />
-                    </svg>
-
-                    <button class="text-gray-500 text-sm">Management User</button>
-                </div>
-
-                <div class="report flex flex-row gap-2 items-center"
-                    onclick="window.location.href='{{ url('/indexReportWeb') }}'">
-                    <svg width="20" height="18" viewBox="0 0 25 23" fill="none"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M17.1875 2.125C17.1875 1.7106 17.3521 1.31317 17.6451 1.02015C17.9382 0.72712 18.3356 0.5625 18.75 0.5625H21.875C22.2894 0.5625 22.6868 0.72712 22.9799 1.02015C23.2729 1.31317 23.4375 1.7106 23.4375 2.125V20.875H24.2188C24.426 20.875 24.6247 20.9573 24.7712 21.1038C24.9177 21.2503 25 21.449 25 21.6562C25 21.8635 24.9177 22.0622 24.7712 22.2087C24.6247 22.3552 24.426 22.4375 24.2188 22.4375H0.78125C0.57405 22.4375 0.375336 22.3552 0.228823 22.2087C0.08231 22.0622 0 21.8635 0 21.6562C0 21.449 0.08231 21.2503 0.228823 21.1038C0.375336 20.9573 0.57405 20.875 0.78125 20.875H1.5625V16.1875C1.5625 15.7731 1.72712 15.3757 2.02015 15.0826C2.31317 14.7896 2.7106 14.625 3.125 14.625H6.25C6.6644 14.625 7.06183 14.7896 7.35485 15.0826C7.64788 15.3757 7.8125 15.7731 7.8125 16.1875V20.875H9.375V9.9375C9.375 9.5231 9.53962 9.12567 9.83265 8.83265C10.1257 8.53962 10.5231 8.375 10.9375 8.375H14.0625C14.4769 8.375 14.8743 8.53962 15.1674 8.83265C15.4604 9.12567 15.625 9.5231 15.625 9.9375V20.875H17.1875V2.125ZM18.75 20.875H21.875V2.125H18.75V20.875ZM14.0625 20.875V9.9375H10.9375V20.875H14.0625ZM6.25 20.875V16.1875H3.125V20.875H6.25Z"
-                            fill="#6D6D6D" />
-                    </svg>
-                    <button class="text-gray-500 text-sm">Report & Analytics</button>
-                </div>
-
-                <div class="security flex flex-row gap-2 items-center"
-                    onclick="window.location.href='{{ url('/indexSecurity') }}'">
-                    <svg width="20" height="20" viewBox="0 0 25 25" fill="none"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <g clip-path="url(#clip0_219_438)">
-                            <path
-                                d="M12.5001 7.4281C11.8341 7.4281 11.1745 7.55929 10.5592 7.81417C9.94383 8.06906 9.38471 8.44265 8.91374 8.91362C8.44277 9.38459 8.06918 9.9437 7.8143 10.5591C7.55941 11.1744 7.42822 11.8339 7.42822 12.5C7.42822 13.166 7.55941 13.8255 7.8143 14.4409C8.06918 15.0562 8.44277 15.6154 8.91374 16.0863C9.38471 16.5573 9.94383 16.9309 10.5592 17.1858C11.1745 17.4407 11.8341 17.5718 12.5001 17.5718C13.8452 17.5718 15.1353 17.0375 16.0865 16.0863C17.0376 15.1352 17.572 13.8451 17.572 12.5C17.572 11.1548 17.0376 9.86478 16.0865 8.91362C15.1353 7.96246 13.8452 7.4281 12.5001 7.4281ZM8.99072 12.5C8.99072 11.5692 9.36046 10.6766 10.0186 10.0185C10.6767 9.36034 11.5694 8.9906 12.5001 8.9906C13.4308 8.9906 14.3235 9.36034 14.9816 10.0185C15.6397 10.6766 16.0095 11.5692 16.0095 12.5C16.0095 13.4307 15.6397 14.3233 14.9816 14.9815C14.3235 15.6396 13.4308 16.0093 12.5001 16.0093C11.5694 16.0093 10.6767 15.6396 10.0186 14.9815C9.36046 14.3233 8.99072 13.4307 8.99072 12.5Z"
-                                fill="#6D6D6D" />
-                            <path
-                                d="M15.3062 2.09845C14.4828 -0.698425 10.5171 -0.698425 9.6937 2.09845L9.54683 2.59689C9.48932 2.79212 9.38885 2.97202 9.25279 3.12338C9.11673 3.27475 8.94851 3.39375 8.76048 3.47166C8.57246 3.54956 8.36938 3.58441 8.16613 3.57363C7.96288 3.56286 7.76463 3.50674 7.58589 3.40939L7.12964 3.15939C4.56714 1.76564 1.76558 4.56876 3.16089 7.1297L3.40933 7.58595C3.50668 7.76469 3.5628 7.96294 3.57357 8.16619C3.58435 8.36944 3.5495 8.57252 3.4716 8.76054C3.39369 8.94857 3.27469 9.11679 3.12332 9.25285C2.97196 9.38891 2.79206 9.48938 2.59683 9.54689L2.09839 9.69376C-0.698486 10.5172 -0.698486 14.4828 2.09839 15.3063L2.59683 15.4531C2.79206 15.5106 2.97196 15.6111 3.12332 15.7472C3.27469 15.8832 3.39369 16.0514 3.4716 16.2395C3.5495 16.4275 3.58435 16.6306 3.57357 16.8338C3.5628 17.0371 3.50668 17.2353 3.40933 17.4141L3.15933 17.8703C1.76558 20.4328 4.56714 23.2359 7.12964 21.8391L7.58589 21.5906C7.76463 21.4933 7.96288 21.4372 8.16613 21.4264C8.36938 21.4156 8.57246 21.4505 8.76048 21.5284C8.94851 21.6063 9.11673 21.7253 9.25279 21.8766C9.38885 22.028 9.48932 22.2079 9.54683 22.4031L9.6937 22.9016C10.5171 25.6984 14.4828 25.6984 15.3062 22.9016L15.4531 22.4031C15.5106 22.2079 15.611 22.028 15.7471 21.8766C15.8832 21.7253 16.0514 21.6063 16.2394 21.5284C16.4274 21.4505 16.6305 21.4156 16.8338 21.4264C17.037 21.4372 17.2353 21.4933 17.414 21.5906L17.8703 21.8406C20.4328 23.2359 23.2359 20.4313 21.839 17.8703L21.5906 17.4141C21.4932 17.2353 21.4371 17.0371 21.4263 16.8338C21.4156 16.6306 21.4504 16.4275 21.5283 16.2395C21.6062 16.0514 21.7252 15.8832 21.8766 15.7472C22.0279 15.6111 22.2078 15.5106 22.4031 15.4531L22.9015 15.3063C25.6984 14.4828 25.6984 10.5172 22.9015 9.69376L22.4031 9.54689C22.2078 9.48938 22.0279 9.38891 21.8766 9.25285C21.7252 9.11679 21.6062 8.94857 21.5283 8.76054C21.4504 8.57252 21.4156 8.36944 21.4263 8.16619C21.4371 7.96294 21.4932 7.76469 21.5906 7.58595L21.8406 7.1297C23.2359 4.5672 20.4312 1.76564 17.8703 3.16095L17.414 3.40939C17.2353 3.50674 17.037 3.56286 16.8338 3.57363C16.6305 3.58441 16.4274 3.54956 16.2394 3.47166C16.0514 3.39375 15.8832 3.27475 15.7471 3.12338C15.611 2.97202 15.5106 2.79212 15.4531 2.59689L15.3062 2.09845ZM11.1921 2.54064C11.5765 1.23595 13.4234 1.23595 13.8078 2.54064L13.9546 3.03907C14.0781 3.45796 14.2938 3.8439 14.5858 4.1686C14.8778 4.49331 15.2388 4.74855 15.6423 4.91561C16.0457 5.08266 16.4815 5.1573 16.9176 5.13406C17.3537 5.11081 17.779 4.99027 18.1625 4.78126L18.6171 4.53126C19.8109 3.88282 21.1171 5.18751 20.4671 6.38282L20.2187 6.83907C20.01 7.22255 19.8898 7.64787 19.8668 8.08385C19.8438 8.51983 19.9186 8.95543 20.0858 9.35874C20.253 9.76204 20.5083 10.1228 20.833 10.4147C21.1578 10.7065 21.5436 10.922 21.9625 11.0453L22.4593 11.1922C23.764 11.5766 23.764 13.4234 22.4593 13.8078L21.9609 13.9547C21.542 14.0782 21.1561 14.2938 20.8314 14.5858C20.5067 14.8778 20.2514 15.2388 20.0844 15.6423C19.9173 16.0458 19.8427 16.4816 19.8659 16.9176C19.8892 17.3537 20.0097 17.7791 20.2187 18.1625L20.4687 18.6172C21.1171 19.8109 19.8125 21.1172 18.6171 20.4672L18.1625 20.2188C17.7789 20.0098 17.3535 19.8893 16.9173 19.8661C16.4811 19.843 16.0453 19.9178 15.6418 20.085C15.2383 20.2522 14.8773 20.5076 14.5854 20.8325C14.2934 21.1574 14.0779 21.5435 13.9546 21.9625L13.8078 22.4594C13.4234 23.7641 11.5765 23.7641 11.1921 22.4594L11.0453 21.9609C10.9217 21.5423 10.7061 21.1566 10.4142 20.832C10.1223 20.5075 9.7615 20.2523 9.35822 20.0853C8.95493 19.9183 8.51939 19.8436 8.0835 19.8666C7.6476 19.8897 7.22239 20.01 6.83901 20.2188L6.38276 20.4688C5.18901 21.1172 3.88276 19.8125 4.53276 18.6172L4.7812 18.1625C4.9905 17.779 5.11128 17.3535 5.13468 16.9173C5.15808 16.481 5.0835 16.045 4.91643 15.6413C4.74935 15.2376 4.49401 14.8765 4.16914 14.5844C3.84427 14.2922 3.45812 14.0766 3.03901 13.9531L2.54058 13.8063C1.23589 13.4219 1.23589 11.575 2.54058 11.1906L3.03901 11.0438C3.45746 10.9202 3.84298 10.7046 4.16736 10.4128C4.49174 10.121 4.74677 9.76037 4.91378 9.35729C5.0808 8.9542 5.15557 8.51888 5.13263 8.08317C5.10969 7.64746 4.98962 7.22239 4.7812 6.83907L4.5312 6.38282C3.88276 5.18907 5.18745 3.88282 6.38276 4.53282L6.83901 4.78126C7.22239 4.98997 7.6476 5.11028 8.0835 5.13338C8.51939 5.15647 8.95493 5.08176 9.35822 4.91473C9.7615 4.74769 10.1223 4.49256 10.4142 4.16801C10.7061 3.84347 10.9217 3.45774 11.0453 3.03907L11.1921 2.54064Z"
-                                fill="#6D6D6D" />
-                        </g>
-                        <defs>
-                            <clipPath id="clip0_219_438">
-                                <rect width="25" height="25" fill="white" />
-                            </clipPath>
-                        </defs>
-                    </svg>
-                    <button class="text-gray-500 text-sm">Security & Settings </button>
-                </div>
-
-                <div class="logout flex flex-row gap-2 items-center"
-                    onclick="window.location.href='{{ url('/signIn') }}'">
-                    <svg width="20" height="20" viewBox="0 0 25 25" fill="none"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <g clip-path="url(#clip0_219_450)">
-                            <path fill-rule="evenodd" clip-rule="evenodd"
-                                d="M15.625 19.5312C15.625 19.7385 15.5427 19.9372 15.3962 20.0837C15.2497 20.2302 15.051 20.3125 14.8438 20.3125H2.34375C2.13655 20.3125 1.93784 20.2302 1.79132 20.0837C1.64481 19.9372 1.5625 19.7385 1.5625 19.5312V5.46875C1.5625 5.26155 1.64481 5.06284 1.79132 4.91632C1.93784 4.76981 2.13655 4.6875 2.34375 4.6875H14.8438C15.051 4.6875 15.2497 4.76981 15.3962 4.91632C15.5427 5.06284 15.625 5.26155 15.625 5.46875V8.59375C15.625 8.80095 15.7073 8.99966 15.8538 9.14618C16.0003 9.29269 16.199 9.375 16.4062 9.375C16.6135 9.375 16.8122 9.29269 16.9587 9.14618C17.1052 8.99966 17.1875 8.80095 17.1875 8.59375V5.46875C17.1875 4.84715 16.9406 4.25101 16.501 3.81147C16.0615 3.37193 15.4654 3.125 14.8438 3.125H2.34375C1.72215 3.125 1.12601 3.37193 0.686468 3.81147C0.24693 4.25101 0 4.84715 0 5.46875L0 19.5312C0 20.1529 0.24693 20.749 0.686468 21.1885C1.12601 21.6281 1.72215 21.875 2.34375 21.875H14.8438C15.4654 21.875 16.0615 21.6281 16.501 21.1885C16.9406 20.749 17.1875 20.1529 17.1875 19.5312V16.4062C17.1875 16.199 17.1052 16.0003 16.9587 15.8538C16.8122 15.7073 16.6135 15.625 16.4062 15.625C16.199 15.625 16.0003 15.7073 15.8538 15.8538C15.7073 16.0003 15.625 16.199 15.625 16.4062V19.5312Z"
-                                fill="#6D6D6D" />
-                            <path fill-rule="evenodd" clip-rule="evenodd"
-                                d="M24.7719 13.0531C24.8446 12.9806 24.9024 12.8944 24.9417 12.7994C24.9811 12.7045 25.0014 12.6028 25.0014 12.5C25.0014 12.3973 24.9811 12.2955 24.9417 12.2006C24.9024 12.1057 24.8446 12.0195 24.7719 11.9469L20.0844 7.25939C19.9377 7.11269 19.7387 7.03027 19.5312 7.03027C19.3238 7.03027 19.1248 7.11269 18.9781 7.25939C18.8314 7.40608 18.749 7.60505 18.749 7.81251C18.749 8.01997 18.8314 8.21894 18.9781 8.36564L22.3328 11.7188H8.59375C8.38655 11.7188 8.18784 11.8011 8.04132 11.9476C7.89481 12.0941 7.8125 12.2928 7.8125 12.5C7.8125 12.7072 7.89481 12.9059 8.04132 13.0524C8.18784 13.199 8.38655 13.2813 8.59375 13.2813H22.3328L18.9781 16.6344C18.8314 16.7811 18.749 16.9801 18.749 17.1875C18.749 17.395 18.8314 17.5939 18.9781 17.7406C19.1248 17.8873 19.3238 17.9697 19.5312 17.9697C19.7387 17.9697 19.9377 17.8873 20.0844 17.7406L24.7719 13.0531Z"
-                                fill="#6D6D6D" />
-                        </g>
-                        <defs>
-                            <clipPath id="clip0_219_450">
-                                <rect width="25" height="25" fill="white" />
-                            </clipPath>
-                        </defs>
-                    </svg>
-                    <button class="text-gray-500 text-sm">Logout</button>
-                </div>
-            </div>
-
-        </div>
-
-        {{-- Content --}}
-        <div class="content flex flex-col gap-6 ml-58 p-6 w-full overflow-y-auto mb-20">
-            <!-- Header -->
-            <div class="bg-blue-500 text-white p-4 rounded-lg">
-                <h1 class="text-xl font-semibold">Attedance Management</h1>
-            </div>
-
-            <div class="flex gap-4 items-center justify-between">
-                <!-- Search Box -->
-                <form method="GET" action="{{ route('attendance.search') }}" class="flex items-center bg-white rounded-full shadow-md px-4 py-2 w-[800px]">
-                    <i class="fa fa-search text-gray-500 mr-2"></i>
-                    <input
-                        type="text"
-                        name="search"
-                        placeholder="Search by name, role, or date"
-                        value="{{ request('search') }}"
-                        class="w-full bg-transparent outline-none text-base italic text-gray-700"
-                    />
-                    <button type="submit" class="ml-2 text-gray-500 hover:text-gray-700">
-                        <i class="fa fa-search"></i>
-                    </button>
-                </form>
-
-                <!-- Month Filter -->
-                <form method="GET" action="{{ route('attendance.search') }}" class="relative">
-                    <div x-data="{ 
-                        open: false, 
-                        selected: '{{ request('month') ?? 'All' }}', 
-                        months: ['All', 'January', 'February', 'March', 'April', 'May', 'June', 
-                                'July', 'August', 'September', 'October', 'November', 'December'] 
-                    }" class="relative w-56">
-                        <input type="hidden" name="month" :value="selected">
-                        <button type="button" @click="open = !open"
-                            class="flex items-center bg-white rounded-full shadow-md px-4 py-2 cursor-pointer w-full justify-between border border-gray-300">
-                            <div class="flex items-center gap-2">
-                                <i class="fa fa-filter text-gray-500"></i>
-                                <span class="italic text-gray-700" x-text="selected"></span>
-                            </div>
-                            <i class="fa fa-chevron-down text-gray-500 text-sm"></i>
-                        </button>
-                        <ul x-show="open" @click.away="open = false"
-                            class="absolute left-0 right-0 mt-2 w-full bg-white border border-gray-200 rounded-md shadow-lg z-20 max-h-72 overflow-y-auto">
-                            <template x-for="month in months" :key="month">
-                                <li @click="selected = month; open = false; $el.closest('form').submit()"
-                                    class="px-4 py-2 hover:bg-blue-100 cursor-pointer text-gray-700">
-                                    <span x-text="month"></span>
-                                </li>
-                            </template>
-                        </ul>
-                    </div>
-                </form>
-            </div>
-
-            <!-- Table -->
-            <div class="overflow-x-auto rounded-lg shadow-lg">
-                <table class="min-w-full bg-white">
-                    <thead>
-                        <tr class="bg-blue-500 text-white text-left text-sm">
-                            <th class="px-4 py-3 font-semibold">Employee</th>
-                            <th class="px-4 py-3 font-semibold">Position</th>
-                            <th class="px-4 py-3 font-semibold">Date</th>
-                            <th class="px-4 py-3 font-semibold">Check in</th>
-                            <th class="px-4 py-3 font-semibold">Check out</th>
-                            <th class="px-4 py-3 font-semibold">Duration</th>
-                            <th class="px-4 py-3 font-semibold">Status</th>
-                            <th class="px-4 py-3 font-semibold">Action</th>
-                        </tr>
-                    </thead>
-
-                    <tbody class="text-sm text-gray-700">
-                        @foreach ($attendances as $attendance)
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-4 py-2">{{ $attendance->user->fullname ?? '-' }}</td>
-                                <td class="px-4 py-2">{{ $attendance->user->role->name ?? '-' }}</td>
-                                <td class="px-4 py-2">{{ $attendance->date ?? '-' }}</td>
-                                <td class="px-4 py-2 underline text-blue-500">
-                                    @if ($attendance->check_in)
-                                        <a href="{{ route('attendance.detail.checkin', $attendance->id) }}">
-                                            {{ \Carbon\Carbon::parse($attendance->check_in)->format('H:i') }}
-                                        </a>
-                                    @else
-                                        -
-                                    @endif
-                                </td>
-                                <td class="px-4 py-2 underline">
-                                    {{ $attendance->check_out ? \Carbon\Carbon::parse($attendance->check_out)->format('H:i') : '-' }}
-                                </td>
-                                <td class="px-4 py-2">
-                                    @if ($attendance->check_in && $attendance->check_out)
-                                        {{ \Carbon\Carbon::parse($attendance->check_in)->diffAsCarbonInterval(\Carbon\Carbon::parse($attendance->check_out))->forHumans(['short' => true]) }}
-                                    @else
-                                        -
-                                    @endif
-                                </td>
-                                <td class="px-4 py-2">
-                                    @if (isset($attendance->status))
-                                        {{ $attendance->status == 'onTime' ? 'On time' : 'Late' }}
-                                    @else
-                                        -
-                                    @endif
-                                </td>
-                                <td class="px-4 py-2 text-blue-500">
-                                    <a href="">
-                                        {{-- {{ route('attendances.edit', $attendance->id) }} --}}
-                                        <i class="fa-solid fa-pen-to-square"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Pagination -->
-            <div class="flex ml-58 fixed bottom-0 left-0 right-0 justify-between items-center py-8 px-8">
-                <button class="bg-blue-100 text-blue-700 px-4 py-2 rounded-lg hover:bg-blue-200">Previously</button>
-                <div class="flex gap-2">
-                    <button class="px-3 py-1 text-sm rounded-lg">1</button>
-                    <button class="px-3 py-1 text-sm rounded-lg ">2</button>
-                    <button class="px-3 py-1 text-sm bg-pink-500 text-white font-semibold rounded-full">3</button>
-                    <button class="px-3 py-1 text-sm rounded-lg">4</button>
-                    <button class="px-3 py-1 text-sm rounded-lg">5</button>
-                </div>
-                <button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Next</button>
-            </div>
-        </div>
+@extends('management_system.templates.layouts')
+@section('content')
+    <!-- Header -->
+    <div class="bg-blue-500 text-white p-4 rounded-lg">
+        <h1 class="text-xl font-semibold">Attedance Management</h1>
     </div>
-</body>
 
-</html>
+    <div class="flex gap-4 items-center justify-between">
+        <!-- Search Box -->
+        <form method="GET" action="{{ route('attendance.search') }}"
+            class="flex items-center bg-white rounded-full shadow-md px-4 py-2 w-[800px]">
+            <i class="fa fa-search text-gray-500 mr-2"></i>
+            <input type="text" name="search" placeholder="Search by name, role, or date" value="{{ request('search') }}"
+                class="w-full bg-transparent outline-none text-base italic text-gray-700" />
+            <button type="submit" class="ml-2 text-gray-500 hover:text-gray-700">
+                <i class="fa fa-search"></i>
+            </button>
+        </form>
+
+        <!-- Month Filter -->
+        <form method="GET" action="{{ route('attendance.search') }}" class="relative">
+            <div x-data="{
+                open: false,
+                selected: '{{ request('month', 'All') }}',
+                months: [
+                    { label: 'All', value: 'All' },
+                    { label: 'January', value: 1 },
+                    { label: 'February', value: 2 },
+                    { label: 'March', value: 3 },
+                    { label: 'April', value: 4 },
+                    { label: 'May', value: 5 },
+                    { label: 'June', value: 6 },
+                    { label: 'July', value: 7 },
+                    { label: 'August', value: 8 },
+                    { label: 'September', value: 9 },
+                    { label: 'October', value: 10 },
+                    { label: 'November', value: 11 },
+                    { label: 'December', value: 12 }
+                ]
+            }" class="relative w-56">
+                <input type="hidden" name="month" :value="selected">
+                <button type="button" @click="open = !open"
+                    class="flex items-center bg-white rounded-full shadow-md px-4 py-2 cursor-pointer w-full justify-between border border-gray-300">
+                    <div class="flex items-center gap-2">
+                        <i class="fa fa-filter text-gray-500"></i>
+                        <span class="italic text-gray-700"
+                            x-text="months.find(m => m.value == selected)?.label || 'All'"></span>
+                    </div>
+                    <i class="fa fa-chevron-down text-gray-500 text-sm"></i>
+                </button>
+                <ul x-show="open" @click.away="open = false"
+                    class="absolute left-0 right-0 mt-2 w-full bg-white border border-gray-200 rounded-md shadow-lg z-20 max-h-72 overflow-y-auto">
+                    <template x-for="month in months" :key="month.value">
+                        <li @click="selected = month.value; open = false; $el.closest('form').submit()"
+                            class="px-4 py-2 hover:bg-blue-100 cursor-pointer text-gray-700">
+                            <span x-text="month.label"></span>
+                        </li>
+                    </template>
+                </ul>
+            </div>
+        </form>
+    </div>
+
+    <!-- Table -->
+    <div class="overflow-x-auto rounded-lg shadow-lg">
+        <table class="min-w-full bg-white">
+            <thead>
+                <tr class="bg-blue-500 text-white text-left text-sm">
+                    <th class="px-4 py-3 font-semibold">Employee</th>
+                    <th class="px-4 py-3 font-semibold">Position</th>
+                    <th class="px-4 py-3 font-semibold">Date</th>
+                    <th class="px-4 py-3 font-semibold">Check in</th>
+                    <th class="px-4 py-3 font-semibold">Check out</th>
+                    <th class="px-4 py-3 font-semibold">Duration</th>
+                    <th class="px-4 py-3 font-semibold">Status</th>
+                    <th class="px-4 py-3 font-semibold">Action</th>
+                </tr>
+            </thead>
+
+            <tbody class="text-sm text-gray-700">
+                @foreach ($attendances as $attendance)
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-4 py-2">{{ $attendance->user->fullname ?? '-' }}</td>
+                        <td class="px-4 py-2">{{ $attendance->user->role->name ?? '-' }}</td>
+                        <td class="px-4 py-2">{{ $attendance->date ?? '-' }}</td>
+                        <td class="px-4 py-2 underline text-blue-500">
+                            @if ($attendance->check_in)
+                                <a href="{{ route('attendance.detail.checkin', $attendance->id) }}">
+                                    {{ \Carbon\Carbon::parse($attendance->check_in)->format('H:i') }}
+                                </a>
+                            @else
+                                -
+                            @endif
+                        </td>
+                        <td class="px-4 py-2 underline">
+                            {{ $attendance->check_out ? \Carbon\Carbon::parse($attendance->check_out)->format('H:i') : '-' }}
+                        </td>
+                        <td class="px-4 py-2">
+                            @if ($attendance->check_in && $attendance->check_out)
+                                {{ \Carbon\Carbon::parse($attendance->check_in)->diffAsCarbonInterval(\Carbon\Carbon::parse($attendance->check_out))->forHumans(['short' => true]) }}
+                            @else
+                                -
+                            @endif
+                        </td>
+                        <td class="px-4 py-2">
+                            @if (isset($attendance->status))
+                                {{ $attendance->status == 'onTime' ? 'On time' : 'Late' }}
+                            @else
+                                -
+                            @endif
+                        </td>
+                        <td class="px-4 py-2 text-blue-500">
+                            <a href="">
+                                {{-- {{ route('attendances.edit', $attendance->id) }} --}}
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </a>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="flex ml-58 fixed bottom-0 left-0 right-0 justify-between items-center py-8 px-8">
+        <button class="bg-blue-100 text-blue-700 px-4 py-2 rounded-lg hover:bg-blue-200">Previously</button>
+        <div class="flex gap-2">
+            <button class="px-3 py-1 text-sm rounded-lg">1</button>
+            <button class="px-3 py-1 text-sm rounded-lg ">2</button>
+            <button class="px-3 py-1 text-sm bg-pink-500 text-white font-semibold rounded-full">3</button>
+            <button class="px-3 py-1 text-sm rounded-lg">4</button>
+            <button class="px-3 py-1 text-sm rounded-lg">5</button>
+        </div>
+        <button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Next</button>
+    </div>
+@endsection

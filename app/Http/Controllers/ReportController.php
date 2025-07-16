@@ -10,38 +10,125 @@ use Carbon\Carbon;
 
 class ReportController extends Controller
 {
-    // public function index()
-    // {
-    //     return view('reports.attendance-report');
-    // }
+
+    public function indexReport()
+    {
+        $user = auth()->user();
+        $attendances = \App\Models\Attendance::where('user_id', $user->id)
+            ->orderByDesc('date')
+            ->take(30)
+            ->get();
+
+        // Summary
+        $presentDays = $attendances->where('status', 0)->count();
+        $lateCount = $attendances->where('status', 0)->filter(function ($a) use ($user) {
+            // Misal shift 1 jam masuk 08:00, shift 2 jam masuk 14:00
+            $shiftStart = $user->shift == 2 ? '14:00:00' : '08:00:00';
+            return $a->check_in && $a->check_in > $shiftStart;
+        })->count();
+        $onTimeCount = $attendances->where('status', 0)->filter(function ($a) use ($user) {
+            $shiftStart = $user->shift == 2 ? '14:00:00' : '08:00:00';
+            return $a->check_in && $a->check_in <= $shiftStart;
+        })->count();
+        $totalWorkMinutes = $attendances->sum(function ($a) {
+            if ($a->check_in && $a->check_out) {
+                return \Carbon\Carbon::parse($a->check_in)->diffInMinutes(\Carbon\Carbon::parse($a->check_out));
+            }
+            return 0;
+        });
+
+        return view('pwa.report.indexReport', compact(
+            'attendances',
+            'user',
+            'presentDays',
+            'lateCount',
+            'onTimeCount',
+            'totalWorkMinutes'
+        ));
+    }
+
+    public function detailsReport($id)
+    {
+        $attendance = \App\Models\Attendance::with('user')->findOrFail($id);
+
+        // Hitung jam kerja
+        $workMinutes = ($attendance->check_in && $attendance->check_out)
+            ? \Carbon\Carbon::parse($attendance->check_in)->diffInMinutes(\Carbon\Carbon::parse($attendance->check_out))
+            : 0;
+        $workHours = $workMinutes ? floor($workMinutes / 60) . 'h ' . ($workMinutes % 60) . 'm' : '-';
+
+        return view('pwa.report.detailsReport', compact('attendance', 'workHours'));
+    }
 
     public function exportPDF(Request $request)
     {
-        $monthParam = $request->get('month', now()->format('F'));
-        if (is_numeric($monthParam)) {
-            $monthNumber = (int)$monthParam;
-            $selectedMonth = Carbon::create()->month($monthNumber)->format('F');
-        } else {
-            $selectedMonth = $monthParam;
-            $monthNumber = Carbon::parse($selectedMonth)->month;
-        }
+        $month = $request->get('month', now()->month);
         $year = $request->get('year', now()->year);
 
-        $records = Attendance::whereMonth('date', $monthNumber)
-            ->whereYear('date', $year)
-            ->with(['user'])
-            ->get();
+        $users = User::with(['attendances' => function ($query) use ($month, $year) {
+            $query->whereMonth('date', $month)
+                ->whereYear('date', $year);
+        }])->get();
 
-        $groupedRecords = $this->processAttendanceData($records);
+        $reportData = $users->map(function ($user) {
+            $onTime = 0;
+            $late = 0;
+            $permission = 0;
+            $workDuration = 0; // in hours
+            $workingDays = 0;
 
-        $pdf = PDF::loadView('pdf.attendance-report', [
-            'records' => $groupedRecords,
-            'month' => $selectedMonth,
-            'year' => $year,
-            'totalWorkingDays' => $this->getWorkingDaysInMonth($monthNumber, $year)
+            foreach ($user->attendances as $attendance) {
+                // Hitung permission
+                if ($attendance->status_label === 'permission') {
+                    $permission++;
+                    continue;
+                }
+                if ($attendance->status == \App\Models\Attendance::STATUS_PERMISSION) {
+                    $permission++;
+                    continue;
+                }
+                // Hitung onTime & Late
+                if ($attendance->check_in && $user->shift_start) {
+                    $checkIn = \Carbon\Carbon::parse($attendance->check_in);
+                    $shiftStart = \Carbon\Carbon::createFromFormat('H:i:s', $user->shift_start);
+
+                    if ($checkIn->lessThanOrEqualTo($shiftStart)) {
+                        $onTime++;
+                    } else {
+                        $late++;
+                    }
+                }
+                // Hitung working day
+                $workingDays++;
+                // Hitung durasi kerja (hanya jika ada check_out)
+                if ($attendance->check_in && $attendance->check_out) {
+                    $checkIn = \Carbon\Carbon::parse($attendance->check_in);
+                    $checkOut = \Carbon\Carbon::parse($attendance->check_out);
+                    $duration = $checkOut->diffInMinutes($checkIn) / 60; // convert to hours
+                    $workDuration += $duration;
+                }
+            }
+
+            return [
+                'user' => $user,
+                'totalDays' => $workingDays,
+                'onTime' => $onTime,
+                'late' => $late,
+                'absent' => 0, // tambahkan logika jika perlu
+                'permission' => $permission,
+                'overtime' => $user->attendances->sum('overtime_hours') ?? 0,
+                'workDuration' => round($workDuration, 1),
+            ];
+        });
+
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('management_system.report_analytics.attendance-report', [
+            'reportData' => $reportData,
+            'month' => $month,
+            'year' => $year
         ]);
         $pdf->setPaper('A4', 'landscape');
-        return $pdf->download("attendance_report_{$selectedMonth}_{$year}.pdf");
+        return $pdf->download("attendance_report_{$month}_{$year}.pdf");
     }
 
     private function processAttendanceData($records)
@@ -154,7 +241,7 @@ class ReportController extends Controller
                 if ($attendance->check_in && $user->shift_start) {
                     $checkIn = \Carbon\Carbon::parse($attendance->check_in);
                     $shiftStart = \Carbon\Carbon::createFromFormat('H:i:s', $user->shift_start);
-                    
+
                     if ($checkIn->lessThanOrEqualTo($shiftStart)) {
                         $onTime++;
                     } else {
@@ -187,5 +274,70 @@ class ReportController extends Controller
         });
 
         return view('management_system.report_analytics.attedanceReport', compact('reportData', 'month', 'year'));
+    }
+
+
+    public function payrollReport(Request $request)
+    {
+        $month = $request->get('month', now()->month);
+        $year = $request->get('year', now()->year);
+
+        // Ambil semua user beserta role dan attendance bulan ini
+        $users = \App\Models\User::with(['role', 'attendances' => function ($q) use ($month, $year) {
+            $q->whereMonth('date', $month)
+                ->whereYear('date', $year);
+        }])->get();
+
+        $payrollData = $users->map(function ($user) {
+            $salary = $user->role->salary ?? 0;
+            $absent = $user->attendances->where('status', 'absent')->count();
+            $alphaDeduction = $absent * 100000; // contoh: potongan 100rb/hari alpha
+            $totalSalary = $salary - $alphaDeduction;
+
+            return [
+                'fullname' => $user->fullname,
+                'position' => $user->role->name ?? '-',
+                'salary' => $salary,
+                'alphaDeduction' => $alphaDeduction,
+                'totalSalary' => $totalSalary,
+            ];
+        });
+
+        return view('management_system.report_analytics.payrollReport', compact('payrollData', 'month', 'year'));
+    }
+
+
+    public function exportPayrollPDF(Request $request)
+    {
+        $month = $request->get('month', now()->month);
+        $year = $request->get('year', now()->year);
+
+        $users = \App\Models\User::with(['role', 'attendances' => function ($q) use ($month, $year) {
+            $q->whereMonth('date', $month)
+                ->whereYear('date', $year);
+        }])->get();
+
+        $payrollData = $users->map(function ($user) {
+            $salary = $user->role->salary ?? 0;
+            $absent = $user->attendances->where('status', 'absent')->count();
+            $alphaDeduction = $absent * 100000;
+            $totalSalary = $salary - $alphaDeduction;
+
+            return [
+                'fullname' => $user->fullname,
+                'position' => $user->role->name ?? '-',
+                'salary' => $salary,
+                'alphaDeduction' => $alphaDeduction,
+                'totalSalary' => $totalSalary,
+            ];
+        });
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('management_system.report_analytics.payroll-report-pdf', [
+            'payrollData' => $payrollData,
+            'month' => $month,
+            'year' => $year
+        ]);
+        $pdf->setPaper('A4', 'landscape');
+        return $pdf->download("payroll_report_{$month}_{$year}.pdf");
     }
 }

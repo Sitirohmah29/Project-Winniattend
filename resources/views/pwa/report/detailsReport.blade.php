@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,16 +13,20 @@
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <!-- Leaflet CSS and JS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" /><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 </head>
 
 <body class="mt-15 bg-white font-poppins">
-     {{-- information page --}}
-     <div class="page-title-container">
+    {{-- information page --}}
+    <div class="page-title-container">
         <i class="fa-solid fa-chevron-left cursor-pointer hover:text-blue-600" page-title-back
-
-        onclick="window.location.href='{{url('/indexReport')}}'"></i>
-        <h2 class="text-title text-center w-full">01 Feb Monday</h2>
+            onclick="window.location.href='{{ url('/indexReport') }}'"></i>
+        <h2 class="text-title text-center w-full">
+            {{ \Carbon\Carbon::parse($attendance->date)->format('d M l') }}
+        </h2>
     </div>
 
     {{-- Details Report --}}
@@ -41,7 +46,8 @@
                         </div>
                         <div class="ml-3">
                             <h3 class="text-sm font-semibold">IBI Kesatuan</h3>
-                            <p class="text-xs font-thin">Jl. Ranggagading no.1 RT.02/09, Gudang, Kec.Bogor Tengah, Bogor, Indonesia 16123
+                            <p class="text-xs font-thin">Jl. Ranggagading no.1 RT.02/09, Gudang, Kec.Bogor Tengah,
+                                Bogor, Indonesia 16123
                             </p>
                         </div>
                     </div>
@@ -49,81 +55,84 @@
             </div>
 
             <div>
-            {{-- working hours report  --}}
-            <div class="grid-con-rounded shadow-2xl">
+                {{-- working hours report  --}}
+                <div class="grid-con-rounded shadow-2xl">
 
-            {{-- check in --}}
-            <span>
-                <p class="text-reg">Check in</p>
-                <p class="text-title">01.00 am</p>
-            </span>
+                    {{-- check in --}}
+                    <span>
+                        <p class="text-reg">Check in</p>
+                        <p class="text-title">
+                            {{ $attendance->check_in ? \Carbon\Carbon::parse($attendance->check_in)->format('H:i') : '-' }}
+                        </p>
+                    </span>
+                    <span>
+                        <p class="text-reg">Check out</p>
+                        <p class="text-title">
+                            {{ $attendance->check_out ? \Carbon\Carbon::parse($attendance->check_out)->format('H:i') : '-' }}
+                        </p>
+                    </span>
+                    <span class="grid justify-end">
+                        <p class="text-reg">Total Working hours</p>
+                        <p class="text-big">{{ $workHours }}</p>
+                    </span>
+                    {{-- ... --}}
+                    <p class="text-reg">Face ID</p>
+                    <div class="flex-container justify-center items-center">
+                        <p class="text-title2">
+                            {{ $attendance->permission ? 'Permission' : ($attendance->status_label == 'present' ? 'Success Complete' : ucfirst($attendance->status_label)) }}
+                        </p>
+                        @if ($attendance->status_label == 'present')
+                            <i class="fa-solid fa-circle-check fa-lg" style="color: #63E6BE;"></i>
+                        @elseif($attendance->status_label == 'permission')
+                            <i class="fa-solid fa-circle-exclamation fa-lg" style="color: #FF66C4;"></i>
+                        @else
+                            <i class="fa-solid fa-circle-xmark fa-lg" style="color: #FF0000;"></i>
+                        @endif
+                    </div>
 
-            {{-- check out --}}
-            <span>
-                <p class="text-reg">Check out</p>
-                <p class="text-title">06.00 am</p>
-            </span>
+                    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function() {
+                            const mapContainer = document.getElementById("map");
 
-            {{-- total working hours --}}
-            <span class="grid justify-end">
-                <p class="text-reg">Total Working hours</p>
-                <p class="text-big">4 Hours</p>
-            </span>
-        </div>
+                            // Pastikan elemen map memiliki tinggi
+                            if (mapContainer && mapContainer.offsetHeight > 0) {
+                                if (navigator.geolocation) {
+                                    navigator.geolocation.getCurrentPosition(function(position) {
+                                        const userLat = position.coords.latitude;
+                                        const userLng = position.coords.longitude;
 
-        {{-- face id report --}}
-        <div class="grid-con-rounded shadow-2xl ">
-            <p class="text-reg">Face ID</p>
-            <div class="flex-container justify-center items-center">
-                <p class="text-title2">Success Complete</p>
-                <i class="fa-solid fa-circle-check fa-lg" style="color: #63E6BE;"></i>
-            </div>
-        </div>
-    </div>
+                                        // Inisialisasi peta
+                                        const map = L.map('map').setView([userLat, userLng], 16);
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-  const mapContainer = document.getElementById("map");
+                                        // Tile layer
+                                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                            attribution: '&copy; OpenStreetMap contributors'
+                                        }).addTo(map);
 
-  // Pastikan elemen map memiliki tinggi
-  if (mapContainer && mapContainer.offsetHeight > 0) {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(function (position) {
-        const userLat = position.coords.latitude;
-        const userLng = position.coords.longitude;
+                                        // Marker user
+                                        L.marker([userLat, userLng]).addTo(map)
+                                            .bindPopup('Lokasi Kamu Sekarang')
+                                            .openPopup();
 
-        // Inisialisasi peta
-        const map = L.map('map').setView([userLat, userLng], 16);
+                                        // Marker lokasi target
+                                        const targetLat = -6.596300;
+                                        const targetLng = 106.806039;
 
-        // Tile layer
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '&copy; OpenStreetMap contributors'
-        }).addTo(map);
+                                        L.marker([targetLat, targetLng]).addTo(map)
+                                            .bindPopup('IBI Kesatuan');
 
-        // Marker user
-        L.marker([userLat, userLng]).addTo(map)
-          .bindPopup('Lokasi Kamu Sekarang')
-          .openPopup();
-
-        // Marker lokasi target
-        const targetLat = -6.596300;
-        const targetLng = 106.806039;
-
-        L.marker([targetLat, targetLng]).addTo(map)
-          .bindPopup('IBI Kesatuan');
-
-      }, function (error) {
-        alert("Gagal mengambil lokasi: " + error.message);
-      });
-    } else {
-      alert("Browser tidak mendukung Geolocation.");
-    }
-  } else {
-    console.error("Elemen #map tidak memiliki ukuran yang cukup untuk menampilkan peta.");
-  }
-});
-
-</script>
+                                    }, function(error) {
+                                        alert("Gagal mengambil lokasi: " + error.message);
+                                    });
+                                } else {
+                                    alert("Browser tidak mendukung Geolocation.");
+                                }
+                            } else {
+                                console.error("Elemen #map tidak memiliki ukuran yang cukup untuk menampilkan peta.");
+                            }
+                        });
+                    </script>
 </body>
+
 </html>

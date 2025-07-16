@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,10 +14,11 @@
     {{-- Font Awesome for icons --}}
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
 </head>
+
 <body class="bg-[#f5f9fc] font-poppins min-h-screen flex flex-col">
     <header class="px-6 py-4 relative flex items-center">
         {{-- Back button to navigate to the attendance check-in page --}}
-        <a href="{{url('/attendance/check-in')}}" class="absolute left-6">
+        <a href="{{ url('/attendance/check-in') }}" class="absolute left-6">
             <i class="fa fa-chevron-left text-gray-700"></i>
         </a>
         {{-- Page title --}}
@@ -41,21 +43,24 @@
                     <div class="bg-white rounded-full p-2 shadow-md mb-2">
                         <div class="bg-gradient-to-r from-blue-500 to-pink-400 rounded-full p-2">
                             {{-- SVG icon for status indication --}}
-                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <circle cx="12" cy="12" r="11" stroke="black" stroke-width="2" fill="white"/>
-                                <path stroke="blue" stroke-width="2.5" d="M7 13l3 3 7-7"/>
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" stroke-width="2"
+                                viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="11" stroke="black" stroke-width="2"
+                                    fill="white" />
+                                <path stroke="blue" stroke-width="2.5" d="M7 13l3 3 7-7" />
                             </svg>
                         </div>
                     </div>
                     {{-- Display verification status --}}
-                    <h2 class="text-xl text-center font-bold text-blue-600" id="cardStatus">Waiting for verification...</h2>
+                    <h2 class="text-xl text-center font-bold text-blue-600" id="cardStatus">Waiting for verification...
+                    </h2>
                     {{-- Display detected user's name --}}
                     <p class="text-gray-500 text-sm" id="cardName">-</p>
                 </div>
                 {{-- Details card (Face ID, Shift, Location) --}}
                 <div class="bg-white rounded-2xl shadow px-4 py-4 mt-4">
                     <div class="flex justify-between text-gray-500 text-sm font-medium">
-                        <span >Face ID</span>
+                        <span>Face ID</span>
                         <span>Shift</span>
                     </div>
                     <div class="flex justify-between font-bold text-lg mb-2">
@@ -75,7 +80,9 @@
                 </div>
             </div>
             {{-- Done button to submit attendance --}}
-            <button id="btnDone" class="mt-8 w-[60%] bg-blue-500 hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-full shadow-lg text-lg" disabled>
+            <button id="btnDone"
+                class="mt-8 w-[60%] bg-blue-500 hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-full shadow-lg text-lg"
+                disabled>
                 Done
             </button>
         </div>
@@ -107,7 +114,10 @@
 
         // --- State Variables ---
         let detectedUser = null; // Stores the name of the detected user
-        let userLocation = { latitude: null, longitude: null }; // Stores user's geographical coordinates
+        let userLocation = {
+            latitude: null,
+            longitude: null
+        }; // Stores user's geographical coordinates
         let isProcessing = false; // Flag to prevent multiple attendance submissions
 
         // Realtime clock for check-in
@@ -131,7 +141,8 @@
                         userLocation.longitude = position.coords.longitude;
 
                         // Reverse geocoding: convert coordinates to a human-readable address
-                        fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${userLocation.latitude}&lon=${userLocation.longitude}`)
+                        fetch(
+                                `https://nominatim.openstreetmap.org/reverse?format=json&lat=${userLocation.latitude}&lon=${userLocation.longitude}`)
                             .then(res => res.json())
                             .then(data => {
                                 cardLocation.innerText = data.display_name || "Location not found";
@@ -168,7 +179,10 @@
         // Function to start the webcam stream
         function startWebcam() {
             navigator.mediaDevices
-                .getUserMedia({ video: true, audio: false }) // Request video access
+                .getUserMedia({
+                    video: true,
+                    audio: false
+                }) // Request video access
                 .then((stream) => {
                     video.srcObject = stream; // Set video source to the webcam stream
                 })
@@ -206,7 +220,10 @@
 
         // Event listener for when the video metadata is loaded (meaning the webcam is ready)
         video.addEventListener("loadedmetadata", async () => {
-            const displaySize = { width: video.videoWidth, height: video.videoHeight };
+            const displaySize = {
+                width: video.videoWidth,
+                height: video.videoHeight
+            };
             // Create a canvas overlay for drawing detections
             const canvas = faceapi.createCanvasFromMedia(video);
             canvas.style.position = "absolute";
@@ -224,7 +241,8 @@
                     return;
                 }
                 // Create a FaceMatcher to compare detected faces with known faces
-                const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.45); // 0.45 is the recognition threshold
+                const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors,
+                0.45); // 0.45 is the recognition threshold
 
                 // Set up an interval to continuously detect and recognize faces from the video stream
                 setInterval(async () => {
@@ -253,8 +271,10 @@
                                     detectedUser = result._label;
                                     cardName.innerText = result._label;
                                     cardFaceId.innerText = result._label;
-                                    cardShift.innerText = "Shift 1 (07.00am - 01.00pm)"; // Example shift
-                                    cardStatus.innerText = "Face detected! Press Done to check in.";
+                                    cardShift.innerText =
+                                    "Shift 1 (07.00am - 01.00pm)"; // Example shift
+                                    cardStatus.innerText =
+                                        "Face detected! Press Done to check in.";
                                     btnDone.disabled = false; // Enable the Done button
                                     found = true;
                                 }
@@ -274,7 +294,8 @@
                             cardName.innerText = "-";
                             cardFaceId.innerText = "-";
                             cardShift.innerText = "-";
-                            cardStatus.innerText = "Waiting for verification..."; // Reset status if no face
+                            cardStatus.innerText =
+                            "Waiting for verification..."; // Reset status if no face
                             btnDone.disabled = true; // Disable the Done button
                         }
                     } catch (error) {
@@ -303,47 +324,55 @@
             btnDone.disabled = true; // Disable button to prevent re-clicks
             cardStatus.innerText = "Processing attendance...";
 
-            // Prepare attendance data to send to the server
+            const now = new Date();
+            const pad = (n) => n.toString().padStart(2, '0');
+            const check_in_time =
+                `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+
             const attendanceData = {
                 user_id: userId,
                 latitude: userLocation.latitude,
-                longitude: userLocation.longitude
+                longitude: userLocation.longitude,
+                check_in_time: check_in_time // tambahkan ini
             };
-
             // Send attendance data to the backend via POST request
-            fetch('{{ route("attendance.face-verification") }}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}' // Laravel CSRF token for security
-                },
-                body: JSON.stringify(attendanceData) // Send data as JSON string
-            })
-            .then(response => response.json()) // Parse JSON response
-            .then(data => {
-                if (data.success) {
-                    cardStatus.innerText = data.message;
-                    cardStatus.className = "text-xl font-bold text-green-600"; // Set status text to green for success
-                    // Redirect to check-in page after a short delay on success
-                    setTimeout(() => {
-                        window.location.href = '{{ route("attendance.check-in") }}';
-                    }, 2000);
-                } else {
-                    cardStatus.innerText = data.message || "Failed to submit attendance.";
-                    cardStatus.className = "text-xl font-bold text-red-600"; // Set status text to red for error
-                    btnDone.disabled = false; // Re-enable button on failure
-                }
-            })
-            .catch(error => {
-                console.error('Attendance submission error:', error);
-                cardStatus.innerText = "Failed to contact server.";
-                cardStatus.className = "text-xl font-bold text-red-600"; // Set status text to red for network error
-                btnDone.disabled = false; // Re-enable button on error
-            })
-            .finally(() => {
-                isProcessing = false; // Reset processing flag
-            });
+            fetch('{{ route('attendance.face-verification') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}' // Laravel CSRF token for security
+                    },
+                    body: JSON.stringify(attendanceData) // Send data as JSON string
+                })
+                .then(response => response.json()) // Parse JSON response
+                .then(data => {
+                    if (data.success) {
+                        cardStatus.innerText = data.message;
+                        cardStatus.className =
+                        "text-xl font-bold text-green-600"; // Set status text to green for success
+                        // Redirect to check-in page after a short delay on success
+                        setTimeout(() => {
+                            window.location.href = '{{ route('attendance.check-in') }}';
+                        }, 2000);
+                    } else {
+                        cardStatus.innerText = data.message || "Failed to submit attendance.";
+                        cardStatus.className =
+                        "text-xl font-bold text-red-600"; // Set status text to red for error
+                        btnDone.disabled = false; // Re-enable button on failure
+                    }
+                })
+                .catch(error => {
+                    console.error('Attendance submission error:', error);
+                    cardStatus.innerText = "Failed to contact server.";
+                    cardStatus.className =
+                    "text-xl font-bold text-red-600"; // Set status text to red for network error
+                    btnDone.disabled = false; // Re-enable button on error
+                })
+                .finally(() => {
+                    isProcessing = false; // Reset processing flag
+                });
         });
     </script>
 </body>
+
 </html>

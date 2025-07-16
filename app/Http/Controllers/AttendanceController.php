@@ -17,7 +17,8 @@ class AttendanceController extends Controller
     // Halaman check-in
     public function showCheckInPage()
     {
-        return view('pwa.attendance.check-in');
+        $user = Auth::user();
+        return view('pwa.attendance.check-in', compact('user'));
     }
 
     // Halaman check-out
@@ -50,8 +51,9 @@ class AttendanceController extends Controller
         return redirect()->back()->with('success', 'Check out Successfully!');
     }
 
-    
-    public function index(){
+
+    public function index()
+    {
         $attendances = \App\Models\Attendance::with(['user.role'])->get();
         return view('management_system.attedance_management.indexAttedance', compact('attendances'));
     }
@@ -62,35 +64,19 @@ class AttendanceController extends Controller
 
         if ($request->has('search') && $request->search !== '') {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->whereHas('user', function ($q2) use ($search) {
                     $q2->where('fullname', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%");
+                        ->orWhere('email', 'like', "%{$search}%");
                 })
-                ->orWhere('date', 'like', "%{$search}%");
+                    ->orWhere('date', 'like', "%{$search}%");
             });
         }
 
         // Filter by month if provided
         if ($request->filled('month') && $request->month !== 'All') {
-            // Array untuk mapping nama bulan ke nomor bulan
-            $monthMapping = [
-                'January' => 1,
-                'February' => 2,
-                'March' => 3,
-                'April' => 4,
-                'May' => 5,
-                'June' => 6,
-                'July' => 7,
-                'August' => 8,
-                'September' => 9,
-                'October' => 10,
-                'November' => 11,
-                'December' => 12
-            ];
-
-            if (isset($monthMapping[$request->month])) {
-                $monthNumber = $monthMapping[$request->month];
+            $monthNumber = intval($request->month);
+            if ($monthNumber >= 1 && $monthNumber <= 12) {
                 $query->whereMonth('date', $monthNumber);
             }
         }
@@ -99,7 +85,8 @@ class AttendanceController extends Controller
         return view('management_system.attedance_management.indexAttedance', compact('attendances'));
     }
 
-   public function showCheckInDetail($id){
+    public function showCheckInDetail($id)
+    {
         $attendance = Attendance::with('user.role')->findOrFail($id);
 
         return view('management_system.attedance_management.checkinAttedance', compact('attendance'));
@@ -148,7 +135,7 @@ class AttendanceController extends Controller
             return null;
         }
     }
-public function faceVerificationAbsen(Request $request)
+    public function faceVerificationAbsen(Request $request)
     {
         try {
             if ($request->isJson()) {
@@ -186,11 +173,13 @@ public function faceVerificationAbsen(Request $request)
                 $locationName = $this->getLocationName($request->latitude, $request->longitude);
             }
 
+            $checkInTime = $request->input('check_in_time') ?? now()->format('H:i:s');
+
             $attendance = Attendance::create([
                 'user_id' => $userId,
                 'date' => now()->toDateString(),
                 'status' => 'onTime',
-                'check_in' => now()->format('H:i:s'),
+                'check_in' => $checkInTime,
                 'check_in_location' => $locationName,
                 'latitude' => $request->latitude,
                 'longitude' => $request->longitude,
@@ -330,5 +319,4 @@ public function faceVerificationAbsen(Request $request)
             'data' => $attendance
         ]);
     }
-
 }
