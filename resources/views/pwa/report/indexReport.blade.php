@@ -41,14 +41,6 @@
                     <p class="text-base font-extrabold">{{ $presentDays }} Days</p>
                 </span>
             </div>
-            {{-- on time --}}
-            <div>
-                <p class="text-reg">On Time</p>
-                <span class="flex-container">
-                    <i class="fa-solid fa-clock fa-lg" style="color: #63E6BE;"></i>
-                    <p class="text-base font-extrabold">{{ $onTimeCount }} Days</p>
-                </span>
-            </div>
             {{-- late --}}
             <div>
                 <p class="text-reg">Late</p>
@@ -73,9 +65,14 @@
     {{-- attendance report --}}
     <div class="grid gap-2">
         <div class="flex-container justify-between">
-            <p>Accending - Decending</p>
-            <i class="fa-solid fa-arrow-up-wide-short"></i>
+            <p>
+                Sort by: {{ $orderDirection === 'asc' ? 'Oldest Date' : 'Newest Date' }}
+            </p>
+            <a href="{{ route('report.index', ['sort' => $orderDirection === 'asc' ? 'desc' : 'asc']) }}" class="px-3">
+                 <i class="fa-solid {{ $orderDirection === 'asc' ? 'fa-arrow-up-wide-short' : 'fa-arrow-down-wide-short' }}"></i>
+            </a>
         </div>
+
         <div class="mt-4 h-[500px] overflow-y-auto pr-2">
             <div class="grid gap-3">
                 @foreach ($attendances as $attendance)
@@ -105,7 +102,7 @@
                                 <p class="text-xl font-bold">{{ $date->format('l') }}</p>
                             </span>
                             <span class="text-reg {{ $isBlue ? 'text-white' : '' }}">
-                                <p>{{ $status }}</p>
+                                <p>{{ $attendance->faceIdStatus}}</p>
                                 <p>{{ $checkIn }} - {{ $checkOut }}</p>
                                 <p class="text-xs">Working: {{ $workHours }}</p>
                             </span>

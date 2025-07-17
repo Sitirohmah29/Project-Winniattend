@@ -11,25 +11,43 @@ use Carbon\Carbon;
 class ReportController extends Controller
 {
 
-    public function indexReport()
+   public function indexReport(Request $request)
     {
         $user = auth()->user();
+
+        // Ambil parameter sort dari query string
+        $orderDirection = $request->get('sort', 'desc'); // 'asc' atau 'desc'
+
         $attendances = \App\Models\Attendance::where('user_id', $user->id)
-            ->orderByDesc('date')
+            ->orderBy('date', $orderDirection)
             ->take(30)
             ->get();
 
-        // Summary
-        $presentDays = $attendances->where('status', 0)->count();
-        $lateCount = $attendances->where('status', 0)->filter(function ($a) use ($user) {
-            // Misal shift 1 jam masuk 08:00, shift 2 jam masuk 14:00
-            $shiftStart = $user->shift == 2 ? '14:00:00' : '08:00:00';
-            return $a->check_in && $a->check_in > $shiftStart;
+        // Face ID status
+        $faceIdStatus = $attendances->map(function ($a){
+            if ($a->check_in) {
+                $a->faceIdStatus = 'Success';
+            } elseif ($a->permission) {
+                $a->faceIdStatus = 'Permission';
+            } else {
+                $a->faceIdStatus = ucfirst($a->status_label);
+            }
+            return $a;
+        });
+
+        // Summary kehadiran
+        $presentDays = $attendances->filter(fn($a) => $a->check_in !== null)->count();
+
+        // Hitung keterlambatan
+        $lateCount = $attendances->filter(function ($a) use ($user) {
+            if (!$a->check_in) return false;
+
+            $shiftStart = $user->shift === 'shift-2' ? '14:00:00' : '08:00:00';
+            $checkInTime = \Carbon\Carbon::parse($a->check_in)->format('H:i:s');
+
+            return $checkInTime > $shiftStart;
         })->count();
-        $onTimeCount = $attendances->where('status', 0)->filter(function ($a) use ($user) {
-            $shiftStart = $user->shift == 2 ? '14:00:00' : '08:00:00';
-            return $a->check_in && $a->check_in <= $shiftStart;
-        })->count();
+
         $totalWorkMinutes = $attendances->sum(function ($a) {
             if ($a->check_in && $a->check_out) {
                 return \Carbon\Carbon::parse($a->check_in)->diffInMinutes(\Carbon\Carbon::parse($a->check_out));
@@ -42,10 +60,11 @@ class ReportController extends Controller
             'user',
             'presentDays',
             'lateCount',
-            'onTimeCount',
-            'totalWorkMinutes'
+            'totalWorkMinutes',
+            'orderDirection', // diganti dari 'filterDate' agar lebih deskriptif
         ));
     }
+
 
     public function detailsReport($id)
     {
@@ -58,6 +77,95 @@ class ReportController extends Controller
         $workHours = $workMinutes ? floor($workMinutes / 60) . 'h ' . ($workMinutes % 60) . 'm' : '-';
 
         return view('pwa.report.detailsReport', compact('attendance', 'workHours'));
+    }
+
+
+    //MANAGEMENT SYSTEM REPORTS
+    public function ReportWeb(Request $request)
+    {
+        // === Perhitungan kehadiran perdivisi (Pie Chart) ===
+        $month = $request->input('month', now()->month); // default: bulan sekarang
+        $year = now()->year;
+
+        $roles = ['Fullstack Developer', 'Copy Writer', 'Laravel Developer'];
+        $colors = [
+            'Fullstack Developer' => '#db2777', // pink
+            'Copy Writer' => '#0ea5e9',         // sky
+            'Laravel Developer' => '#8b5cf6'    // purple
+        ];
+
+        $datasets = [];
+
+        foreach ($roles as $role) {
+            $userIds = User::whereHas('role', fn($q) => $q->where('name', $role))->pluck('id');
+
+            $onTime = Attendance::whereIn('user_id', $userIds)
+                ->whereMonth('date', $month)
+                ->whereYear('date', $year)
+                ->where('status', 'onTime')
+                ->count();
+
+            $late = Attendance::whereIn('user_id', $userIds)
+                ->whereMonth('date', $month)
+                ->whereYear('date', $year)
+                ->where('status', 'Late')
+                ->count();
+
+            $permission = Attendance::whereIn('user_id', $userIds)
+                ->whereMonth('date', $month)
+                ->whereYear('date', $year)
+                ->where('permission', true)
+                ->count();
+
+            $datasets[] = [
+                'label' => $role,
+                'data' => [$onTime, $late, $permission],
+                'borderColor' => $colors[$role],
+                'backgroundColor' => $colors[$role] . '33',
+                'tension' => 0.4,
+            ];
+        }
+
+        $labels = ['On Time', 'Late', 'Permission'];
+        $monthName = Carbon::create()->month($month)->format('F');
+
+        // === Perhitungan rata-rata attendance (Pie Chart) ===
+        $totalDays = Attendance::whereMonth('date', $month)
+            ->whereYear('date', $year)
+            ->distinct('date')
+            ->count('date');
+
+        $totalUsers = User::count();
+        $totalPossibleAttendance = $totalDays * $totalUsers;
+
+        $totalOnTime = Attendance::whereMonth('date', $month)
+            ->whereYear('date', $year)
+            ->where('status', 'onTime')
+            ->count();
+
+        $totalLate = Attendance::whereMonth('date', $month)
+            ->whereYear('date', $year)
+            ->where('status', 'Late')
+            ->count();
+
+        $totalPermission = Attendance::whereMonth('date', $month)
+            ->whereYear('date', $year)
+            ->where('permission', true)
+            ->count();
+
+        $totalAttendance = $totalOnTime + $totalLate + $totalPermission;
+        $totalAbsent = $totalPossibleAttendance - $totalAttendance;
+
+        // Hitung persentase
+        $percentage = [
+            'onTime' => $totalPossibleAttendance ? round(($totalOnTime / $totalPossibleAttendance) * 100) : 0,
+            'late' => $totalPossibleAttendance ? round(($totalLate / $totalPossibleAttendance) * 100) : 0,
+            'permission' => $totalPossibleAttendance ? round(($totalPermission / $totalPossibleAttendance) * 100) : 0,
+            'absent' => $totalPossibleAttendance ? round(($totalAbsent / $totalPossibleAttendance) * 100) : 0,
+        ];
+
+
+        return view('management_system.report_analytics.indexReportWeb', compact('datasets', 'labels', 'month', 'monthName', 'percentage'));
     }
 
     public function exportPDF(Request $request)

@@ -33,7 +33,7 @@
     <div class=" bg-white shadow rounded-md">
         <p class="text-xl font-semibold text-blue-600 mb-2 ml-5"> Details </p>
 
-        <div class="w-full space-y-4 ">
+        <div class="w-full space-y-4 px-5 ">
             <!-- bagian map -->
             <div id="map" class="grid-con-rounded shadow-2xl" style="min-height: 200px;">
                 <div class="absolute bottom-5 left-2 bg-opacity-90 rounded-md shadow p-3 z-[500] max-w-xs">
@@ -78,12 +78,27 @@
                     {{-- ... --}}
                     <p class="text-reg">Face ID</p>
                     <div class="flex-container justify-center items-center">
-                        <p class="text-title2">
+                        {{-- <p class="text-title2">
                             {{ $attendance->permission ? 'Permission' : ($attendance->status_label == 'present' ? 'Success Complete' : ucfirst($attendance->status_label)) }}
                         </p>
                         @if ($attendance->status_label == 'present')
                             <i class="fa-solid fa-circle-check fa-lg" style="color: #63E6BE;"></i>
                         @elseif($attendance->status_label == 'permission')
+                            <i class="fa-solid fa-circle-exclamation fa-lg" style="color: #FF66C4;"></i>
+                        @else
+                            <i class="fa-solid fa-circle-xmark fa-lg" style="color: #FF0000;"></i>
+                        @endif --}}
+
+                        <p class="text-title2">
+                            @if ($attendance->check_in) Success
+                            @elseif ($attendance->permission) Permission
+                            @else {{ ucfirs($attendance->status_label) }}
+                            @endif
+                        </p>
+
+                        @if ($attendance->check_in)
+                            <i class="fa-solid fa-circle-check fa-lg" style="color: #63E6BE;"></i>
+                        @elseif($attendance->permission)
                             <i class="fa-solid fa-circle-exclamation fa-lg" style="color: #FF66C4;"></i>
                         @else
                             <i class="fa-solid fa-circle-xmark fa-lg" style="color: #FF0000;"></i>

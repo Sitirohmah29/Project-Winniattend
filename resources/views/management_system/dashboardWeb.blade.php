@@ -24,48 +24,212 @@
 
     <!-- Statistics Section -->
     <div class="statistics flex flex-col items-center gap-4">
-        <h3 class="text-xl text-gray-600 text-center font-semibold">Employee Attendance Statistics</h3>
+    <h3 class="text-xl text-gray-600 text-center font-semibold">Employee Attendance Statistics</h3>
 
-        <!-- Charts Container -->
-        <div class="flex flex-row gap-6 w-full">
+    <!-- Charts Container -->
+    <div class="flex flex-row gap-6 w-full">
+
             <!-- Today Chart -->
-            <div class="bg-white rounded-lg shadow-lg p-6 flex-1">
+        <div class="bg-white rounded-lg shadow-lg p-6 flex-1">
                 <h4 class="text-lg font-semibold mb-4">Today</h4>
-                <canvas id="todayChart" width="400" height="200"></canvas>
+                <canvas id="todayChart" class="w-full h-[250px]"></canvas>
+
+                <!-- Legend for Today Chart -->
+                <div class="flex justify-center gap-6 mt-4">
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-[#4F46E5]"></span>
+                        <span class="text-sm text-gray-700">on Time</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-[#EF4444]"></span>
+                        <span class="text-sm text-gray-700">Late</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-[#38BDF8]"></span>
+                        <span class="text-sm text-gray-700">Permission</span>
+                    </div>
+                </div>
             </div>
 
             <!-- Month Chart -->
             <div class="bg-white rounded-lg shadow-lg p-6 flex-1">
                 <h4 class="text-lg font-semibold mb-4">Month</h4>
-                <canvas id="monthChart" width="400" height="200"></canvas>
+                <canvas id="monthChart" class="w-full max-h-[250px]"></canvas>
+
+                <!-- Legend for Month Chart -->
+                <div class="flex justify-center gap-6 mt-4">
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-green-500"></span>
+                        <span class="text-sm text-gray-700">on Time</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-[#EF4444]"></span>
+                        <span class="text-sm text-gray-700">Late</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-blue-600"></span>
+                        <span class="text-sm text-gray-700">Permission</span>
+                    </div>
+                </div>
             </div>
         </div>
+
+        <!-- Chart.js Script -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            const totalEmployees = {{ $totalEmployees }};
+
+            // Today Chart
+            const todayCtx = document.getElementById('todayChart').getContext('2d');
+            new Chart(todayCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['on Time', 'Late', 'Permission'],
+                    datasets: [{
+                        label: 'Today Attendance',
+                        data: [
+                            {{ $todayStats['onTime'] }},
+                            {{ $todayStats['Late'] }},
+                            {{ $todayStats['permission'] }}
+                        ],
+                        backgroundColor: [
+                            '#4F46E5',
+                            '#EF4444',
+                            '#38BDF8'
+                        ],
+                        borderRadius: 6,
+                        barThickness: 50
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.raw;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: totalEmployees,
+                            ticks: { stepSize: 10 }
+                        }
+                    }
+                }
+            });
+        </script>
+
+        <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const ctx = document.getElementById('monthChart').getContext('2d');
+            const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+            const data = {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            datasets: [
+                {
+                    label: 'On Time',
+                    data: @json($onTimeMonthly),
+                    borderColor: 'rgb(74, 222, 128)',
+                    backgroundColor: 'rgba(74, 222, 128, 0.1)',
+                    tension: 0.4,
+                    pointBackgroundColor: 'rgb(74, 222, 128)'
+                },
+                {
+                    label: 'Late',
+                    data: @json($lateMonthly),
+                    borderColor: 'rgb(239, 68, 68)',
+                    backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                    tension: 0.4,
+                    pointBackgroundColor: 'rgb(239, 68, 68)'
+                },
+                {
+                    label: 'Permission',
+                    data: @json($permissionMonthly),
+                    borderColor: 'rgb(59, 130, 246)',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    tension: 0.4,
+                    pointBackgroundColor: 'rgb(59, 130, 246)'
+                }
+            ]
+        };
+
+
+            const options = {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 26,
+                        ticks: { stepSize: 20 },
+                        grid: {
+                            display: true,
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                },
+                plugins: {
+                    legend: { display: true } // Tampilkan legenda
+                },
+                elements: {
+                    point: {
+                        radius: 4,
+                        hoverRadius: 6
+                    }
+                }
+            };
+
+            new Chart(ctx, {
+                type: 'line',
+                data: data,
+                options: options
+            });
+        });
+        </script>
     </div>
 
+
     <!-- Cards Section -->
-    <div class="flex flex-row justify-between">
+    <div class="grid grid-cols-3 gap-4">
         <!-- Top 5 Attendance -->
-        <div class="bg-white flex flex-col w-[450px] h-auto gap-4 items-start p-6 rounded-2xl shadow-lg">
+        <div class="bg-white flex flex-col col-span-2 h-auto gap-4 items-start p-6 rounded-2xl shadow-lg">
             <h3 class="text-blue-500 text-xl font-bold">
                 Top 5 <span class="font-normal text-base">Attendance Records</span>
             </h3>
 
             <div class="w-full space-y-3">
-                @foreach ($topAttendances as $i => $top)
+                @foreach ($topUsers as $i => $user)
                     <div class="flex flex-row w-full justify-between items-center py-2">
                         <span class="text-base text-black font-medium">
-                            {{ $i + 1 }}. {{ $top->user->fullname ?? '-' }}
+                            {{ $i + 1 }}. {{ $user['fullname'] }}
                         </span>
-                        <span class="text-sm text-gray-500">
-                            {{ $top->total_checkin }} days
-                        </span>
+                        <div class="flex gap-2">
+                            <span class="text-sm text-gray-500">
+                                {{ $user['total_checkin'] }} days -
+                            </span>
+                            <span class="text-sm text-gray-500">
+                                {{ $user['total_ontime'] }} On Time -
+                            </span>
+                            <span class="text-sm text-gray-500">
+                                {{ $user['total_worktime'] }} Time
+                            </span>
+                        </div>
                     </div>
                 @endforeach
             </div>
         </div>
 
         <!-- Employee Count -->
-        <div class="bg-white flex flex-col gap-4 w-[280px] h-auto items-center justify-between p-6 rounded-2xl shadow-lg">
+        <div class="bg-white flex flex-col gap-4  h-auto items-center justify-between p-6 rounded-2xl shadow-lg">
             <h3 class="text-lg text-blue-500 font-semibold">Number of employees</h3>
 
             <div class="flex flex-col items-center">
@@ -88,13 +252,7 @@
                 </div>
             </div>
         </div>
-
-        <!-- Overtime -->
-        <div class="bg-white flex flex-col gap-4 items-center justify-between p-6 rounded-2xl shadow-lg min-w-[220px]">
-            <h3 class="text-2xl text-red-500 font-bold">Overtime</h3>
-            <div class="text-4xl font-bold text-black text-center pb-30">{{ $totalWorkTime }}</div>
-            <div class="text-xs text-gray-500 text-center">Total working hours of all employees</div>
-        </div>
+ 
     </div>
 
     <!-- Employee Table -->
@@ -125,108 +283,4 @@
 @endsection
 
 
-{{-- <script>
-        // Today Chart
-        const todayCtx = document.getElementById('todayChart').getContext('2d');
-        const todayChart = new Chart(todayCtx, {
-            type: 'bar',
-            data: {
-                labels: ['Morning', 'Afternoon', 'Evening', 'Absent'],
-                datasets: [{
-                    data: [250, 150, 100, 50],
-                    backgroundColor: ['#3B82F6', '#EC4899', '#06B6D4', '#EF4444'],
-                    borderRadius: 8,
-                    barThickness: 40
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 300,
-                        ticks: {
-                            stepSize: 50
-                        }
-                    },
-                    x: {
-                        grid: {
-                            display: false
-                        }
-                    }
-                }
-            }
-        });
 
-        // Month Chart
-        const monthCtx = document.getElementById('monthChart').getContext('2d');
-        const monthChart = new Chart(monthCtx, {
-            type: 'bar',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                datasets: [
-                    {
-                        label: 'Present',
-                        data: [300, 280, 320, 310, 290, 330, 350, 340, 300, 310, 290, 320],
-                        backgroundColor: '#10B981',
-                        stack: 'stack1'
-                    },
-                    {
-                        label: 'Late',
-                        data: [50, 60, 40, 45, 55, 35, 30, 40, 50, 45, 60, 40],
-                        backgroundColor: '#F59E0B',
-                        stack: 'stack1'
-                    },
-                    {
-                        label: 'Absent',
-                        data: [20, 25, 15, 20, 30, 20, 15, 20, 25, 20, 25, 15],
-                        backgroundColor: '#EF4444',
-                        stack: 'stack1'
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'top'
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 400,
-                        stacked: true
-                    },
-                    x: {
-                        stacked: true,
-                        grid: {
-                            display: false
-                        }
-                    }
-                }
-            }
-        });
-
-        // Update overtime timer
-        function updateOvertime() {
-            const now = new Date();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
-
-            // This is just a demo - in real app you'd calculate actual overtime
-            document.querySelector('.text-4xl.font-bold.text-black').textContent = `${hours} : ${minutes} : ${seconds}`;
-        }
-
-        // Update every second
-        setInterval(updateOvertime, 1000);
-    </script> --}}

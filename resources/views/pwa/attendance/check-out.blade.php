@@ -87,7 +87,7 @@
             <form id="punchOutForm" method="POST" action="{{ route('attendance.realtime') }}"
                 enctype="multipart/form-data" class="flex flex-col items-center">
                 @csrf
-                <input type="hidden" name="punch_out_location" value="IBI Kesatuan, Bogor" />
+                <input type="hidden" name="punch_out_location" value="Unknown location" />
                 <input type="hidden" name="latitude" />
                 <input type="hidden" name="longitude" />
                 <input type="hidden" name="shift" value="Frontend Developer" />
@@ -245,7 +245,7 @@
             }).addTo(map);
 
             userMarker = L.marker([lat, lng]).addTo(map)
-                .bindPopup('Lokasi Kamu Sekarang').openPopup();
+                .bindPopup('Your current location').openPopup();
 
             // Marker kantor
             officeMarker = L.marker([officeLat, officeLng]).addTo(map)

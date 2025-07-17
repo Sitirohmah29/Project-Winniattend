@@ -6,39 +6,47 @@
     </div>
 
     <div class="flex gap-4 items-center justify-between">
-        <!-- Search Box -->
-        <form method="GET" action="{{ route('attendance.search') }}"
+    <!-- Search Box -->
+        <form method="GET" action="{{ route('attendances.index') }}"
             class="flex items-center bg-white rounded-full shadow-md px-4 py-2 w-[800px]">
             <i class="fa fa-search text-gray-500 mr-2"></i>
             <input type="text" name="search" placeholder="Search by name, role, or date" value="{{ request('search') }}"
                 class="w-full bg-transparent outline-none text-base italic text-gray-700" />
+            <!-- Preserve month filter when searching -->
+            @if(request('month') && request('month') !== 'All')
+                <input type="hidden" name="month" value="{{ request('month') }}">
+            @endif
             <button type="submit" class="ml-2 text-gray-500 hover:text-gray-700">
                 <i class="fa fa-search"></i>
             </button>
         </form>
 
         <!-- Month Filter -->
-        <form method="GET" action="{{ route('attendance.search') }}" class="relative">
+        <form method="GET" action="{{ route('attendances.index') }}" class="relative">
             <div x-data="{
                 open: false,
                 selected: '{{ request('month', 'All') }}',
                 months: [
                     { label: 'All', value: 'All' },
-                    { label: 'January', value: 1 },
-                    { label: 'February', value: 2 },
-                    { label: 'March', value: 3 },
-                    { label: 'April', value: 4 },
-                    { label: 'May', value: 5 },
-                    { label: 'June', value: 6 },
-                    { label: 'July', value: 7 },
-                    { label: 'August', value: 8 },
-                    { label: 'September', value: 9 },
-                    { label: 'October', value: 10 },
-                    { label: 'November', value: 11 },
-                    { label: 'December', value: 12 }
+                    { label: 'January', value: '1' },
+                    { label: 'February', value: '2' },
+                    { label: 'March', value: '3' },
+                    { label: 'April', value: '4' },
+                    { label: 'May', value: '5' },
+                    { label: 'June', value: '6' },
+                    { label: 'July', value: '7' },
+                    { label: 'August', value: '8' },
+                    { label: 'September', value: '9' },
+                    { label: 'October', value: '10' },
+                    { label: 'November', value: '11' },
+                    { label: 'December', value: '12' }
                 ]
             }" class="relative w-56">
                 <input type="hidden" name="month" :value="selected">
+                <!-- Preserve search when filtering -->
+                @if(request('search'))
+                    <input type="hidden" name="search" value="{{ request('search') }}">
+                @endif
                 <button type="button" @click="open = !open"
                     class="flex items-center bg-white rounded-full shadow-md px-4 py-2 cursor-pointer w-full justify-between border border-gray-300">
                     <div class="flex items-center gap-2">
@@ -61,6 +69,15 @@
         </form>
     </div>
 
+    <!-- Debug Info (hapus setelah testing) -->
+    <div class="mb-4 p-4 bg-gray-100 rounded hidden">
+        <strong>Debug Info:</strong><br>
+        Current Month Filter: {{ request('month', 'All') }}<br>
+        Search Query: {{ request('search', 'None') }}<br>
+        Total Records: {{ $attendances->count() }}<br>
+        Current Year: {{ date('Y') }}
+    </div>
+
     <!-- Table -->
     <div class="overflow-x-auto rounded-lg shadow-lg">
         <table class="min-w-full bg-white">
@@ -78,11 +95,13 @@
             </thead>
 
             <tbody class="text-sm text-gray-700">
-                @foreach ($attendances as $attendance)
+                @forelse ($attendances as $attendance)
                     <tr class="hover:bg-gray-50">
                         <td class="px-4 py-2">{{ $attendance->user->fullname ?? '-' }}</td>
                         <td class="px-4 py-2">{{ $attendance->user->role->name ?? '-' }}</td>
-                        <td class="px-4 py-2">{{ $attendance->date ?? '-' }}</td>
+                        <td class="px-4 py-2">
+                            {{ $attendance->date ? \Carbon\Carbon::parse($attendance->date)->format('d/m/Y') : '-' }}
+                        </td>
                         <td class="px-4 py-2 underline text-blue-500">
                             @if ($attendance->check_in)
                                 <a href="{{ route('attendance.detail.checkin', $attendance->id) }}">
@@ -116,7 +135,13 @@
                             </a>
                         </td>
                     </tr>
-                @endforeach
+                @empty
+                    <tr>
+                        <td colspan="8" class="px-4 py-8 text-center text-gray-500">
+                            No attendance records found for the selected criteria.
+                        </td>
+                    </tr>
+                @endforelse
             </tbody>
         </table>
     </div>

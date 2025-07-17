@@ -49,8 +49,8 @@
         <!-- Welcome Header -->
         <div class="flex justify-between items-center mb-6">
             <div>
-                <h1 class="text-xl font-semibold text-pink-400">Welcome!</h1>
-                <p class="text-gray-800 font-medium">{{ $user->fullname }}</p>
+                <h1 class="text-lg font-semibold text-pink-400">Welcome!</h1>
+                <p class="text-xl text-gray-800 font-medium">{{ $user->fullname }}</p>
             </div>
             <div class="bg-gray-800 text-white rounded-full p-2 w-7 h-7 flex items-center justify-center">
                 <a href="{{ url('/notification') }}"><i class="fa fa-bell"></i></a>
@@ -228,7 +228,10 @@
 
         <!-- Time Track -->
         <div class="mb-4">
-            <h2 class="text-xl font-semibold text-gray-800 mb-3">Time Track</h2>
+            <div class="flex px-2 justify-between items-center">
+                <h2 class="text-xl font-semibold text-gray-800 mb-3">Time Track</h2>
+                <p class="text-sm font-semibold text-blue-500 mb-3">Tahun {{  $yearRealtime }}</p>
+            </div>
 
             <div class="bg-white rounded-xl p-4 shadow-sm">
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
@@ -242,7 +245,7 @@
                     <div class="w-full md:w-1/2 flex flex-col justify-between gap-6">
 
                         <!-- Legend -->
-                        <div class="grid lg:grid-cols-1 md:grid-cols-2 grid-cols-4 gap-4">
+                        <div class="grid lg:grid-cols-1 md:grid-cols-2 grid-cols-3 gap-4">
                             <div class="flex items-center gap-2">
                                 <span class="w-3 h-3 rounded-full bg-green-400"></span>
                                 <span class="text-xs text-gray-600">On Time</span>
@@ -250,10 +253,6 @@
                             <div class="flex items-center gap-2">
                                 <span class="w-3 h-3 rounded-full bg-red-500"></span>
                                 <span class="text-xs text-gray-600">Late</span>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <span class="w-3 h-3 rounded-full bg-gray-800"></span>
-                                <span class="text-xs text-gray-600">Absent</span>
                             </div>
                             <div class="flex items-center gap-2">
                                 <span class="w-3 h-3 rounded-full bg-blue-400"></span>
@@ -313,42 +312,35 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const ctx = document.getElementById('timeTrackChart').getContext('2d');
-            const labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+            const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
 
             const data = {
                 labels: labels,
                 datasets: [{
-                        label: 'On Time',
-                        data: @json($onTime),
-                        borderColor: 'rgb(74, 222, 128)',
-                        backgroundColor: 'rgba(74, 222, 128, 0.1)',
-                        tension: 0.4,
-                        pointBackgroundColor: 'rgb(74, 222, 128)'
-                    },
-                    {
-                        label: 'Late',
-                        data: @json($late),
-                        borderColor: 'rgb(239, 68, 68)',
-                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
-                        tension: 0.4,
-                        pointBackgroundColor: 'rgb(239, 68, 68)'
-                    },
-                    {
-                        label: 'Permission',
-                        data: @json($permission),
-                        borderColor: 'rgb(59, 130, 246)',
-                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                        tension: 0.4,
-                        pointBackgroundColor: 'rgb(59, 130, 246)'
-                    },
-                    {
-                        label: 'Absent',
-                        data: @json($absent),
-                        borderColor: 'rgb(31, 41, 55)',
-                        backgroundColor: 'rgba(31, 41, 55, 0.1)',
-                        tension: 0.4,
-                        pointBackgroundColor: 'rgb(31, 41, 55)'
-                    }
+                    label: 'On Time',
+                    data: @json($onTime),
+                    borderColor: 'rgb(74, 222, 128)',
+                    backgroundColor: 'rgba(74, 222, 128, 0.1)',
+                    tension: 0.4,
+                    pointBackgroundColor: 'rgb(74, 222, 128)'
+                },
+                {
+                    label: 'Late',
+                    data: @json($late),
+                    borderColor: 'rgb(239, 68, 68)',
+                    backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                    tension: 0.4,
+                    pointBackgroundColor: 'rgb(239, 68, 68)'
+                },
+                {
+                    label: 'Permission',
+                    data: @json($permission),
+                    borderColor: 'rgb(59, 130, 246)',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    tension: 0.4,
+                    pointBackgroundColor: 'rgb(59, 130, 246)'
+                },
                 ]
             };
 
@@ -360,9 +352,9 @@
                 scales: {
                     y: {
                         beginAtZero: true,
-                        max: 10,
+                        max: 26,
                         ticks: {
-                            stepSize: 2
+                            stepSize: 4
                         },
                         grid: {
                             display: true,
@@ -394,6 +386,9 @@
                 data: data,
                 options: options
             });
+
+        
+            new Chart(ctx, config);
         });
     </script>
 

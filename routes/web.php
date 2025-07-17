@@ -64,9 +64,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/face-verification', [AttendanceController::class, 'showfaceVerificationPage'])->name('verification.face-verification');
     Route::get('/face-register', [AttendanceController::class, 'faceVerificationPage'])->name('verification.face-register');
 
+    //MANAGEMENT SYSTEM ROUTE
     // DASHBOARD
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('Dashboard');
     Route::get('/dashboardWeb', [DashboardController::class, 'dashboard'])->name('dashboardWeb');
+    // Route::get('/dashboardWeb', [DashboardController::class, 'showMonthlyChart']);
     Route::get('/notificationWeb', fn() => view('management_system.notificationWeb'))->name('notifications');
     // Route::get('/dashboardWeb/employees', [DashboardController::class, 'countEmployee'])->name('dashboardWeb.employees');
 
@@ -79,11 +81,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/users', [UserController::class, 'search'])->name('users.search');
 
     // ATTEDANCE MANAGEMENT
-    Route::get('/indexAttedance', [AttendanceController::class, 'index'])->name('attendances.index');
+    Route::get('/indexAttedance', [AttendanceController::class, 'indexAttendanceWeb'])->name('attendances.index');
     Route::get('/checkin/{Attendance}', [AttendanceController::class, 'showCheckInDetail'])->name('attendance.detail.checkin');
-    Route::get('/attedance', [AttendanceController::class, 'search'])->name('attendance.search');
+    // Route::get('/attedance', [AttendanceController::class, 'search'])->name('attendance.search');
+    
     //REPORT & ANALYTICS
-    Route::get('/indexReportWeb', fn() => view('management_system.report_analytics.indexReportWeb'))->name('Report_and_analytics');
+    Route::get('/indexReportWeb', [ReportController::class, 'ReportWeb'])->name('report.indexWeb');
+    // Route::get('/indexReportWeb', fn() => view('management_system.report_analytics.indexReportWeb'))->name('Report_and_analytics');
     //report & analytics - attedance report
     Route::get('/attedanceReport', fn() => view('management_system.report_analytics.attedanceReport'))->name('Attedance Report');
     Route::get('/attendance/export-pdf', [ReportController::class, 'exportPDF'])
@@ -91,6 +95,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/attedanceReport', [ReportController::class, 'attendanceReport'])->name('Attendance.report');
     Route::get('/report/attendance', [ReportController::class, 'attendanceReport'])->name('attendance.report');
     Route::get('/indexReport', [ReportController::class, 'indexReport'])->name('indexReport');
+    Route::get('/indexReport', [ReportController::class, 'indexReport'])->name('report.index');
     Route::get('/report/details/{id}', [ReportController::class, 'detailsReport'])->name('report.details');
 
     //report & analytics- payroll report
@@ -103,13 +108,3 @@ Route::get('/face-registration/check', function () {
     $registered = \App\Models\FaceRegistration::where('user_id', Auth::id())->exists();
     return response()->json(['registered' => $registered]);
 })->middleware('auth');
-
-
-// //WEB
-// Route::get('/signIn', fn () => view('management_system.signIn'))->name('signin');
-
-//     // (Optional) If you still need these for admin or advanced features, keep them:
-//     // Route::get('/face-verification/status', [AttendanceController::class, 'getFaceVerificationStatus'])->name('face.verification.status');
-//     // Route::post('/face-verification/reset', [AttendanceController::class, 'resetFaceVerification'])->name('face.verification.reset');
-//     // Route::get('/face-verification/status/{userId}', [AttendanceController::class, 'getFaceVerificationStatus'])->name('face.verification.status.user')->middleware('can:view-users');
-// });

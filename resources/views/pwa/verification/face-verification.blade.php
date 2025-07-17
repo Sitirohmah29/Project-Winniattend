@@ -19,7 +19,7 @@
     <header class="px-6 py-4 relative flex items-center">
         {{-- Back button to navigate to the attendance check-in page --}}
         <a href="{{ url('/attendance/check-in') }}" class="absolute left-6">
-            <i class="fa fa-chevron-left text-gray-700"></i>
+            <i class="fa fa-chevron-left text-gray-700 cursor-pointer hover:text-blue-500"></i>
         </a>
         {{-- Page title --}}
         <h1 class="mx-auto text-sm font-semibold text-gray-800">Face Verification</h1>
@@ -269,10 +269,13 @@
                                 if (result._label !== "unknown") {
                                     // Face detected and recognized
                                     detectedUser = result._label;
+
                                     cardName.innerText = result._label;
+
                                     cardFaceId.innerText = result._label;
-                                    cardShift.innerText =
-                                    "Shift 1 (07.00am - 01.00pm)"; // Example shift
+
+                                    cardShift.innerText = "{{ $shiftLabel }} ({{ $shiftTime }})";
+
                                     cardStatus.innerText =
                                         "Face detected! Press Done to check in.";
                                     btnDone.disabled = false; // Enable the Done button

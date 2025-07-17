@@ -71,9 +71,9 @@
                             <div class="h-2 w-2 rounded-full bg-white"></div>
                         </div>
                     </div>
-                    <div class="ml-3">
-                        <span class="text-xs font-semibold">Frontend Developer</span>
-                        <span class="text-xs font-thin ml-14">(07:00am - 01:00pm)</span>
+                    <div class="flex justify-between items-center w-full mx-3">
+                        <span class="text-sm font-semibold">{{$user->role->name}}</span>
+                        <span class="text-xs font-thin">{{$workingHours}}</span>
                     </div>
                 </div>
             </div>
@@ -91,7 +91,8 @@
                 <input type="hidden" name="in_allowed_range" value="0" />
 
                 <button type="button" id="scanFaceBtn" onclick="checkFaceID()"
-                    class="w-25 h-25 rounded-full bg-white shadow-lg flex flex-col items-center justify-center">
+                    class="w-25 h-25 rounded-full bg-white shadow-lg hover:bg-pink-100 flex flex-col items-center justify-center  transition-transform duration-300 ease-in-out 
+                    hover:scale-110">
                     <div class="w-15 h-15">
                         <svg width="100%" height="100%" viewBox="0 0 57 57" fill="none"
                             xmlns="http://www.w3.org/2000/svg">
@@ -210,7 +211,7 @@
             }).addTo(map);
 
             userMarker = L.marker([lat, lng]).addTo(map)
-                .bindPopup('Lokasi Kamu Sekarang').openPopup();
+                .bindPopup('Your current location').openPopup();
 
             // Marker kantor
             officeMarker = L.marker([officeLat, officeLng]).addTo(map)

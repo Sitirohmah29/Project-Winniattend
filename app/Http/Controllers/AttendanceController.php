@@ -17,8 +17,24 @@ class AttendanceController extends Controller
     // Halaman check-in
     public function showCheckInPage()
     {
-        $user = Auth::user();
-        return view('pwa.attendance.check-in', compact('user'));
+        $user = Auth::user()->load('role'); // Pastikan role sudah dimuat
+
+        //mengambil shift user
+        $shift = $user->shift; 
+        // Tentukan jam kerja berdasarkan shift
+        if ($shift == 'shift-1'){
+            $workingHours = '08.00 am - 04.00 pm';
+        }elseif ($shift == 'shift-2'){
+            $workingHours = '02.00 pm - 09.00 pm';
+        }else {
+            $workingHours = '08.00 am - 04.00 pm'; // Default
+        }
+
+        //mengambil role user
+        $role_id = $user->role_id;
+
+
+        return view('pwa.attendance.check-in', compact('user', 'workingHours'));
     }
 
     // Halaman check-out
@@ -52,62 +68,20 @@ class AttendanceController extends Controller
     }
 
 
-    public function index()
-    {
-        $attendances = \App\Models\Attendance::with(['user.role'])->get();
-        return view('management_system.attedance_management.indexAttedance', compact('attendances'));
-    }
-
-    public function search(Request $request)
-    {
-        $query = Attendance::with('user.role'); // relasi ke user & role
-
-        if ($request->has('search') && $request->search !== '') {
-            $search = $request->search;
-            $query->where(function ($q) use ($search) {
-                $q->whereHas('user', function ($q2) use ($search) {
-                    $q2->where('fullname', 'like', "%{$search}%")
-                        ->orWhere('email', 'like', "%{$search}%");
-                })
-                    ->orWhere('date', 'like', "%{$search}%");
-            });
-        }
-
-        // Filter by month if provided
-        if ($request->filled('month') && $request->month !== 'All') {
-            $monthNumber = intval($request->month);
-            if ($monthNumber >= 1 && $monthNumber <= 12) {
-                $query->whereMonth('date', $monthNumber);
-            }
-        }
-
-        $attendances = $query->get();
-        return view('management_system.attedance_management.indexAttedance', compact('attendances'));
-    }
-
-    public function showCheckInDetail($id)
-    {
-        $attendance = Attendance::with('user.role')->findOrFail($id);
-
-        return view('management_system.attedance_management.checkinAttedance', compact('attendance'));
-    }
-
     // Halaman verifikasi wajah
     public function showfaceVerificationPage()
     {
         $user = Auth::user();
-        // $faceImages = collect(Storage::allFiles('public/face_verifications'))
-        //     ->filter(function ($file) use ($user) {
-        //         return strtolower(pathinfo($file, PATHINFO_FILENAME)) === strtolower($user->name)
-        //         && in_array(strtolower(pathinfo($file, PATHINFO_EXTENSION)), ['jpg', 'jpeg', 'png']);
-        //     })
-        //     ->map(function ($file) {
-        //         return [
-        //             'name' => pathinfo($file, PATHINFO_FILENAME),
-        //             'path' => Storage::url($file),
-        //         ];
-        //     })
-        //     ->values();
+
+         // Ambil shift dan tentukan jam kerja
+        $shiftLabel = 'Shift 1';
+        $shiftTime = '08.00am - 04.00pm';
+
+        if ($user->shift == 'Shift-2'){
+            $shiftLabel = 'Shift-2';
+            $shiftTime = '02.00pm - 09.00pm';
+        }
+
         $faceImages = FaceRegistration::where('user_id', $user->id)->get()->map(function ($item) {
             return [
                 'name' => pathinfo($item->image_name, PATHINFO_FILENAME),
@@ -115,7 +89,7 @@ class AttendanceController extends Controller
             ];
         });
 
-        return view('pwa.verification.face-verification', compact('faceImages'));
+        return view('pwa.verification.face-verification', compact('faceImages', 'user', 'shiftLabel', 'shiftTime'));
     }
 
     // Halaman registrasi wajah
@@ -173,12 +147,23 @@ class AttendanceController extends Controller
                 $locationName = $this->getLocationName($request->latitude, $request->longitude);
             }
 
+            //cek waktu check-in
             $checkInTime = $request->input('check_in_time') ?? now()->format('H:i:s');
+
+            $user = \App\Models\User::findOrFail($userId); // Pastikan user terambil
+
+            $shiftStartTime = '08:00:00'; // default shift-1
+            if ($user->shift === 'shift-2') {
+                $shiftStartTime = '14:00:00';
+            }
+
+            // Cek apakah telat
+            $status = $checkInTime > $shiftStartTime ? 'late' : 'onTime';
 
             $attendance = Attendance::create([
                 'user_id' => $userId,
                 'date' => now()->toDateString(),
-                'status' => 'onTime',
+                'status' => $status,
                 'check_in' => $checkInTime,
                 'check_in_location' => $locationName,
                 'latitude' => $request->latitude,
@@ -318,5 +303,50 @@ class AttendanceController extends Controller
             'message' => 'Permission berhasil dicatat',
             'data' => $attendance
         ]);
+    }
+
+
+    //MANAGEMENT ATTEDANCE WEB
+    public function indexAttendanceWeb(Request $request)
+    {
+        $query = Attendance::with('user.role'); // relasi ke user & role
+
+        // Filter pencarian
+        if ($request->has('search') && $request->search !== '') {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->whereHas('user', function ($q2) use ($search) {
+                    $q2->where('fullname', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%");
+                })
+                ->orWhereHas('user.role', function ($q3) use ($search) {
+                    $q3->where('name', 'like', "%{$search}%");
+                })
+                ->orWhere('date', 'like', "%{$search}%");
+            });
+        }
+
+        // Filter bulan - pastikan menggunakan tahun saat ini
+        if ($request->filled('month') && $request->month !== 'All') {
+            $monthNumber = intval($request->month);
+            if ($monthNumber >= 1 && $monthNumber <= 12) {
+                $currentYear = date('Y'); // Ambil tahun saat ini
+                $query->whereMonth('date', $monthNumber)
+                    ->whereYear('date', $currentYear);
+            }
+        }
+
+        // AMBIL SETELAH FILTER
+        $attendances = $query->orderBy('date', 'desc')->get();
+
+        return view('management_system.attedance_management.indexAttedance', compact('attendances'));
+    }
+
+
+    public function showCheckInDetail($id)
+    {
+        $attendance = Attendance::with('user.role')->findOrFail($id);
+
+        return view('management_system.attedance_management.checkinAttedance', compact('attendance'));
     }
 }

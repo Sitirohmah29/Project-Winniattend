@@ -30,7 +30,7 @@
         <!-- Header -->
         <header class="px-6 py-4 relative flex items-center">
             <a href="{{url('/dashboard')}}" class="absolute left-6">
-                <i class="fa fa-chevron-left text-gray-700"></i>
+                <i class="fa fa-chevron-left text-gray-700  hover:text-blue-600"></i>
             </a>
             <h1 class="mx-auto text-sm font-semibold text-gray-800">Notifications</h1>
         </header>
