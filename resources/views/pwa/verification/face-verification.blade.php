@@ -142,7 +142,8 @@
 
                         // Reverse geocoding: convert coordinates to a human-readable address
                         fetch(
-                                `https://nominatim.openstreetmap.org/reverse?format=json&lat=${userLocation.latitude}&lon=${userLocation.longitude}`)
+                                `https://nominatim.openstreetmap.org/reverse?format=json&lat=${userLocation.latitude}&lon=${userLocation.longitude}`
+                                )
                             .then(res => res.json())
                             .then(data => {
                                 cardLocation.innerText = data.display_name || "Location not found";
@@ -242,7 +243,7 @@
                 }
                 // Create a FaceMatcher to compare detected faces with known faces
                 const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors,
-                0.45); // 0.45 is the recognition threshold
+                    0.45); // 0.45 is the recognition threshold
 
                 // Set up an interval to continuously detect and recognize faces from the video stream
                 setInterval(async () => {
@@ -274,7 +275,8 @@
 
                                     cardFaceId.innerText = result._label;
 
-                                    cardShift.innerText = "{{ $shiftLabel }} ({{ $shiftTime }})";
+                                    cardShift.innerText =
+                                        "{{ $shiftLabel }} ({{ $shiftTime }})";
 
                                     cardStatus.innerText =
                                         "Face detected! Press Done to check in.";
@@ -298,7 +300,7 @@
                             cardFaceId.innerText = "-";
                             cardShift.innerText = "-";
                             cardStatus.innerText =
-                            "Waiting for verification..."; // Reset status if no face
+                                "Waiting for verification..."; // Reset status if no face
                             btnDone.disabled = true; // Disable the Done button
                         }
                     } catch (error) {
@@ -352,7 +354,7 @@
                     if (data.success) {
                         cardStatus.innerText = data.message;
                         cardStatus.className =
-                        "text-xl font-bold text-green-600"; // Set status text to green for success
+                            "text-xl font-bold text-green-600"; // Set status text to green for success
                         // Redirect to check-in page after a short delay on success
                         setTimeout(() => {
                             window.location.href = '{{ route('attendance.check-in') }}';
@@ -360,7 +362,7 @@
                     } else {
                         cardStatus.innerText = data.message || "Failed to submit attendance.";
                         cardStatus.className =
-                        "text-xl font-bold text-red-600"; // Set status text to red for error
+                            "text-xl font-bold text-red-600"; // Set status text to red for error
                         btnDone.disabled = false; // Re-enable button on failure
                     }
                 })
@@ -368,7 +370,7 @@
                     console.error('Attendance submission error:', error);
                     cardStatus.innerText = "Failed to contact server.";
                     cardStatus.className =
-                    "text-xl font-bold text-red-600"; // Set status text to red for network error
+                        "text-xl font-bold text-red-600"; // Set status text to red for network error
                     btnDone.disabled = false; // Re-enable button on error
                 })
                 .finally(() => {

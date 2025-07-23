@@ -72,8 +72,8 @@
                         </div>
                     </div>
                     <div class="flex justify-between items-center w-full mx-3">
-                        <span class="text-sm font-semibold">{{$user->role->name}}</span>
-                        <span class="text-xs font-thin">{{$workingHours}}</span>
+                        <span class="text-sm font-semibold">{{ $user->role->name }}</span>
+                        <span class="text-xs font-thin">{{ $workingHours }}</span>
                     </div>
                 </div>
             </div>
