@@ -35,8 +35,17 @@
                 { name: 'December', value: 12 }
             ],
             years: Array.from({ length: 6 }, (_, i) => new Date().getFullYear() - i),
-            selectedMonth: new Date().getMonth() + 1,
-            selectedYear: new Date().getFullYear(),
+            selectedMonth: Number(new URLSearchParams(window.location.search).get('month')) || (new Date().getMonth() + 1),
+            selectedYear: Number(new URLSearchParams(window.location.search).get('year')) || new Date().getFullYear(),
+        
+            // Method untuk reload ke url baru dengan query month & year
+            updateUrl() {
+                const params = new URLSearchParams(window.location.search);
+                params.set('month', this.selectedMonth);
+                params.set('year', this.selectedYear);
+                // Reload halaman dengan query baru
+                window.location.search = params.toString();
+            }
         }" class="flex flex-row gap-2 items-center">
             <!-- Dropdown Bulan -->
             <div class="relative">
@@ -51,13 +60,14 @@
                 <ul x-show="openMonth" @click.away="openMonth = false"
                     class="absolute mt-2 w-full bg-white border border-gray-200 rounded-md shadow-lg z-10">
                     <template x-for="month in months" :key="month.value">
-                        <li @click="selectedMonth = month.value; openMonth = false"
+                        <li @click="selectedMonth = month.value; openMonth = false; updateUrl()"
                             class="px-4 py-2 hover:bg-gray-100 cursor-pointer text-gray-700">
                             <span x-text="month.name"></span>
                         </li>
                     </template>
                 </ul>
             </div>
+
             <!-- Dropdown Tahun -->
             <div class="relative">
                 <button @click="openYear = !openYear"
@@ -68,13 +78,14 @@
                 <ul x-show="openYear" @click.away="openYear = false"
                     class="absolute mt-2 w-full bg-white border border-gray-200 rounded-md shadow-lg z-10">
                     <template x-for="year in years" :key="year">
-                        <li @click="selectedYear = year; openYear = false"
+                        <li @click="selectedYear = year; openYear = false; updateUrl()"
                             class="px-4 py-2 hover:bg-gray-100 cursor-pointer text-gray-700">
                             <span x-text="year"></span>
                         </li>
                     </template>
                 </ul>
             </div>
+
             <!-- Tombol Export PDF -->
             <a :href="'{{ route('attendance.export') }}?month=' + selectedMonth + '&year=' + selectedYear"
                 class="ml-4 text-white text-md bg-pink-400 rounded-2xl px-5 py-3 font-semibold shadow-md hover:bg-pink-500 transition"

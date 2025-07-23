@@ -32,14 +32,27 @@
                 { name: 'November', value: 11 },
                 { name: 'December', value: 12 }
             ],
-            selected: { name: '{{ \Carbon\Carbon::create()->month($month)->format('F') }}', value: {{ $month }} },
+            selected: {
+                name: '{{ \Carbon\Carbon::create()->month($month)->format('F') }}',
+                value: {{ $month }}
+            },
             openYear: false,
             years: Array.from({ length: 6 }, (_, i) => new Date().getFullYear() - i),
             selectedYear: {{ $year }},
+            // Add auto reload (gunakan route name/URL sesuai)
+            init() {
+                this.$watch('selected', value => {
+                    window.location.href = `{{ route('Payroll Report') }}?month=${value.value}&year=${this.selectedYear}`;
+                });
+                this.$watch('selectedYear', value => {
+                    window.location.href = `{{ route('Payroll Report') }}?month=${this.selected.value}&year=${value}`;
+                });
+            }
         }" class="relative flex items-center gap-2">
             <button @click="open = !open"
                 class="flex items-center bg-white rounded-full shadow-md px-4 py-2 cursor-pointer w-[200px] justify-between">
-                <div class="flex items-center gap-2">
+                <div class="flex items-
+                center gap-2">
                     <i class="fa fa-filter text-gray-500"></i>
                     <span class="italic text-gray-700" x-text="selected.name"></span>
                 </div>

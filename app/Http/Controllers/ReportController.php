@@ -11,7 +11,7 @@ use Carbon\Carbon;
 class ReportController extends Controller
 {
 
-   public function indexReport(Request $request)
+    public function indexReport(Request $request)
     {
         $user = auth()->user();
 
@@ -24,7 +24,7 @@ class ReportController extends Controller
             ->get();
 
         // Face ID status
-        $faceIdStatus = $attendances->map(function ($a){
+        $faceIdStatus = $attendances->map(function ($a) {
             if ($a->check_in) {
                 $a->faceIdStatus = 'Success';
             } elseif ($a->permission) {
@@ -336,11 +336,6 @@ class ReportController extends Controller
                     continue;
                 }
 
-                // if ($attendance->status == 1) {
-                //     $permission++;
-                //     continue;
-                // }
-
                 if ($attendance->status == Attendance::STATUS_PERMISSION) {
                     $permission++;
                     continue;
@@ -447,5 +442,53 @@ class ReportController extends Controller
         ]);
         $pdf->setPaper('A4', 'landscape');
         return $pdf->download("payroll_report_{$month}_{$year}.pdf");
+    }
+    public function indexReportAttendance(Request $request)
+    {
+        $month = $request->query('month', date('n'));
+        $year = $request->query('year', date('Y'));
+
+        $attendances = Attendance::with('user.role')
+            ->whereYear('date', $year)
+            ->whereMonth('date', $month)
+            ->get();
+
+        $reportData = [];
+        $users = $attendances->groupBy('user_id');
+
+        foreach ($users as $userId => $attens) {
+            $user = $attens->first()->user;
+            $totalDays = $attens->count();
+
+            $onTime = $attens->where('status', 'onTime')->count();
+            $late = $attens->where('status', 'late')->count();
+            $absent = $attens->where('status', 'absent')->count();
+
+            // Ubah cara menghitung permission - gunakan kolom permission (tinyint)
+            $permission = $attens->where('permission', 1)->count();
+
+            $totalDurationMinutes = $attens->reduce(function ($carry, $item) {
+                if ($item->check_in && $item->check_out) {
+                    $in = Carbon::parse($item->check_in);
+                    $out = Carbon::parse($item->check_out);
+                    return $carry + $in->diffInMinutes($out);
+                }
+                return $carry;
+            }, 0);
+
+            $workDurationHours = round($totalDurationMinutes / 60, 2);
+
+            $reportData[] = [
+                'user' => $user,
+                'totalDays' => $totalDays,
+                'onTime' => $onTime,
+                'late' => $late,
+                'absent' => $absent,
+                'permission' => $permission,
+                'workDuration' => $workDurationHours,
+            ];
+        }
+
+        return view('management_system.report_analytics.attendanceReport', compact('reportData'));
     }
 }

@@ -45,9 +45,11 @@
                             </div>
                         </div>
                         <div class="ml-3">
-                            <h3 class="text-sm font-semibold">IBI Kesatuan</h3>
-                            <p class="text-xs font-thin">Jl. Ranggagading no.1 RT.02/09, Gudang, Kec.Bogor Tengah,
-                                Bogor, Indonesia 16123
+                            <h3 class="text-sm font-semibold">
+                                {{ $attendance->check_in_location ?? 'Lokasi Tidak Tersedia' }}
+                            </h3>
+                            <p class="text-xs font-thin">
+                                {{ $attendance->check_in_location ?? 'Alamat tidak tersedia' }}
                             </p>
                         </div>
                     </div>
@@ -78,21 +80,13 @@
                     {{-- ... --}}
                     <p class="text-reg">Face ID</p>
                     <div class="flex-container justify-center items-center">
-                        {{-- <p class="text-title2">
-                            {{ $attendance->permission ? 'Permission' : ($attendance->status_label == 'present' ? 'Success Complete' : ucfirst($attendance->status_label)) }}
-                        </p>
-                        @if ($attendance->status_label == 'present')
-                            <i class="fa-solid fa-circle-check fa-lg" style="color: #63E6BE;"></i>
-                        @elseif($attendance->status_label == 'permission')
-                            <i class="fa-solid fa-circle-exclamation fa-lg" style="color: #FF66C4;"></i>
-                        @else
-                            <i class="fa-solid fa-circle-xmark fa-lg" style="color: #FF0000;"></i>
-                        @endif --}}
-
                         <p class="text-title2">
-                            @if ($attendance->check_in) Success
-                            @elseif ($attendance->permission) Permission
-                            @else {{ ucfirs($attendance->status_label) }}
+                            @if ($attendance->check_in)
+                                Success
+                            @elseif ($attendance->permission)
+                                Permission
+                            @else
+                                {{ ucfirs($attendance->status_label) }}
                             @endif
                         </p>
 
@@ -110,39 +104,29 @@
                         document.addEventListener("DOMContentLoaded", function() {
                             const mapContainer = document.getElementById("map");
 
-                            // Pastikan elemen map memiliki tinggi
+                            // Ambil lokasi attendance dari backend
+                            const attendanceLat = {{ $attendance->latitude ?? -6.5963 }};
+                            const attendanceLng = {{ $attendance->longitude ?? 106.806039 }};
+
                             if (mapContainer && mapContainer.offsetHeight > 0) {
-                                if (navigator.geolocation) {
-                                    navigator.geolocation.getCurrentPosition(function(position) {
-                                        const userLat = position.coords.latitude;
-                                        const userLng = position.coords.longitude;
+                                // Inisialisasi peta pada lokasi attendance
+                                const map = L.map('map').setView([attendanceLat, attendanceLng], 16);
 
-                                        // Inisialisasi peta
-                                        const map = L.map('map').setView([userLat, userLng], 16);
+                                // Tile layer
+                                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                    attribution: '&copy; OpenStreetMap contributors'
+                                }).addTo(map);
 
-                                        // Tile layer
-                                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                                            attribution: '&copy; OpenStreetMap contributors'
-                                        }).addTo(map);
+                                // Marker lokasi attendance
+                                L.marker([attendanceLat, attendanceLng]).addTo(map)
+                                    .bindPopup('Lokasi saat absen')
+                                    .openPopup();
 
-                                        // Marker user
-                                        L.marker([userLat, userLng]).addTo(map)
-                                            .bindPopup('Lokasi Kamu Sekarang')
-                                            .openPopup();
-
-                                        // Marker lokasi target
-                                        const targetLat = -6.596300;
-                                        const targetLng = 106.806039;
-
-                                        L.marker([targetLat, targetLng]).addTo(map)
-                                            .bindPopup('IBI Kesatuan');
-
-                                    }, function(error) {
-                                        alert("Gagal mengambil lokasi: " + error.message);
-                                    });
-                                } else {
-                                    alert("Browser tidak mendukung Geolocation.");
-                                }
+                                // (Optional) Marker lokasi kantor
+                                const targetLat = -6.596300;
+                                const targetLng = 106.806039;
+                                L.marker([targetLat, targetLng]).addTo(map)
+                                    .bindPopup('IBI Kesatuan');
                             } else {
                                 console.error("Elemen #map tidak memiliki ukuran yang cukup untuk menampilkan peta.");
                             }

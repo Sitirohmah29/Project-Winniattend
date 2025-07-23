@@ -2,27 +2,20 @@
 @section('content')
     <!-- Header -->
     <div class="bg-blue-500 text-white p-4 rounded-lg">
-        <h1 class="text-xl font-semibold">Attedance Management</h1>
+        <h1 class="text-xl font-semibold">Attendance Management</h1>
     </div>
 
     <div class="flex gap-4 items-center justify-between">
-    <!-- Search Box -->
-        <form method="GET" action="{{ route('attendances.index') }}"
-            class="flex items-center bg-white rounded-full shadow-md px-4 py-2 w-[800px]">
-            <i class="fa fa-search text-gray-500 mr-2"></i>
-            <input type="text" name="search" placeholder="Search by name, role, or date" value="{{ request('search') }}"
-                class="w-full bg-transparent outline-none text-base italic text-gray-700" />
-            <!-- Preserve month filter when searching -->
-            @if(request('month') && request('month') !== 'All')
-                <input type="hidden" name="month" value="{{ request('month') }}">
-            @endif
-            <button type="submit" class="ml-2 text-gray-500 hover:text-gray-700">
-                <i class="fa fa-search"></i>
-            </button>
-        </form>
+        <form method="GET" action="{{ route('attendances.index') }}" class="flex gap-4 items-center w-full">
+            {{-- SEARCH --}}
+            <div class="flex items-center bg-white rounded-full shadow-md px-4 py-2 w-[400px]">
+                <i class="fa fa-search text-gray-500 mr-2"></i>
+                <input type="text" name="search" placeholder="Search by name, role, or date"
+                    value="{{ request('search') }}"
+                    class="w-full bg-transparent outline-none text-base italic text-gray-700" />
+            </div>
 
-        <!-- Month Filter -->
-        <form method="GET" action="{{ route('attendances.index') }}" class="relative">
+            {{-- MONTH FILTER --}}
             <div x-data="{
                 open: false,
                 selected: '{{ request('month', 'All') }}',
@@ -41,41 +34,47 @@
                     { label: 'November', value: '11' },
                     { label: 'December', value: '12' }
                 ]
-            }" class="relative w-56">
+            }" class="relative w-48">
                 <input type="hidden" name="month" :value="selected">
-                <!-- Preserve search when filtering -->
-                @if(request('search'))
-                    <input type="hidden" name="search" value="{{ request('search') }}">
-                @endif
                 <button type="button" @click="open = !open"
                     class="flex items-center bg-white rounded-full shadow-md px-4 py-2 cursor-pointer w-full justify-between border border-gray-300">
-                    <div class="flex items-center gap-2">
-                        <i class="fa fa-filter text-gray-500"></i>
-                        <span class="italic text-gray-700"
-                            x-text="months.find(m => m.value == selected)?.label || 'All'"></span>
-                    </div>
+                    <span class="italic text-gray-700"
+                        x-text="months.find(m => m.value == selected)?.label || 'All'"></span>
                     <i class="fa fa-chevron-down text-gray-500 text-sm"></i>
                 </button>
                 <ul x-show="open" @click.away="open = false"
                     class="absolute left-0 right-0 mt-2 w-full bg-white border border-gray-200 rounded-md shadow-lg z-20 max-h-72 overflow-y-auto">
                     <template x-for="month in months" :key="month.value">
-                        <li @click="selected = month.value; open = false; $el.closest('form').submit()"
+                        <li @click="selected = month.value; open = false; $nextTick(() => $el.closest('form').submit())"
                             class="px-4 py-2 hover:bg-blue-100 cursor-pointer text-gray-700">
                             <span x-text="month.label"></span>
                         </li>
                     </template>
                 </ul>
             </div>
-        </form>
-    </div>
 
-    <!-- Debug Info (hapus setelah testing) -->
-    <div class="mb-4 p-4 bg-gray-100 rounded hidden">
-        <strong>Debug Info:</strong><br>
-        Current Month Filter: {{ request('month', 'All') }}<br>
-        Search Query: {{ request('search', 'None') }}<br>
-        Total Records: {{ $attendances->count() }}<br>
-        Current Year: {{ date('Y') }}
+            {{-- YEAR FILTER --}}
+            <div x-data="{
+                open: false,
+                selected: '{{ request('year', date('Y')) }}',
+                years: Array.from({ length: {{ date('Y') - 2022 + 1 }} }, (_, i) => (2023 + i).toString())
+            }" class="relative w-32">
+                <input type="hidden" name="year" :value="selected">
+                <button type="button" @click="open = !open"
+                    class="flex items-center bg-white rounded-full shadow-md px-4 py-2 cursor-pointer w-full justify-between border border-gray-300">
+                    <span class="italic text-gray-700" x-text="selected"></span>
+                    <i class="fa fa-chevron-down text-gray-500 text-sm"></i>
+                </button>
+                <ul x-show="open" @click.away="open = false"
+                    class="absolute left-0 right-0 mt-2 w-full bg-white border border-gray-200 rounded-md shadow-lg z-20 max-h-60 overflow-y-auto">
+                    <template x-for="year in years" :key="year">
+                        <li @click="selected = year; open = false; $nextTick(() => $el.closest('form').submit())"
+                            class="px-4 py-2 hover:bg-blue-100 cursor-pointer text-gray-700" x-text="year"></li>
+                    </template>
+                </ul>
+            </div>
+        </form>
+
     </div>
 
     <!-- Table -->
@@ -130,7 +129,6 @@
                         </td>
                         <td class="px-4 py-2 text-blue-500">
                             <a href="">
-                                {{-- {{ route('attendances.edit', $attendance->id) }} --}}
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </a>
                         </td>

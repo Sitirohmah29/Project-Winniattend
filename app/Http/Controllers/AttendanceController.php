@@ -20,13 +20,13 @@ class AttendanceController extends Controller
         $user = Auth::user()->load('role'); // Pastikan role sudah dimuat
 
         //mengambil shift user
-        $shift = $user->shift; 
+        $shift = $user->shift;
         // Tentukan jam kerja berdasarkan shift
-        if ($shift == 'shift-1'){
+        if ($shift == 'shift-1') {
             $workingHours = '08.00 am - 04.00 pm';
-        }elseif ($shift == 'shift-2'){
+        } elseif ($shift == 'shift-2') {
             $workingHours = '02.00 pm - 09.00 pm';
-        }else {
+        } else {
             $workingHours = '08.00 am - 04.00 pm'; // Default
         }
 
@@ -73,11 +73,11 @@ class AttendanceController extends Controller
     {
         $user = Auth::user();
 
-         // Ambil shift dan tentukan jam kerja
+        // Ambil shift dan tentukan jam kerja
         $shiftLabel = 'Shift 1';
         $shiftTime = '08.00am - 04.00pm';
 
-        if ($user->shift == 'Shift-2'){
+        if ($user->shift == 'Shift-2') {
             $shiftLabel = 'Shift-2';
             $shiftTime = '02.00pm - 09.00pm';
         }
@@ -158,7 +158,7 @@ class AttendanceController extends Controller
             }
 
             // Cek apakah telat
-            $status = $checkInTime > $shiftStartTime ? 'late' : 'onTime';
+            $status = $checkInTime > $shiftStartTime ? 'Late' : 'onTime';
 
             $attendance = Attendance::create([
                 'user_id' => $userId,
@@ -309,39 +309,40 @@ class AttendanceController extends Controller
     //MANAGEMENT ATTEDANCE WEB
     public function indexAttendanceWeb(Request $request)
     {
-        $query = Attendance::with('user.role'); // relasi ke user & role
+        $query = Attendance::with('user.role');
 
-        // Filter pencarian
-        if ($request->has('search') && $request->search !== '') {
-            $search = $request->search;
+        // Filter pencarian (search)
+        if ($request->filled('search')) {
+            $search = $request->input('search');
             $query->where(function ($q) use ($search) {
                 $q->whereHas('user', function ($q2) use ($search) {
                     $q2->where('fullname', 'like', "%{$search}%")
                         ->orWhere('email', 'like', "%{$search}%");
                 })
-                ->orWhereHas('user.role', function ($q3) use ($search) {
-                    $q3->where('name', 'like', "%{$search}%");
-                })
-                ->orWhere('date', 'like', "%{$search}%");
+                    ->orWhereHas('user.role', function ($q3) use ($search) {
+                        $q3->where('name', 'like', "%{$search}%");
+                    })
+                    ->orWhere('date', 'like', "%{$search}%");
             });
         }
 
-        // Filter bulan - pastikan menggunakan tahun saat ini
-        if ($request->filled('month') && $request->month !== 'All') {
-            $monthNumber = intval($request->month);
-            if ($monthNumber >= 1 && $monthNumber <= 12) {
-                $currentYear = date('Y'); // Ambil tahun saat ini
-                $query->whereMonth('date', $monthNumber)
-                    ->whereYear('date', $currentYear);
-            }
+        // Filter tahun, default tahun sekarang
+        $year = $request->input('year', date('Y'));
+        if (is_numeric($year)) {
+            $query->whereYear('date', $year);
         }
 
-        // AMBIL SETELAH FILTER
+        // Filter bulan kecuali 'All'
+        $month = $request->input('month');
+        if (!empty($month) && $month !== 'All' && is_numeric($month)) {
+            $query->whereMonth('date', $month);
+        }
+
+        // Data
         $attendances = $query->orderBy('date', 'desc')->get();
 
         return view('management_system.attedance_management.indexAttedance', compact('attendances'));
     }
-
 
     public function showCheckInDetail($id)
     {

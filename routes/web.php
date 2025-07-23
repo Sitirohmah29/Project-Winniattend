@@ -68,9 +68,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // DASHBOARD
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('Dashboard');
     Route::get('/dashboardWeb', [DashboardController::class, 'dashboard'])->name('dashboardWeb');
-    // Route::get('/dashboardWeb', [DashboardController::class, 'showMonthlyChart']);
     Route::get('/notificationWeb', fn() => view('management_system.notificationWeb'))->name('notifications');
-    // Route::get('/dashboardWeb/employees', [DashboardController::class, 'countEmployee'])->name('dashboardWeb.employees');
 
     //MANAGEMENT USER
     Route::post('/users', [UserController::class, 'store'])->name('users.store');
@@ -83,13 +81,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // ATTEDANCE MANAGEMENT
     Route::get('/indexAttedance', [AttendanceController::class, 'indexAttendanceWeb'])->name('attendances.index');
     Route::get('/checkin/{Attendance}', [AttendanceController::class, 'showCheckInDetail'])->name('attendance.detail.checkin');
-    // Route::get('/attedance', [AttendanceController::class, 'search'])->name('attendance.search');
-    
+
     //REPORT & ANALYTICS
     Route::get('/indexReportWeb', [ReportController::class, 'ReportWeb'])->name('report.indexWeb');
-    // Route::get('/indexReportWeb', fn() => view('management_system.report_analytics.indexReportWeb'))->name('Report_and_analytics');
     //report & analytics - attedance report
-    Route::get('/attedanceReport', fn() => view('management_system.report_analytics.attedanceReport'))->name('Attedance Report');
+    Route::get('/attedanceReport', [ReportController::class, 'indexReportAttendance'])->name('Attedance Report');
     Route::get('/attendance/export-pdf', [ReportController::class, 'exportPDF'])
         ->name('attendance.export'); // jika perlu
     Route::get('/attedanceReport', [ReportController::class, 'attendanceReport'])->name('Attendance.report');
