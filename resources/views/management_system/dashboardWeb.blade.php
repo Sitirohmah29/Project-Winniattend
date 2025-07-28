@@ -24,13 +24,13 @@
 
     <!-- Statistics Section -->
     <div class="statistics flex flex-col items-center gap-4">
-    <h3 class="text-xl text-gray-600 text-center font-semibold">Employee Attendance Statistics</h3>
+        <h3 class="text-xl text-gray-600 text-center font-semibold">Employee Attendance Statistics</h3>
 
-    <!-- Charts Container -->
-    <div class="flex flex-row gap-6 w-full">
+        <!-- Charts Container -->
+        <div class="flex flex-row gap-6 w-full">
 
             <!-- Today Chart -->
-        <div class="bg-white rounded-lg shadow-lg p-6 flex-1">
+            <div class="bg-white rounded-lg shadow-lg p-6 flex-1">
                 <h4 class="text-lg font-semibold mb-4">Today</h4>
                 <canvas id="todayChart" class="w-full h-[250px]"></canvas>
 
@@ -104,7 +104,9 @@
                 options: {
                     responsive: true,
                     plugins: {
-                        legend: { display: false },
+                        legend: {
+                            display: false
+                        },
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
@@ -117,7 +119,9 @@
                         y: {
                             beginAtZero: true,
                             max: totalEmployees,
-                            ticks: { stepSize: 10 }
+                            ticks: {
+                                stepSize: 10
+                            }
                         }
                     }
                 }
@@ -125,75 +129,80 @@
         </script>
 
         <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const ctx = document.getElementById('monthChart').getContext('2d');
-            const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            document.addEventListener('DOMContentLoaded', function() {
+                const ctx = document.getElementById('monthChart').getContext('2d');
+                const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-            const data = {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-            datasets: [
-                {
-                    label: 'On Time',
-                    data: @json($onTimeMonthly),
-                    borderColor: 'rgb(74, 222, 128)',
-                    backgroundColor: 'rgba(74, 222, 128, 0.1)',
-                    tension: 0.4,
-                    pointBackgroundColor: 'rgb(74, 222, 128)'
-                },
-                {
-                    label: 'Late',
-                    data: @json($lateMonthly),
-                    borderColor: 'rgb(239, 68, 68)',
-                    backgroundColor: 'rgba(239, 68, 68, 0.1)',
-                    tension: 0.4,
-                    pointBackgroundColor: 'rgb(239, 68, 68)'
-                },
-                {
-                    label: 'Permission',
-                    data: @json($permissionMonthly),
-                    borderColor: 'rgb(59, 130, 246)',
-                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                    tension: 0.4,
-                    pointBackgroundColor: 'rgb(59, 130, 246)'
-                }
-            ]
-        };
+                const data = {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: [{
+                            label: 'On Time',
+                            data: @json($onTimeMonthly),
+                            borderColor: 'rgb(74, 222, 128)',
+                            backgroundColor: 'rgba(74, 222, 128, 0.1)',
+                            tension: 0.4,
+                            pointBackgroundColor: 'rgb(74, 222, 128)'
+                        },
+                        {
+                            label: 'Late',
+                            data: @json($lateMonthly),
+                            borderColor: 'rgb(239, 68, 68)',
+                            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                            tension: 0.4,
+                            pointBackgroundColor: 'rgb(239, 68, 68)'
+                        },
+                        {
+                            label: 'Permission',
+                            data: @json($permissionMonthly),
+                            borderColor: 'rgb(59, 130, 246)',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            tension: 0.4,
+                            pointBackgroundColor: 'rgb(59, 130, 246)'
+                        }
+                    ]
+                };
 
 
-            const options = {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 26,
-                        ticks: { stepSize: 20 },
-                        grid: {
-                            display: true,
-                            color: 'rgba(0, 0, 0, 0.05)'
+                const options = {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 26,
+                            ticks: {
+                                stepSize: 20
+                            },
+                            grid: {
+                                display: true,
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
                         }
                     },
-                    x: {
-                        grid: { display: false }
+                    plugins: {
+                        legend: {
+                            display: true
+                        } // Tampilkan legenda
+                    },
+                    elements: {
+                        point: {
+                            radius: 4,
+                            hoverRadius: 6
+                        }
                     }
-                },
-                plugins: {
-                    legend: { display: true } // Tampilkan legenda
-                },
-                elements: {
-                    point: {
-                        radius: 4,
-                        hoverRadius: 6
-                    }
-                }
-            };
+                };
 
-            new Chart(ctx, {
-                type: 'line',
-                data: data,
-                options: options
+                new Chart(ctx, {
+                    type: 'line',
+                    data: data,
+                    options: options
+                });
             });
-        });
         </script>
     </div>
 
@@ -252,7 +261,7 @@
                 </div>
             </div>
         </div>
- 
+
     </div>
 
     <!-- Employee Table -->
@@ -264,6 +273,7 @@
                         <th class="px-6 py-4 text-left text-lg font-semibold text-white">Employee</th>
                         <th class="px-6 py-4 text-left text-lg font-semibold text-white">Check In</th>
                         <th class="px-6 py-4 text-left text-lg font-semibold text-white">Check Out</th>
+                        <th class="px-6 py-4 text-left text-lg font-semibold text-white">Status</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-100">
@@ -273,7 +283,7 @@
                                 {{ $attendance->user->fullname ?? '-' }}</td>
                             <td class="px-6 py-4 text-gray-600">{{ $attendance->check_in ?? '-' }}</td>
                             <td class="px-6 py-4 text-gray-600">{{ $attendance->check_out ?? '-' }}</td>
-
+                            <td class="px-6 py-4 text-gray-600">{{ $attendance->status ?? '-' }}</td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -281,6 +291,3 @@
         </div>
     </div>
 @endsection
-
-
-

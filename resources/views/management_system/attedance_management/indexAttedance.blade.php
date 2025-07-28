@@ -89,7 +89,6 @@
                     <th class="px-4 py-3 font-semibold">Check out</th>
                     <th class="px-4 py-3 font-semibold">Duration</th>
                     <th class="px-4 py-3 font-semibold">Status</th>
-                    <th class="px-4 py-3 font-semibold">Action</th>
                 </tr>
             </thead>
 
@@ -107,7 +106,6 @@
                                     {{ \Carbon\Carbon::parse($attendance->check_in)->format('H:i') }}
                                 </a>
                             @else
-                                -
                             @endif
                         </td>
                         <td class="px-4 py-2 underline">
@@ -122,15 +120,18 @@
                         </td>
                         <td class="px-4 py-2">
                             @if (isset($attendance->status))
-                                {{ $attendance->status == 'onTime' ? 'On time' : 'Late' }}
+                                <span
+                                    class="ml-2 px-2 py-1 rounded text-xs
+    {{ $attendance->status == 'onTime' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
+                                    {{ $attendance->status == 'onTime' ? 'On time' : 'Late' }}
+                                </span>
                             @else
-                                -
                             @endif
-                        </td>
-                        <td class="px-4 py-2 text-blue-500">
-                            <a href="">
-                                <i class="fa-solid fa-pen-to-square"></i>
-                            </a>
+                            @if ($attendance->permission)
+                                <span class="ml-2 px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-xs">
+                                    Permission: {{ $attendance->permission }}
+                                </span>
+                            @endif
                         </td>
                     </tr>
                 @empty
@@ -144,7 +145,13 @@
         </table>
     </div>
 
+
     <!-- Pagination -->
+    {{-- <div class="flex ml-58 fixed bottom-0 left-0 right-0 justify-between items-center py-8 px-8">
+        <div class="mt-4">
+            {{ $attendances->links() }}
+        </div>
+    </div> --}}
     <div class="flex ml-58 fixed bottom-0 left-0 right-0 justify-between items-center py-8 px-8">
         <button class="bg-blue-100 text-blue-700 px-4 py-2 rounded-lg hover:bg-blue-200">Previously</button>
         <div class="flex gap-2">

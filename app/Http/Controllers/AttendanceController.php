@@ -339,7 +339,9 @@ class AttendanceController extends Controller
         }
 
         // Data
-        $attendances = $query->orderBy('date', 'desc')->get();
+        $attendances = Attendance::with(['user.role'])
+            ->orderByDesc('date')
+            ->paginate(10);
 
         return view('management_system.attedance_management.indexAttedance', compact('attendances'));
     }
