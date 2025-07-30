@@ -200,7 +200,8 @@
                         user_id: userId,
                         latitude: latitude,
                         longitude: longitude,
-                        checkout_time: checkout_time
+                        checkout_time: checkout_time,
+                        check_out_location: userLocationName // Kirim nama lokasi
                     })
                 })
                 .then(response => response.json())
@@ -266,6 +267,8 @@
                 map.setView([lat, lng]);
             }
         }
+
+        let userLocationName = null;
         // Reverse geocoding untuk dapatkan nama lokasi
         function fetchLocationName(lat, lng) {
             fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
@@ -274,10 +277,12 @@
                     document.getElementById('locationName').textContent = data.display_name?.split(',')[0] ||
                         'Lokasi Terdeteksi';
                     document.getElementById('locationAddress').textContent = data.display_name || '-';
+                    userLocationName = data.display_name || null; // Simpan nama lokasi
                 })
                 .catch(() => {
                     document.getElementById('locationName').textContent = 'Tidak diketahui';
                     document.getElementById('locationAddress').textContent = '-';
+                    userLocationName = null;
                 });
         }
 

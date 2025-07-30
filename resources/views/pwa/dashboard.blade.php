@@ -117,10 +117,6 @@
                 onclick="showPermissionPopUp()">
                 Permission
             </button>
-
-            {{-- modal permission pop up --}}
-
-
             <script>
                 function showPermissionPopUp() {
                     // Tampilkan tanggal hari ini di popup
@@ -230,7 +226,7 @@
         <div class="mb-4">
             <div class="flex px-2 justify-between items-center">
                 <h2 class="text-xl font-semibold text-gray-800 mb-3">Time Track</h2>
-                <p class="text-sm font-semibold text-blue-500 mb-3">Tahun {{  $yearRealtime }}</p>
+                <p class="text-sm font-semibold text-blue-500 mb-3">Year {{ $yearRealtime }}</p>
             </div>
 
             <div class="bg-white rounded-xl p-4 shadow-sm">
@@ -318,29 +314,29 @@
             const data = {
                 labels: labels,
                 datasets: [{
-                    label: 'On Time',
-                    data: @json($onTime),
-                    borderColor: 'rgb(74, 222, 128)',
-                    backgroundColor: 'rgba(74, 222, 128, 0.1)',
-                    tension: 0.4,
-                    pointBackgroundColor: 'rgb(74, 222, 128)'
-                },
-                {
-                    label: 'Late',
-                    data: @json($late),
-                    borderColor: 'rgb(239, 68, 68)',
-                    backgroundColor: 'rgba(239, 68, 68, 0.1)',
-                    tension: 0.4,
-                    pointBackgroundColor: 'rgb(239, 68, 68)'
-                },
-                {
-                    label: 'Permission',
-                    data: @json($permission),
-                    borderColor: 'rgb(59, 130, 246)',
-                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                    tension: 0.4,
-                    pointBackgroundColor: 'rgb(59, 130, 246)'
-                },
+                        label: 'On Time',
+                        data: @json($onTime),
+                        borderColor: 'rgb(74, 222, 128)',
+                        backgroundColor: 'rgba(74, 222, 128, 0.1)',
+                        tension: 0.4,
+                        pointBackgroundColor: 'rgb(74, 222, 128)'
+                    },
+                    {
+                        label: 'Late',
+                        data: @json($late),
+                        borderColor: 'rgb(239, 68, 68)',
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        tension: 0.4,
+                        pointBackgroundColor: 'rgb(239, 68, 68)'
+                    },
+                    {
+                        label: 'Permission',
+                        data: @json($permission),
+                        borderColor: 'rgb(59, 130, 246)',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.4,
+                        pointBackgroundColor: 'rgb(59, 130, 246)'
+                    },
                 ]
             };
 
@@ -387,7 +383,7 @@
                 options: options
             });
 
-        
+
             new Chart(ctx, config);
         });
     </script>
@@ -406,7 +402,74 @@
             });
         }
     </script>
+    <!-- Modal Tailwind -->
+    <div id="permissionModal" class="fixed inset-0 z-50 items-center justify-center bg-black bg-opacity-40 hidden">
+        <div class="bg-white rounded-lg shadow-lg p-6 max-w-sm w-full text-center">
+            <h2 class="text-lg font-bold text-red-500 mb-2">Akses Ditolak</h2>
+            <p class="text-gray-700 mb-4">
+                @{{ modalMessage }}
+            </p>
+            <button onclick="closePermissionModal()"
+                class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Tutup</button>
+        </div>
+    </div>
 
+    <script>
+        let modalMessage = 'Akses tidak diizinkan.';
+
+        function showPermissionModal(message) {
+            modalMessage = message;
+            document.querySelector('#permissionModal p').innerHTML = message;
+            document.getElementById('permissionModal').classList.remove('hidden');
+        }
+
+        function closePermissionModal() {
+            document.getElementById('permissionModal').classList.add('hidden');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('{{ route('attendance.statusToday') }}')
+                .then(res => res.json())
+                .then(data => {
+                    // Disable tombol Permission jika sudah check-in atau sudah permission
+                    const permissionBtn = document.querySelector('button[onclick*="showPermissionPopUp"]');
+                    if (data.permission) {
+                        // Sudah permission, disable check-in, check-out, permission
+                        const checkInBtn = document.querySelector('button[onclick*="check-in"]');
+                        const checkOutBtn = document.querySelector('button[onclick*="check-out"]');
+                        if (checkInBtn) {
+                            checkInBtn.disabled = true;
+                            checkInBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                            checkInBtn.onclick = () => showPermissionModal(
+                                'Anda sudah mengajukan permission hari ini.<br>Tidak bisa check-in atau check-out.'
+                                );
+                        }
+                        if (checkOutBtn) {
+                            checkOutBtn.disabled = true;
+                            checkOutBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                            checkOutBtn.onclick = () => showPermissionModal(
+                                'Anda sudah mengajukan permission hari ini.<br>Tidak bisa check-in atau check-out.'
+                                );
+                        }
+                        if (permissionBtn) {
+                            permissionBtn.disabled = true;
+                            permissionBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                            permissionBtn.onclick = () => showPermissionModal(
+                                'Anda sudah mengajukan permission hari ini.<br>Tidak bisa mengajukan permission lagi.'
+                                );
+                        }
+                    } else if (data.check_in) {
+                        // Sudah check-in, disable permission
+                        if (permissionBtn) {
+                            permissionBtn.disabled = true;
+                            permissionBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                            permissionBtn.onclick = () => showPermissionModal(
+                                'Anda sudah check-in hari ini.<br>Tidak bisa mengajukan permission.');
+                        }
+                    }
+                });
+        });
+    </script>
 
 </body>
 

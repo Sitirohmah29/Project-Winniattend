@@ -99,6 +99,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/payroll/export-pdf', [ReportController::class, 'exportPayrollPDF'])->name('payroll.export');
 
     Route::get('/indexSecurity', fn() => view('management_system.security_settings.indexSecurity'))->name('Security_and_Settings');
+
+    Route::get('/attendance/status-today', [AttendanceController::class, 'statusToday'])->name('attendance.statusToday');
 });
 Route::get('/face-registration/check', function () {
     $registered = \App\Models\FaceRegistration::where('user_id', Auth::id())->exists();
