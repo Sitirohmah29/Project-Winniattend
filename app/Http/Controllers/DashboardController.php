@@ -15,11 +15,7 @@ class DashboardController extends Controller
     public function dashboard()
     {
 
-        $attendances = Attendance::with('user')
-            ->whereNotNull('check_in')
-            ->orderByDesc('check_in')
-            ->limit(10)
-            ->get();
+        $attendances = Attendance::with('user')->orderByDesc('created_at')->limit(10)->get();
 
         // Hitung total user (pegawai)
         $totalEmployees = User::count();
@@ -74,18 +70,18 @@ class DashboardController extends Controller
                 'total_work_seconds' => $workSeconds, // untuk sorting nanti
             ];
         })
-        // SORTING: total_checkin > total_ontime > total_work_seconds
-        ->sort(function ($a, $b) {
-            if ($a['total_checkin'] === $b['total_checkin']) {
-                if ($a['total_ontime'] === $b['total_ontime']) {
-                    return $b['total_work_seconds'] <=> $a['total_work_seconds'];
+            // SORTING: total_checkin > total_ontime > total_work_seconds
+            ->sort(function ($a, $b) {
+                if ($a['total_checkin'] === $b['total_checkin']) {
+                    if ($a['total_ontime'] === $b['total_ontime']) {
+                        return $b['total_work_seconds'] <=> $a['total_work_seconds'];
+                    }
+                    return $b['total_ontime'] <=> $a['total_ontime'];
                 }
-                return $b['total_ontime'] <=> $a['total_ontime'];
-            }
-            return $b['total_checkin'] <=> $a['total_checkin'];
-        })
-        ->values() // reset index
-        ->take(5); // ambil top 5
+                return $b['total_checkin'] <=> $a['total_checkin'];
+            })
+            ->values() // reset index
+            ->take(5); // ambil top 5
 
         // TODAY STATISTICS
         $today = now()->toDateString();

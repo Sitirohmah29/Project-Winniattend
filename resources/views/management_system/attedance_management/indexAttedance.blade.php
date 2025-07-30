@@ -16,7 +16,7 @@
             </div>
 
             <div class="flex gap-4 items-center">
-            {{-- MONTH FILTER --}}
+                {{-- MONTH FILTER --}}
                 <div x-data="{
                     open: false,
                     selected: '{{ request('month', 'All') }}',
@@ -121,19 +121,11 @@
                         </td>
                         <td class="px-4 py-2">
                             @if (isset($attendance->status))
-
-                                <span
-                                    class="ml-2 px-2 py-1 rounded text-xs
-    {{ $attendance->status == 'onTime' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
-                                    {{ $attendance->status == 'onTime' ? 'On time' : 'Late' }}
-                                </span>
-
+                                {{ $attendance->status == 'onTime' ? 'On time' : 'Late' }}
+                            @elseif (isset($attendance->permission) && $attendance->permission == 1)
+                                Permission
                             @else
-                            @endif
-                            @if ($attendance->permission)
-                                <span class="ml-2 px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-xs">
-                                    Permission: {{ $attendance->permission }}
-                                </span>
+                                -
                             @endif
                         </td>
                     </tr>
