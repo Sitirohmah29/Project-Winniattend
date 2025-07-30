@@ -16,8 +16,7 @@
             border-collapse: collapse;
             margin-top: 20px;
         }
-
-        th,
+        
         td {
             border: 1px solid #aaa;
             padding: 6px;
@@ -38,8 +37,8 @@
             <tr>
                 <th>Employee</th>
                 <th>Position</th>
-                <th>Salary</th>
-                <th>Alpha Deduction</th>
+                <th>Daily Salary</th>
+                <th>Number of working days</th>
                 <th>Total Salary</th>
             </tr>
         </thead>
@@ -48,8 +47,8 @@
                 <tr>
                     <td>{{ $row['fullname'] }}</td>
                     <td>{{ $row['position'] }}</td>
-                    <td>{{ number_format($row['salary'], 0, ',', '.') }}</td>
-                    <td>{{ number_format($row['alphaDeduction'], 0, ',', '.') }}</td>
+                    <td>{{ number_format($row['salary_perday'], 0, ',', '.') }}</td>
+                    <td>{{ number_format($row['workingDays'], 0, ',', '.') }}</td>
                     <td>{{ number_format($row['totalSalary'], 0, ',', '.') }}</td>
                 </tr>
             @endforeach

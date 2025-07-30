@@ -14,12 +14,12 @@ class RoleSeeder extends Seeder
     public function run(): void
     {
         $roles = [
-            ['name' => 'Laravel Developer', 'salary' => 8000000],
-            ['name' => 'Fullstack Developer', 'salary' => 10000000],
-            ['name' => 'Copy Writer', 'salary' => 6000000],
-            ['name' => 'Frontend Developer', 'salary' => 7500000],
-            ['name' => 'Backend Developer', 'salary' => 8500000],
-            ['name' => 'Admin', 'salary' => 4000000],
+            ['name' => 'Laravel Developer', 'salary_perday' => 350000],
+            ['name' => 'Fullstack Developer', 'salary_perday' => 385000],
+            ['name' => 'Copy Writer', 'salary_perday' => 250000],
+            ['name' => 'Frontend Developer', 'salary_perday' => 290000],
+            ['name' => 'Backend Developer', 'salary_perday' => 325000],
+            ['name' => 'Admin', 'salary' => 150000],
         ];
 
         foreach ($roles as $role) {

@@ -77,7 +77,7 @@ class AttendanceController extends Controller
         $shiftLabel = 'Shift 1';
         $shiftTime = '08.00am - 04.00pm';
 
-        if ($user->shift == 'Shift-2') {
+        if ($user->shift == 'shift-2') {
             $shiftLabel = 'Shift-2';
             $shiftTime = '02.00pm - 09.00pm';
         }
@@ -157,9 +157,13 @@ class AttendanceController extends Controller
                 $shiftStartTime = '14:00:00';
             }
 
-            // Cek apakah telat
-            $status = $checkInTime > $shiftStartTime ? 'Late' : 'onTime';
+            // Konversi ke Carbon object
+            $checkIn = Carbon::parse($checkInTime);
+            $shiftStart = Carbon::parse($shiftStartTime);
 
+            // Bandingkan check-in dengan shift start
+            $status = $checkIn->gt($shiftStart) ? 'Late' : 'onTime';
+            
             $attendance = Attendance::create([
                 'user_id' => $userId,
                 'date' => now()->toDateString(),

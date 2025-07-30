@@ -109,8 +109,8 @@
                 <tr class="bg-blue-500 text-white text-left text-sm">
                     <th class="px-4 py-3 font-semibold text-center">Employee</th>
                     <th class="px-4 py-3 font-semibold text-center">Position</th>
-                    <th class="px-4 py-3 font-semibold text-center">Salary</th>
-                    <th class="px-4 py-3 font-semibold text-center">Alpha Deduction</th>
+                    <th class="px-4 py-3 font-semibold text-center">Daily Salary</th>
+                    <th class="px-4 py-3 font-semibold text-center">Number of Working Days</th>
                     <th class="px-4 py-3 font-semibold text-center">Total Salary</th>
                 </tr>
             </thead>
@@ -119,9 +119,9 @@
                     <tr class="hover:bg-gray-50">
                         <td class="px-4 py-2">{{ $row['fullname'] }}</td>
                         <td class="px-4 py-2">{{ $row['position'] }}</td>
-                        <td class="px-4 py-2">{{ number_format($row['salary'], 0, ',', '.') }}</td>
-                        <td class="px-4 py-2">{{ number_format($row['alphaDeduction'], 0, ',', '.') }}</td>
-                        <td class="px-4 py-2">{{ number_format($row['totalSalary'], 0, ',', '.') }}</td>
+                        <td class="px-4 py-2 text-center">{{ number_format($row['salary_perday'], 0, ',', '.') }}</td>
+                        <td class="px-4 py-2 text-center">{{ number_format($row['workingDays'], 0, ',', '.') }}</td>
+                        <td class="px-4 py-2 text-center">{{ number_format($row['totalSalary'], 0, ',', '.') }}</td>
                     </tr>
                 @endforeach
             </tbody>
