@@ -14,22 +14,18 @@ class DashboardController extends Controller
 {
     public function dashboard()
     {
-        // Ambil 10 data presensi terakhir + user-nya
+
         $attendances = Attendance::with('user')
             ->whereNotNull('check_in')
             ->orderByDesc('check_in')
             ->limit(10)
             ->get();
+
         // Hitung total user (pegawai)
         $totalEmployees = User::count();
 
-        // Hitung berdasarkan role
-        $laravelCount = User::whereHas('role', fn($q) => $q->where('name', 'Laravel Developer'))->count();
-        $fullstackCount = User::whereHas('role', fn($q) => $q->where('name', 'Fullstack Developer'))->count();
-        $copywriterCount = User::whereHas('role', fn($q) => $q->where('name', 'Copy Writer'))->count();
-        $frontendCount = User::whereHas('role', fn($q) => $q->where('name', 'Frontend Developer'))->count();
-        $backendCount = User::whereHas('role', fn($q) => $q->where('name', 'Backend Developer'))->count();
-        $adminCount = User::whereHas('role', fn($q) => $q->where('name', 'Admin'))->count();
+        // Ambil semua role beserta jumlah user-nya
+        $roles = Role::withCount('users')->get();
 
         // TOP 5 attendance
         $topAttendances = Attendance::select('user_id')
@@ -51,7 +47,7 @@ class DashboardController extends Controller
                 ->whereNotNull('check_out')
                 ->get();
 
-            // Hitung total waktu kerja
+            // Hitung total waktu kerja dalam detik
             $workSeconds = $attendances->reduce(function ($carry, $a) {
                 $checkIn = Carbon::parse($a->date . ' ' . $a->check_in);
                 $checkOut = Carbon::parse($a->date . ' ' . $a->check_out);
@@ -75,8 +71,21 @@ class DashboardController extends Controller
                 'total_checkin' => $item->total_checkin,
                 'total_ontime' => $onTime,
                 'total_worktime' => $workTime,
+                'total_work_seconds' => $workSeconds, // untuk sorting nanti
             ];
-        });
+        })
+        // SORTING: total_checkin > total_ontime > total_work_seconds
+        ->sort(function ($a, $b) {
+            if ($a['total_checkin'] === $b['total_checkin']) {
+                if ($a['total_ontime'] === $b['total_ontime']) {
+                    return $b['total_work_seconds'] <=> $a['total_work_seconds'];
+                }
+                return $b['total_ontime'] <=> $a['total_ontime'];
+            }
+            return $b['total_checkin'] <=> $a['total_checkin'];
+        })
+        ->values() // reset index
+        ->take(5); // ambil top 5
 
         // TODAY STATISTICS
         $today = now()->toDateString();
@@ -132,12 +141,7 @@ class DashboardController extends Controller
         return view('management_system.dashboardWeb', compact(
             'attendances',
             'totalEmployees',
-            'laravelCount',
-            'fullstackCount',
-            'copywriterCount',
-            'frontendCount',
-            'backendCount',
-            'adminCount',
+            'roles',
             'topAttendances',
             'topUsers',
             'todayStats',

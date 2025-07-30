@@ -326,53 +326,47 @@ class ReportController extends Controller
             $onTime = 0;
             $late = 0;
             $permission = 0;
-            $workDuration = 0; // in hours
+            $workMinutes = 0;
             $workingDays = 0;
 
             foreach ($user->attendances as $attendance) {
                 // Hitung permission
-                if ($attendance->status_label === 'permission') {
+                if ($attendance->permission == 1) {
                     $permission++;
-                    continue;
+                    continue; // skip attendance with permission
                 }
 
-                if ($attendance->status == Attendance::STATUS_PERMISSION) {
-                    $permission++;
-                    continue;
-                }
-                // Hitung onTime & Late
-                if ($attendance->check_in && $user->shift_start) {
-                    $checkIn = \Carbon\Carbon::parse($attendance->check_in);
-                    $shiftStart = \Carbon\Carbon::createFromFormat('H:i:s', $user->shift_start);
-
-                    if ($checkIn->lessThanOrEqualTo($shiftStart)) {
-                        $onTime++;
-                    } else {
-                        $late++;
-                    }
+                // Hitung status onTime atau late
+                if ($attendance->status === 'onTime') {
+                    $onTime++;
+                    $workingDays++;
+                } elseif ($attendance->status === 'Late') {
+                    $late++;
+                    $workingDays++;
                 }
 
-                // Hitung working day
-                $workingDays++;
-
-                // Hitung durasi kerja (hanya jika ada check_out)
+                // Hitung durasi kerja (jika ada check-in & check-out)
                 if ($attendance->check_in && $attendance->check_out) {
                     $checkIn = \Carbon\Carbon::parse($attendance->check_in);
                     $checkOut = \Carbon\Carbon::parse($attendance->check_out);
-                    $duration = $checkOut->diffInMinutes($checkIn) / 60; // convert to hours
-                    $workDuration += $duration;
+                    $duration = $checkOut->diffInMinutes($checkIn); // in minutes
+                    $workMinutes += $duration;
                 }
             }
+
+            // Ubah workMinutes jadi jam dan menit
+            $workHours = intdiv($workMinutes, 60);
+            $remainingMinutes = $workMinutes % 60;
+            $formattedDuration = "{$workHours}.{$remainingMinutes}";
 
             return [
                 'user' => $user,
                 'totalDays' => $workingDays,
                 'onTime' => $onTime,
                 'late' => $late,
-                'absent' => 0, // kamu bisa tambahkan logika ini nanti
                 'permission' => $permission,
                 'overtime' => $user->attendances->sum('overtime_hours') ?? 0,
-                'workDuration' => round($workDuration, 1),
+                'workDuration' => $formattedDuration,
             ];
         });
 
@@ -392,16 +386,15 @@ class ReportController extends Controller
         }])->get();
 
         $payrollData = $users->map(function ($user) {
-            $salary = $user->role->salary ?? 0;
-            $absent = $user->attendances->where('status', 'absent')->count();
-            $alphaDeduction = $absent * 100000; // contoh: potongan 100rb/hari alpha
-            $totalSalary = $salary - $alphaDeduction;
+            $salary = $user->role->salary_perday ?? 0;
+            $workingDays = $user->attendances->whereIn('status', ['onTime', 'Late'])->count(); // hanya yang masuk kerja
+            $totalSalary = $workingDays * $salary ;
 
             return [
                 'fullname' => $user->fullname,
                 'position' => $user->role->name ?? '-',
-                'salary' => $salary,
-                'alphaDeduction' => $alphaDeduction,
+                'salary_perday' => $salary,
+                'workingDays' => $workingDays,
                 'totalSalary' => $totalSalary,
             ];
         });
@@ -421,16 +414,15 @@ class ReportController extends Controller
         }])->get();
 
         $payrollData = $users->map(function ($user) {
-            $salary = $user->role->salary ?? 0;
-            $absent = $user->attendances->where('status', 'absent')->count();
-            $alphaDeduction = $absent * 100000;
-            $totalSalary = $salary - $alphaDeduction;
+            $salary = $user->role->salary_perday ?? 0;
+            $workingDays = $user->attendances->whereIn('status', ['onTime', 'Late'])->count(); // hanya yang masuk kerja
+            $totalSalary = $workingDays * $salary ;
 
             return [
                 'fullname' => $user->fullname,
                 'position' => $user->role->name ?? '-',
-                'salary' => $salary,
-                'alphaDeduction' => $alphaDeduction,
+                'salary_perday' => $salary,
+                'workingDays' => $workingDays,
                 'totalSalary' => $totalSalary,
             ];
         });
@@ -443,6 +435,8 @@ class ReportController extends Controller
         $pdf->setPaper('A4', 'landscape');
         return $pdf->download("payroll_report_{$month}_{$year}.pdf");
     }
+
+
     public function indexReportAttendance(Request $request)
     {
         $month = $request->query('month', date('n'));

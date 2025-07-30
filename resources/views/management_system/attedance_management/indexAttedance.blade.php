@@ -6,75 +6,76 @@
     </div>
 
     <div class="flex gap-4 items-center justify-between">
-        <form method="GET" action="{{ route('attendances.index') }}" class="flex gap-4 items-center w-full">
+        <form method="GET" action="{{ route('attendances.index') }}" class="flex gap-4 items-center w-full justify-between">
             {{-- SEARCH --}}
-            <div class="flex items-center bg-white rounded-full shadow-md px-4 py-2 w-[400px]">
+            <div class="flex items-center bg-white rounded-full shadow-md px-4 py-2 w-full">
                 <i class="fa fa-search text-gray-500 mr-2"></i>
                 <input type="text" name="search" placeholder="Search by name, role, or date"
                     value="{{ request('search') }}"
                     class="w-full bg-transparent outline-none text-base italic text-gray-700" />
             </div>
 
+            <div class="flex gap-4 items-center">
             {{-- MONTH FILTER --}}
-            <div x-data="{
-                open: false,
-                selected: '{{ request('month', 'All') }}',
-                months: [
-                    { label: 'All', value: 'All' },
-                    { label: 'January', value: '1' },
-                    { label: 'February', value: '2' },
-                    { label: 'March', value: '3' },
-                    { label: 'April', value: '4' },
-                    { label: 'May', value: '5' },
-                    { label: 'June', value: '6' },
-                    { label: 'July', value: '7' },
-                    { label: 'August', value: '8' },
-                    { label: 'September', value: '9' },
-                    { label: 'October', value: '10' },
-                    { label: 'November', value: '11' },
-                    { label: 'December', value: '12' }
-                ]
-            }" class="relative w-48">
-                <input type="hidden" name="month" :value="selected">
-                <button type="button" @click="open = !open"
-                    class="flex items-center bg-white rounded-full shadow-md px-4 py-2 cursor-pointer w-full justify-between border border-gray-300">
-                    <span class="italic text-gray-700"
-                        x-text="months.find(m => m.value == selected)?.label || 'All'"></span>
-                    <i class="fa fa-chevron-down text-gray-500 text-sm"></i>
-                </button>
-                <ul x-show="open" @click.away="open = false"
-                    class="absolute left-0 right-0 mt-2 w-full bg-white border border-gray-200 rounded-md shadow-lg z-20 max-h-72 overflow-y-auto">
-                    <template x-for="month in months" :key="month.value">
-                        <li @click="selected = month.value; open = false; $nextTick(() => $el.closest('form').submit())"
-                            class="px-4 py-2 hover:bg-blue-100 cursor-pointer text-gray-700">
-                            <span x-text="month.label"></span>
-                        </li>
-                    </template>
-                </ul>
-            </div>
+                <div x-data="{
+                    open: false,
+                    selected: '{{ request('month', 'All') }}',
+                    months: [
+                        { label: 'All', value: 'All' },
+                        { label: 'January', value: '1' },
+                        { label: 'February', value: '2' },
+                        { label: 'March', value: '3' },
+                        { label: 'April', value: '4' },
+                        { label: 'May', value: '5' },
+                        { label: 'June', value: '6' },
+                        { label: 'July', value: '7' },
+                        { label: 'August', value: '8' },
+                        { label: 'September', value: '9' },
+                        { label: 'October', value: '10' },
+                        { label: 'November', value: '11' },
+                        { label: 'December', value: '12' }
+                    ]
+                }" class="relative w-48">
+                    <input type="hidden" name="month" :value="selected">
+                    <button type="button" @click="open = !open"
+                        class="flex items-center bg-white rounded-full shadow-md px-4 py-2 cursor-pointer w-full justify-between border border-gray-300">
+                        <span class="italic text-gray-700"
+                            x-text="months.find(m => m.value == selected)?.label || 'All'"></span>
+                        <i class="fa fa-chevron-down text-gray-500 text-sm"></i>
+                    </button>
+                    <ul x-show="open" @click.away="open = false"
+                        class="absolute left-0 right-0 mt-2 w-full bg-white border border-gray-200 rounded-md shadow-lg z-20 max-h-72 overflow-y-auto">
+                        <template x-for="month in months" :key="month.value">
+                            <li @click="selected = month.value; open = false; $nextTick(() => $el.closest('form').submit())"
+                                class="px-4 py-2 hover:bg-blue-100 cursor-pointer text-gray-700">
+                                <span x-text="month.label"></span>
+                            </li>
+                        </template>
+                    </ul>
+                </div>
 
-            {{-- YEAR FILTER --}}
-            <div x-data="{
-                open: false,
-                selected: '{{ request('year', date('Y')) }}',
-                years: Array.from({ length: {{ date('Y') - 2022 + 1 }} }, (_, i) => (2023 + i).toString())
-            }" class="relative w-32">
-                <input type="hidden" name="year" :value="selected">
-                <button type="button" @click="open = !open"
-                    class="flex items-center bg-white rounded-full shadow-md px-4 py-2 cursor-pointer w-full justify-between border border-gray-300">
-                    <span class="italic text-gray-700" x-text="selected"></span>
-                    <i class="fa fa-chevron-down text-gray-500 text-sm"></i>
-                </button>
-                <ul x-show="open" @click.away="open = false"
-                    class="absolute left-0 right-0 mt-2 w-full bg-white border border-gray-200 rounded-md shadow-lg z-20 max-h-60 overflow-y-auto">
-                    <template x-for="year in years" :key="year">
-                        <li @click="selected = year; open = false; $nextTick(() => $el.closest('form').submit())"
-                            class="px-4 py-2 hover:bg-blue-100 cursor-pointer text-gray-700" x-text="year"></li>
-                    </template>
-                </ul>
+                {{-- YEAR FILTER --}}
+                <div x-data="{
+                    open: false,
+                    selected: '{{ request('year', date('Y')) }}',
+                    years: Array.from({ length: {{ date('Y') - 2022 + 1 }} }, (_, i) => (2023 + i).toString())
+                }" class="relative w-32">
+                    <input type="hidden" name="year" :value="selected">
+                    <button type="button" @click="open = !open"
+                        class="flex items-center bg-white rounded-full shadow-md px-4 py-2 cursor-pointer w-full justify-between border border-gray-300">
+                        <span class="italic text-gray-700" x-text="selected"></span>
+                        <i class="fa fa-chevron-down text-gray-500 text-sm"></i>
+                    </button>
+                    <ul x-show="open" @click.away="open = false"
+                        class="absolute left-0 right-0 mt-2 w-full bg-white border border-gray-200 rounded-md shadow-lg z-20 max-h-60 overflow-y-auto">
+                        <template x-for="year in years" :key="year">
+                            <li @click="selected = year; open = false; $nextTick(() => $el.closest('form').submit())"
+                                class="px-4 py-2 hover:bg-blue-100 cursor-pointer text-gray-700" x-text="year"></li>
+                        </template>
+                    </ul>
+                </div>
             </div>
         </form>
-
     </div>
 
     <!-- Table -->
@@ -120,11 +121,13 @@
                         </td>
                         <td class="px-4 py-2">
                             @if (isset($attendance->status))
+
                                 <span
                                     class="ml-2 px-2 py-1 rounded text-xs
     {{ $attendance->status == 'onTime' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
                                     {{ $attendance->status == 'onTime' ? 'On time' : 'Late' }}
                                 </span>
+
                             @else
                             @endif
                             @if ($attendance->permission)

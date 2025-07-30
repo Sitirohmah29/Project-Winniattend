@@ -4,7 +4,7 @@
     <div class="flex flex-row gap-2 items-center bg-blue-500 text-white p-4 rounded-lg">
         <button class="text-lg" onclick="window.location.href='{{ url('/indexReportWeb') }}'">Report & Analytics</button>
         <i class="fa-solid fa-angle-right"></i>
-        <h1 class="text-xl font-semibold">Attedance Report</h1>
+        <h1 class="text-xl font-semibold">Attendance Report</h1>
     </div>
 
     <div class="flex flex-row gap-4 items-center justify-between">
@@ -13,7 +13,7 @@
                 onclick="window.location.href='{{ url('/indexReportWeb') }}'">
                 <i class="fa-solid fa-angle-left fa-xl"></i>
             </div>
-            <p class="text-black text-xl font-bold">Attedance Report</p>
+            <p class="text-black text-xl font-bold">Attendance Report</p>
         </div>
 
         <!-- FILTER BULAN & TAHUN + EXPORT BUTTON DINAMIS -->
@@ -104,7 +104,6 @@
                     <th class="px-4 py-3 font-semibold text-center">Number of working days</th>
                     <th class="px-4 py-3 font-semibold text-center">On Time</th>
                     <th class="px-4 py-3 font-semibold text-center">Late</th>
-                    <th class="px-4 py-3 font-semibold text-center">Absent</th>
                     <th class="px-4 py-3 font-semibold text-center">Permission</th>
                     <th class="px-4 py-3 font-semibold text-center">Total Work Duration</th>
                 </tr>
@@ -114,12 +113,11 @@
                     <tr class="hover:bg-gray-50">
                         <td class="px-4 py-2">{{ $report['user']->fullname }}</td>
                         <td class="px-4 py-2">{{ $report['user']->role->name ?? '-' }}</td>
-                        <td class="px-4 py-2">{{ $report['totalDays'] }}</td>
-                        <td class="px-4 py-2">{{ $report['onTime'] }}</td>
-                        <td class="px-4 py-2">{{ $report['late'] }}</td>
-                        <td class="px-4 py-2">{{ $report['absent'] }}</td>
-                        <td class="px-4 py-2">{{ $report['permission'] }}</td>
-                        <td class="px-4 py-2">{{ $report['workDuration'] }} hours</td>
+                        <td class="px-4 py-2 text-center">{{ $report['totalDays'] }}</td>
+                        <td class="px-4 py-2 text-center">{{ $report['onTime'] }}</td>
+                        <td class="px-4 py-2 text-center">{{ $report['late'] }}</td>
+                        <td class="px-4 py-2 text-center">{{ $report['permission'] }}</td>
+                        <td class="px-4 py-2 text-center">{{ $report['workDuration'] }} hours </td>
                     </tr>
                 </tbody>
             @endforeach

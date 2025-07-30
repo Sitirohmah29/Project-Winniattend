@@ -49,8 +49,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/attendance/check-in', [AttendanceController::class, 'showCheckInPage'])->name('attendance.check-in');
     Route::get('/attendance/check-out', [AttendanceController::class, 'showCheckOutPage'])->name('attendance.check-out');
     Route::post('/attendance/check-out', [AttendanceController::class, 'clockCheckOut'])->name('attendance.realtime');
-    Route::post('/attendance/face-verification-checkout', [AttendanceController::class, 'faceVerificationCheckOut'])->name('attendance.face-verification-checkout');
     Route::get('/attendance/face-verification', [AttendanceController::class, 'showFaceVerificationPage'])->name('attendance.face-verification.show');
+    Route::post('/attendance/face-verification-checkout', [AttendanceController::class, 'faceVerificationCheckOut'])->name('attendance.face-verification-checkout');
     Route::post('/attendance/face-verification', [AttendanceController::class, 'faceVerificationAbsen'])->name('attendance.face-verification');
     Route::post('/attendance/permission', [AttendanceController::class, 'setPermission'])->name('attendance.permission');
 
