@@ -19,7 +19,7 @@ class RoleSeeder extends Seeder
             ['name' => 'Copy Writer', 'salary_perday' => 250000],
             ['name' => 'Frontend Developer', 'salary_perday' => 290000],
             ['name' => 'Backend Developer', 'salary_perday' => 325000],
-            ['name' => 'Admin', 'salary' => 150000],
+            ['name' => 'Admin', 'salary_perday' => 150000],
         ];
 
         foreach ($roles as $role) {
