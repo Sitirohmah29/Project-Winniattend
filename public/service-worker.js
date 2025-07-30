@@ -6,6 +6,7 @@ const urlsToCache = [
     "/images/logo.svg",
     "/login",
     "/offline",
+    "/offline.html", // Tambahkan offline.html ke cache
 ];
 
 // Install a service worker
@@ -19,6 +20,11 @@ self.addEventListener("install", (event) => {
 
 // Cache and return requests
 self.addEventListener("fetch", (event) => {
+    // Hanya cache request http(s)
+    if (!event.request.url.startsWith("http")) {
+        return;
+    }
+
     event.respondWith(
         caches.match(event.request).then((response) => {
             // Cache hit - return response
@@ -46,9 +52,18 @@ self.addEventListener("fetch", (event) => {
                     return response;
                 })
                 .catch(() => {
-                    // If fetch fails, show offline page
+                    // Jika fetch gagal dan mode navigate, tampilkan offline.html
                     if (event.request.mode === "navigate") {
-                        return caches.match("/offline");
+                        return caches.match("/offline.html");
+                    }
+                    // Jika request asset, fallback ke offline.html juga
+                    if (
+                        event.request.destination === "document" ||
+                        event.request.destination === "image" ||
+                        event.request.destination === "style" ||
+                        event.request.destination === "script"
+                    ) {
+                        return caches.match("/offline.html");
                     }
                 });
         })

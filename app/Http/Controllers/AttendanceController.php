@@ -128,6 +128,19 @@ class AttendanceController extends Controller
             $userId = $request->user_id;
             $today = now()->toDateString();
 
+            // Cek apakah sudah permission hari ini
+            $permissionToday = Attendance::where('user_id', $userId)
+                ->where('date', $today)
+                ->where('permission', 1)
+                ->exists();
+
+            if ($permissionToday) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Anda sudah mengajukan permission hari ini, tidak bisa check-in.'
+                ], 403);
+            }
+
             // Cek apakah sudah absen hari ini
             $existingAttendance = Attendance::where('user_id', $userId)
                 ->where('date', $today)
@@ -169,7 +182,7 @@ class AttendanceController extends Controller
                 'date' => now()->toDateString(),
                 'status' => $status,
                 'check_in' => $checkInTime,
-                'check_in_location' => $locationName,
+                'check_in_location' => $request->input('check_in_location') ?? $locationName, // Ambil dari request jika ada    
                 'latitude' => $request->latitude,
                 'longitude' => $request->longitude,
             ]);
@@ -230,6 +243,19 @@ class AttendanceController extends Controller
             $userId = $request->user_id;
             $today = now()->toDateString();
 
+            // Cek apakah sudah permission hari ini
+            $permissionToday = Attendance::where('user_id', $userId)
+                ->where('date', $today)
+                ->where('permission', 1)
+                ->exists();
+
+            if ($permissionToday) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Anda sudah mengajukan permission hari ini, tidak bisa check-out.'
+                ], 403);
+            }
+
             // Cari attendance hari ini
             $attendance = Attendance::where('user_id', $userId)
                 ->where('date', $today)
@@ -251,7 +277,7 @@ class AttendanceController extends Controller
 
             // Gunakan waktu dari request (checkout_time) atau waktu server
             $attendance->check_out = Carbon::parse($request->checkout_time)->format('H:i:s');
-            $attendance->check_out_location = $locationName;
+            $attendance->check_out_location = $request->input('check_out_location') ?? $locationName;
             $attendance->latitude = $request->latitude;
             $attendance->longitude = $request->longitude;
             // Jangan update status ke 'checked_out', biarkan tetap 'onTime' atau 'Late'
@@ -291,6 +317,18 @@ class AttendanceController extends Controller
     {
         $userId = Auth::id();
         $today = now()->toDateString();
+
+        // Cek apakah sudah check-in atau check-out hari ini
+        $attendance = Attendance::where('user_id', $userId)
+            ->where('date', $today)
+            ->first();
+
+        if ($attendance && ($attendance->check_in || $attendance->check_out)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda sudah check-in atau check-out hari ini, tidak bisa mengajukan permission.'
+            ], 403);
+        }
 
         // Cari atau buat attendance berdasarkan user_id dan date (BUKAN check_in)
         $attendance = Attendance::firstOrCreate(
@@ -343,6 +381,9 @@ class AttendanceController extends Controller
         }
 
         // Data
+        // $attendances = Attendance::with(['user.role'])
+        //     ->orderByDesc('date')
+        //     ->paginate(10);
         $attendances = $query->orderBy('date', 'desc')->get();
 
         return view('management_system.attedance_management.indexAttedance', compact('attendances'));
@@ -353,5 +394,21 @@ class AttendanceController extends Controller
         $attendance = Attendance::with('user.role')->findOrFail($id);
 
         return view('management_system.attedance_management.checkinAttedance', compact('attendance'));
+    }
+
+
+    public function statusToday()
+    {
+        $userId = Auth::id();
+        $today = now()->toDateString();
+        $attendance = Attendance::where('user_id', $userId)
+            ->where('date', $today)
+            ->first();
+
+        return response()->json([
+            'permission' => $attendance && $attendance->permission ? true : false,
+            'check_in' => $attendance && $attendance->check_in ? true : false,
+            'check_out' => $attendance && $attendance->check_out ? true : false,
+        ]);
     }
 }

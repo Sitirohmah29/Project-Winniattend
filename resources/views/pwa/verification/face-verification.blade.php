@@ -143,13 +143,15 @@
                         // Reverse geocoding: convert coordinates to a human-readable address
                         fetch(
                                 `https://nominatim.openstreetmap.org/reverse?format=json&lat=${userLocation.latitude}&lon=${userLocation.longitude}`
-                                )
+                            )
                             .then(res => res.json())
                             .then(data => {
                                 cardLocation.innerText = data.display_name || "Location not found";
+                                userLocationName = data.display_name || null; // Simpan nama lokasi
                             })
                             .catch(() => {
                                 cardLocation.innerText = "Failed to get location";
+                                userLocationName = null;
                             });
                     },
                     (error) => {
@@ -338,6 +340,7 @@
                 user_id: userId,
                 latitude: userLocation.latitude,
                 longitude: userLocation.longitude,
+                check_in_location: userLocationName,
                 check_in_time: check_in_time // tambahkan ini
             };
             // Send attendance data to the backend via POST request

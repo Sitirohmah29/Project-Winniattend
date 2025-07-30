@@ -14,8 +14,12 @@ class DashboardController extends Controller
 {
     public function dashboard()
     {
-        // Ambil 10 data presensi terakhir + user-nya
-        $attendances = Attendance::with('user')->orderByDesc('created_at')->limit(10)->get();
+
+        $attendances = Attendance::with('user')
+            ->whereNotNull('check_in')
+            ->orderByDesc('check_in')
+            ->limit(10)
+            ->get();
 
         // Hitung total user (pegawai)
         $totalEmployees = User::count();
@@ -157,11 +161,11 @@ class DashboardController extends Controller
         $shift = $user->shift; // Pastikan ada relasi/field shift di tabel user
 
         // Tentukan jam kerja berdasarkan shift
-        if ($shift == 'shift-1'){
+        if ($shift == 'shift-1') {
             $workingHours = '08.00 am - 04.00 pm';
-        }elseif ($shift == 'shift-2'){
+        } elseif ($shift == 'shift-2') {
             $workingHours = '02.00 pm - 09.00 pm';
-        }else {
+        } else {
             $workingHours = '08.00 am - 04.00 pm'; // Default
         }
 
@@ -172,11 +176,11 @@ class DashboardController extends Controller
         $endOfWeek = now()->endOfWeek();
 
         $attendanceData = \App\Models\Attendance::where('user_id', $user->id)
-        ->whereYear('date', now()->year) // filter tahun sekarang
-        ->get()
-        ->groupBy(function ($item) {
-            return \Carbon\Carbon::parse($item->date)->format('M'); // contoh: Jan, Feb, dst
-        });
+            ->whereYear('date', now()->year) // filter tahun sekarang
+            ->get()
+            ->groupBy(function ($item) {
+                return \Carbon\Carbon::parse($item->date)->format('M'); // contoh: Jan, Feb, dst
+            });
 
 
         $months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
