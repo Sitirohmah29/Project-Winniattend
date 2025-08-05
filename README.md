@@ -1,5 +1,6 @@
 **Siti Rohmah - Fullstack Developer**  
 **Risma Handayani - Laravel Developer**
+**Teknologi Informasi - Institut Bisnis dan Informatika Kesatuan**
 
 # Project WinniAttend
 
