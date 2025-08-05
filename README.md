@@ -1,3 +1,6 @@
+**Siti Rohmah - Fullstack Developer**  
+**Risma Handayani - Laravel Developer**
+
 # Project WinniAttend
 
 WinniAttend is a Laravel-based attendance web application using Tailwind CSS for frontend styling.
